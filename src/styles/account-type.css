@@ -1,0 +1,62 @@
+.account-type-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.account-type-selector h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.account-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.account-option {
+  padding: 20px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account-option:hover {
+  border-color: #0066cc;
+  background: #f9fbfd;
+}
+
+.account-option.selected {
+  border-color: #0066cc;
+  background: #f0f7ff;
+}
+
+.option-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.option-header i {
+  font-size: 20px;
+  color: #0066cc;
+}
+
+.account-option p {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+  margin-left: 32px;
+}

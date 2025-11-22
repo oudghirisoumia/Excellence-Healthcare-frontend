@@ -1,0 +1,89 @@
+/* WRAPPER sticky — seulement pour le sticky */
+.categories-sticky-wrapper {
+  position: sticky;
+  top: 60px; /* met la distance par rapport au header */
+  z-index: 100;
+}
+
+/* Section visuelle */
+.categories-section {
+  background: #e6f0f8;
+  padding: 1rem 0;
+  position: relative;
+  overflow: visible; /* important ! */
+}
+
+.categories-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding: 0 1rem;
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar */
+.categories-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.categories-container::-webkit-scrollbar-thumb {
+  background: #5C96B3;
+  border-radius: 3px;
+}
+
+/* Cards */
+.category-card {
+  flex: 0 0 auto;
+  background: white;
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-weight: 600;
+  color: #5C96B3;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-align: center;
+  min-width: 140px;
+}
+
+.category-card:hover {
+  background: #5C96B3;
+  color: white;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Gradient */
+.categories-section::before,
+.categories-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 50px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.categories-section::before {
+  left: 0;
+  background: linear-gradient(to right, #e6f0f8, transparent);
+}
+
+.categories-section::after {
+  right: 0;
+  background: linear-gradient(to left, #e6f0f8, transparent);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .category-card {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    min-width: 120px;
+  }
+  .categories-container {
+    gap: 10px;
+  }
+}
