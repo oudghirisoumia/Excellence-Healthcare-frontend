@@ -1,83 +1,117 @@
-import "../styles/ProductCard.css"
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import "../styles/ProductCard.css"; // keep your CSS or use Tailwind
 
-const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite }) => {
-  const handleAddClick = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (product && product.id) {
-      onAddToCart(product)
-    }
-  }
+const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite = false }) => {
+  if (!product) return null;
 
-  const handleFavoriteClick = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (product && product.id) {
-      onToggleFavorite(product.id)
-    }
-  }
+  // Calculate real discounted price
+  const originalPrice = parseFloat(product.prix_detail);
+  const discountPercent = product.promotion ? parseFloat(product.pourcentage_promo) : 0;
+  const discountedPrice = discountPercent > 0 
+    ? (originalPrice * (1 - discountPercent / 100)).toFixed(2)
+    : null;
 
-  if (!product) return null
+  const isLowStock = product.stock > 0 && product.stock <= product.seuil_alerte;
+  const isOutOfStock = product.stock <= 0;
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onAddToCart(product);
+  };
+
+  const handleFavorite = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggleFavorite(product.id);
+  };
 
   return (
     <div className="product-card">
       <div className="product-image-container">
-        {/* Lien vers la page produit */}
-        {/* <Link to={`/product/${product.id}`}>
-          <img src={product.image || "/placeholder.svg"} alt={product.name} className="product-image" />
-        </Link> */}
-        {/* <Link to={`/product/${product.id}`}>
-          <img src={product.image} alt={product.name} className="product-image" />
-      </Link> */}
-      <Link to={`/product/${product.id}`}>
-  <img src={product.image || "/placeholder.svg"} alt={product.name} className="product-image" />
-</Link>
+        <Link to={`/product/${product.id}`}>
+          {product.image_principale ? (
+            <img 
+              src={product.image_principale} 
+              alt={product.name} 
+              className="product-image" 
+            />
+          ) : (
+            <div className="image-placeholder">
+              <span>No image</span>
+            </div>
+          )}
+        </Link>
 
-        {/* Favorite Button */}
+        {/* Favorite Heart */}
         <button
           className={`favorite-btn ${isFavorite ? "active" : ""}`}
-          onClick={handleFavoriteClick}
-          aria-label="Add to favorites"
-          type="button"
+          onClick={handleFavorite}
+          aria-label="Favoris"
         >
-          <i className="fas fa-heart"></i>
+          <i className={`fas fa-heart ${isFavorite ? "filled" : ""}`}></i>
         </button>
 
-        {/* Discount Badge */}
-        {product.discount > 0 && <div className="discount-badge">-{product.discount}%</div>}
+        {/* Promotion Badge */}
+        {product.promotion && (
+          <div className="discount-badge">
+            -{discountPercent}%
+          </div>
+        )}
+
+        {/* Stock Alert */}
+        {isLowStock && (
+          <div className="stock-alert">
+            Plus que {product.stock} !
+          </div>
+        )}
+        {isOutOfStock && (
+          <div className="out-of-stock-badge">
+            Rupture
+          </div>
+        )}
       </div>
 
       <div className="product-info">
-        <p className="product-brand">{product.brand}</p>
-        <h3 className="product-name">{product.name}</h3>
+        {/* Brand + Reference */}
+        <p className="product-brand">
+          {product.brand} • {product.reference}
+        </p>
 
-        {/* Rating */}
-        <div className="product-rating">
-          <div className="stars">
-            {[...Array(5)].map((_, i) => (
-              <i key={i} className={`fas fa-star ${i < Math.floor(product.rating) ? "filled" : ""}`}></i>
-            ))}
-          </div>
-          <span className="rating-text">
-            {product.rating} ({product.reviews})
-          </span>
-        </div>
+        {/* Name */}
+        <h3 className="product-name">
+          <Link to={`/product/${product.id}`}>
+            {product.name}
+          </Link>
+        </h3>
 
-        {/* Pricing */}
+        {/* Description */}
+        <p className="product-description">{product.description}</p>
+
+        {/* Price */}
         <div className="product-pricing">
-          {product.price > 0 && <span className="original-price">{product.price.toFixed(2)} €</span>}
-          <span className="discount-price">{product.discountPrice.toFixed(2)} €</span>
+          {discountedPrice ? (
+            <>
+              <span className="discount-price">{discountedPrice} DH</span>
+              <span className="original-price">{originalPrice.toFixed(2)} DH</span>
+            </>
+          ) : (
+            <span className="current-price">{originalPrice.toFixed(2)} DH</span>
+          )}
         </div>
 
         {/* Add to Cart Button */}
-        <button className="add-to-cart-btn" onClick={handleAddClick} type="button">
+        <button
+          className={`add-to-cart-btn ${isOutOfStock ? "disabled" : ""}`}
+          onClick={handleAddToCart}
+          disabled={isOutOfStock}
+        >
           <i className="fas fa-shopping-cart"></i>
-          Ajouter au panier
+          {isOutOfStock ? "Rupture" : "Ajouter au panier"}
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;

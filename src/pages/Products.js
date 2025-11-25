@@ -1,29 +1,53 @@
-import PropTypes from "prop-types"
-import ProductGrid from "../components/ProductGrid"
-import "../styles/ProductGrid.css"
+import { useState, useEffect } from 'react';
+import api from '../api';
+import ProductCard from '../components/ProductCard'; // your card we fixed
 
-function Products({ products, favorites, onAddToCart, onToggleFavorite }) {
+export default function Products() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    api.get('/products')
+      .then(response => {
+        setProducts(response.data.data); // Laravel paginates → data.data
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setError("Impossible de charger les produits");
+        setLoading(false);
+      });
+  }, []);
+
+  const handleAddToCart = (product) => {
+    alert(`Ajouté au panier : ${product.name}`);
+    // Later: connect to real cart API
+  };
+
+  const handleToggleFavorite = (productId) => {
+    alert(`Favoris cliqué : ${productId}`);
+    // Later: connect to /favorites/toggle
+  };
+
+  if (loading) return <div className="text-center py-20 text-xl">Chargement des produits...</div>;
+  if (error) return <div className="text-center py-20 text-red-600">{error}</div>;
+
   return (
-    <div className="products-page">
-      <div className="products-header">
-        <h1>Tous les Produits</h1>
-        <p>Découvrez notre gamme complète de produits de parapharmcie</p>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold text-center mb-10">Nos Produits</h1>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {products.map(product => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onAddToCart={handleAddToCart}
+            onToggleFavorite={handleToggleFavorite}
+            isFavorite={false}
+          />
+        ))}
       </div>
-      <ProductGrid
-        products={products}
-        favorites={favorites}
-        onAddToCart={onAddToCart}
-        onToggleFavorite={onToggleFavorite}
-      />
     </div>
-  )
+  );
 }
-
-Products.propTypes = {
-  products: PropTypes.array.isRequired,
-  favorites: PropTypes.array.isRequired,
-  onAddToCart: PropTypes.func.isRequired,
-  onToggleFavorite: PropTypes.func.isRequired,
-}
-
-export default Products
