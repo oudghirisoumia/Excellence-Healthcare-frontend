@@ -4,7 +4,18 @@ import { Link, useNavigate } from "react-router-dom"
 
 const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
   const navigate = useNavigate()
-  const subtotal = cart.reduce((total, item) => total + item.discountPrice * item.quantity, 0)
+  
+  // Handle different cart item structures
+  const normalizedCart = cart.map(item => ({
+    ...item,
+    price: item.discountPrice || item.product?.discountPrice || item.product?.prix_detail || 0,
+    name: item.name || item.product?.name || 'Unknown',
+    brand: item.brand || item.product?.brand || '',
+    image: item.image || item.product?.image_principale || '/placeholder.svg',
+    itemId: item.id || item.product_id
+  }))
+
+  const subtotal = normalizedCart.reduce((total, item) => total + (parseFloat(item.price) || 0) * (item.quantity || 1), 0)
   const shipping = subtotal > 50 ? 0 : 4.9
   const total = subtotal + shipping
 
@@ -29,34 +40,34 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
 
       <div className="cart-container">
         <div className="cart-items">
-          {cart.map((item) => (
-            <div key={item.id} className="cart-item">
-              <img src={item.image || "/placeholder.svg"} alt={item.name} />
+          {normalizedCart.map((item) => (
+            <div key={item.itemId} className="cart-item">
+              <img src={item.image} alt={item.name} />
 
               <div className="item-details">
                 <h3>{item.name}</h3>
                 <p className="brand">{item.brand}</p>
-                <p className="price">{item.discountPrice.toFixed(2)} €</p>
+                <p className="price">{parseFloat(item.price).toFixed(2)} €</p>
               </div>
 
               <div className="quantity-control">
-                <button className="qty-btn" onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}>
+                <button className="qty-btn" onClick={() => onUpdateQuantity(item.itemId, item.quantity - 1)}>
                   −
                 </button>
                 <input
                   type="number"
                   value={item.quantity}
-                  onChange={(e) => onUpdateQuantity(item.id, Number.parseInt(e.target.value) || 1)}
+                  onChange={(e) => onUpdateQuantity(item.itemId, Number.parseInt(e.target.value) || 1)}
                   className="qty-input"
                 />
-                <button className="qty-btn" onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}>
+                <button className="qty-btn" onClick={() => onUpdateQuantity(item.itemId, item.quantity + 1)}>
                   +
                 </button>
               </div>
 
-              <div className="item-total">{(item.discountPrice * item.quantity).toFixed(2)} €</div>
+              <div className="item-total">{(parseFloat(item.price) * item.quantity).toFixed(2)} €</div>
 
-              <button className="remove-btn" onClick={() => onRemoveFromCart(item.id)} title="Supprimer">
+              <button className="remove-btn" onClick={() => onRemoveFromCart(item.itemId)} title="Supprimer">
                 <i className="fas fa-trash"></i>
               </button>
             </div>
