@@ -4,6 +4,11 @@ import { useState, useEffect } from "react"
 import "../styles/AdminDashboard.css"
 import { CARRIERS, ORDER_STATUSES } from "../data/deliveryData"
 
+const formatPrice = (price) => {
+  if (!price && price !== 0) return "0.00";
+  return Number(price).toFixed(2);
+};
+
 const AdminDashboard = () => {
   const [orders, setOrders] = useState([])
   const [selectedOrder, setSelectedOrder] = useState(null)
@@ -96,7 +101,7 @@ const AdminDashboard = () => {
                 >
                   <td>{order.id}</td>
                   <td>{order.phone}</td>
-                  <td>{order.total.toFixed(2)} €</td>
+                 <td> {order.total ? Number(order.total).toFixed(2) : "0.00"} DH</td>
                   <td>
                     <select
                       value={order.status}
