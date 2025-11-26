@@ -78,7 +78,10 @@ function AppContent() {
   }
 
   const handleAddToCart = async (product) => {
-    if (!user) {
+    // Check if user has a token (logged in)
+    const token = localStorage.getItem('token')
+    
+    if (!token) {
       navigate('/auth')
       return
     }
