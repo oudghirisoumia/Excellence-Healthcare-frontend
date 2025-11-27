@@ -74,28 +74,6 @@ function AppContent() {
     loadFavorites()
   }, [showFavorites, favorites])
 
-  const loadUserData = async () => {
-    try {
-      const [cartRes, favRes, notifRes] = await Promise.all([
-        api.get('/cart'),
-        api.get('/favorites'),
-        api.get('/notifications')
-      ])
-
-      setCart(cartRes.data.items || cartRes.data)
-      setFavorites(favRes.data.map(f => f.product_id || f.id))
-      setNotifications(notifRes.data)
-    } catch (err) {
-      console.error("Failed to load user data", err)
-      if (err.response?.status === 401) {
-        logout()
-        navigate('/auth')
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const handleToggleFavorite = async (productId) => {
     try {
       await api.post(`/favorites/toggle/${productId}`)
