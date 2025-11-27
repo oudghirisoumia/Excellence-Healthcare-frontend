@@ -31,10 +31,19 @@
   width: auto;
 }
 
-.logo span {
-  color:  #5C96B3;
+/* Ensure the link contents are aligned and the text is visible */
+.logo a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
-  font-weight: 500;
+}
+
+.logo span {
+  color:  #5C96B3; /* visible on teal header */
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 18px;
   transition: all 0.3s;
 }
 
