@@ -38,7 +38,7 @@ const OrderConfirmation = () => {
 
           <div className="detail-section">
             <h3>Montant total</h3>
-            <p className="total-amount">{order.total.toFixed(2)} €</p>
+            <p className="total-amount">{(parseFloat(order.total) || parseFloat(order.calculated_total) || 0).toFixed(2)} DH</p>
           </div>
 
           <div className="detail-section">
@@ -49,12 +49,12 @@ const OrderConfirmation = () => {
           <div className="detail-section">
             <h3>Articles commandés</h3>
             <div className="order-items-list">
-              {order.items.map((item) => (
-                <div key={item.id} className="item-line">
+              {(order.items || []).map((item) => (
+                <div key={item.id || item.product_id} className="item-line">
                   <span>
                     {item.name} x{item.quantity}
                   </span>
-                  <span>{(item.discountPrice * item.quantity).toFixed(2)} €</span>
+                  <span>{(parseFloat(item.discountPrice || item.price || item.prix_detail) * (item.quantity || 1) || 0).toFixed(2)} DH</span>
                 </div>
               ))}
             </div>

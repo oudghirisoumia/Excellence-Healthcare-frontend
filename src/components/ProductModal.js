@@ -93,9 +93,9 @@ export default function ProductModal({ product }) {
 
           {/* Prix */}
           <div className="flex items-baseline gap-3 mb-4">
-            <span className="text-3xl font-bold text-emerald-600">{displayPrice.toFixed(2)} €</span>
+            <span className="text-3xl font-bold text-emerald-600">{displayPrice.toFixed(2)} DH</span>
             {promoPercent > 0 && (
-              <span className="text-xl text-gray-400 line-through">{rawPrice.toFixed(2)} €</span>
+              <span className="text-xl text-gray-400 line-through">{rawPrice.toFixed(2)} DH</span>
             )}
           </div>
 
@@ -151,7 +151,7 @@ export default function ProductModal({ product }) {
               className="w-full bg-[#0088CC] hover:bg-[#0077B3] text-white font-bold py-3.5 px-6 rounded-lg shadow-lg shadow-blue-200/50 flex items-center justify-center gap-2"
             >
               <ShoppingCart className="w-5 h-5" />
-              <span>Ajouter au panier - {(displayPrice * quantity).toFixed(2)} €</span>
+              <span>Ajouter au panier - {(displayPrice * quantity).toFixed(2)} DH</span>
             </button>
           </div>
         </div>

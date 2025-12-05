@@ -47,7 +47,7 @@ const FavoritesPage = ({ favorites, products, onRemoveFavorite, onAddToCart, onC
                   {
                     (() => {
                       const price = parseFloat(product.prix_detail || product.prix || product.price || product.prix_original || 0)
-                      return <p className="price">{price.toFixed(2)} €</p>
+                      return <p className="price">{price.toFixed(2)} DH</p>
                     })()
                   }
                 </div>
