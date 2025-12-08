@@ -3,15 +3,15 @@ import { useNavigate, useLocation } from "react-router-dom"
 import "../styles/Categories.css"
 
 const categories = [
-  { id: "all", name: "Tous les produits", icon: "Package" },
-  { id: "soins-visage", name: "Soins du visage", icon: "Sparkles" },
-  { id: "soins-corps", name: "Soins du corps", icon: "Heart" },
+  { id: "all", name: "Tous les produits" },
+  { id: "soins-visage", name: "Soins du visage"},
+  { id: "soins-corps", name: "Soins du corps" },
   { id: "cheveux", name: "Cheveux", icon: "Waves" },
-  { id: "vitamines", name: "Vitamines & Compléments", icon: "Pill" },
-  { id: "hygiene", name: "Hygiène", icon: "Droplet" },
-  { id: "maquillage", name: "Maquillage", icon: "Palette" },
-  { id: "bebe-maman", name: "Bébé & Maman", icon: "Baby" },
-  { id: "solaire", name: "Solaire", icon: "Sun" },
+  { id: "vitamines", name: "Vitamines & Compléments"},
+  { id: "hygiene", name: "Hygiène"},
+  { id: "maquillage", name: "Maquillage" },
+  { id: "bebe-maman", name: "Bébé & Maman", },
+  { id: "solaire", name: "Solaire" },
 ]
 
 export default function Categories() {
