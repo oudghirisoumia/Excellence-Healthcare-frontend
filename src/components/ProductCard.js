@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import api from "../api";
 import "../styles/ProductCard.css"; // keep your CSS or use Tailwind
 
 const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite = false }) => {
@@ -26,13 +27,29 @@ const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite = fals
     onToggleFavorite(product.id);
   };
 
+  // Build full image URL if the API returns a relative path
+  const buildImageUrl = (path) => {
+    if (!path) return "/placeholder.svg";
+    try {
+      // api.defaults.baseURL is like 'http://localhost:8000/api'
+      const base = api.defaults.baseURL || '';
+      // remove trailing '/api' if present to point to the host
+      const host = base.replace(/\/api\/?$/, '')
+      if (path.startsWith('http')) return path
+      if (path.startsWith('/')) return host + path
+      return host + '/' + path
+    } catch (err) {
+      return path
+    }
+  }
+
   return (
     <div className="product-card">
       <div className="product-image-container">
         <Link to={`/product/${product.id}`}>
           {product.image_principale ? (
             <img 
-              src={product.image_principale} 
+              src={buildImageUrl(product.image_principale)} 
               alt={product.name} 
               className="product-image" 
             />

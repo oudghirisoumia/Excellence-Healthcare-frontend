@@ -1,8 +1,22 @@
 
 import "../styles/FavoritesPage.css"
+import api from "../api"
 
 const FavoritesPage = ({ favorites, products, onRemoveFavorite, onAddToCart, onClose }) => {
   const favoriteProducts = products.filter((p) => favorites.includes(p.id))
+
+  const buildImageUrl = (path) => {
+    if (!path) return "/placeholder.svg"
+    try {
+      const base = api.defaults.baseURL || ''
+      const host = base.replace(/\/api\/?$/, '')
+      if (path.startsWith('http')) return path
+      if (path.startsWith('/')) return host + path
+      return host + '/' + path
+    } catch (err) {
+      return path
+    }
+  }
 
   const handleAddAllToCart = () => {
     favoriteProducts.forEach((product) => {
@@ -26,11 +40,16 @@ const FavoritesPage = ({ favorites, products, onRemoveFavorite, onAddToCart, onC
           {favoriteProducts.length > 0 ? (
             favoriteProducts.map((product) => (
               <div key={product.id} className="favorite-item">
-                <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                <img src={buildImageUrl(product.image_principale || product.image || product.image_principale)} alt={product.name} />
                 <div className="favorite-info">
                   <h3>{product.name}</h3>
                   <p className="brand">{product.brand}</p>
-                  <p className="price">{product.discountPrice.toFixed(2)} €</p>
+                  {
+                    (() => {
+                      const price = parseFloat(product.prix_detail || product.prix || product.price || product.prix_original || 0)
+                      return <p className="price">{price.toFixed(2)} DH</p>
+                    })()
+                  }
                 </div>
                 <div className="favorite-actions">
                   <button className="delete-btn" onClick={() => onRemoveFavorite(product.id)} title="Supprimer">

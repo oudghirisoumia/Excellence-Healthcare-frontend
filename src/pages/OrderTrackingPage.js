@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import "../styles/OrderTrackingPage.css"
 import { ORDER_STATUSES } from "../data/deliveryData"
+import api from "../api"
 
 const OrderTrackingPage = () => {
   const [orders, setOrders] = useState([])
@@ -45,8 +46,8 @@ const OrderTrackingPage = () => {
                     {getStatusLabel(order.status)}
                   </span>
                 </div>
-                <p className="order-date">{new Date(order.createdAt).toLocaleDateString("fr-FR")}</p>
-                <p className="order-total">{order.total.toFixed(2)} €</p>
+                <p className="order-date">{order.createdAt ? new Date(order.createdAt).toLocaleDateString("fr-FR") : "-"}</p>
+                <p className="order-total">{(parseFloat(order.total) || 0).toFixed(2)} DH</p>
               </div>
             ))}
           </div>
@@ -95,29 +96,47 @@ const OrderTrackingPage = () => {
                 <div className="info-section">
                   <h3>Résumé financier</h3>
                   <p>
-                    <strong>Sous-total:</strong> {selectedOrder.subtotal.toFixed(2)} €
+                    <strong>Sous-total:</strong> {(parseFloat(selectedOrder.subtotal) || 0).toFixed(2)} DH
                   </p>
                   <p>
-                    <strong>Livraison:</strong> {selectedOrder.deliveryFee.toFixed(2)} €
+                    <strong>Livraison:</strong> {(parseFloat(selectedOrder.deliveryFee) || 0).toFixed(2)} DH
                   </p>
                   <p className="total">
-                    <strong>Total:</strong> {selectedOrder.total.toFixed(2)} €
+                    <strong>Total:</strong> {(parseFloat(selectedOrder.total) || parseFloat(selectedOrder.calculated_total) || 0).toFixed(2)} DH
                   </p>
                 </div>
 
                 <div className="info-section">
                   <h3>Articles</h3>
                   <div className="order-items">
-                    {selectedOrder.items.map((item) => (
-                      <div key={item.id} className="order-item">
-                        <img src={item.image || "/placeholder.svg"} alt={item.name} />
-                        <div>
-                          <p>{item.name}</p>
-                          <p className="qty">Quantité: {item.quantity}</p>
+                    {(selectedOrder.items || []).map((item) => {
+                      const price = parseFloat(item.discountPrice || item.price || item.prix_detail || 0)
+                      const qty = parseInt(item.quantity || 1)
+                      const img = (() => {
+                        const path = item.image || item.image_principale || item.product_image
+                        if (!path) return "/placeholder.svg"
+                        try {
+                          const base = api.defaults.baseURL || ''
+                          const host = base.replace(/\/api\/?$/, '')
+                          if (path.startsWith('http')) return path
+                          if (path.startsWith('/')) return host + path
+                          return host + '/' + path
+                        } catch (err) {
+                          return path
+                        }
+                      })()
+
+                      return (
+                        <div key={item.id || item.product_id || Math.random()} className="order-item">
+                          <img src={img} alt={item.name} />
+                          <div>
+                            <p>{item.name}</p>
+                            <p className="qty">Quantité: {qty}</p>
+                          </div>
+                          <span>{(price * qty).toFixed(2)} DH</span>
                         </div>
-                        <span>{(item.discountPrice * item.quantity).toFixed(2)} €</span>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 </div>
 

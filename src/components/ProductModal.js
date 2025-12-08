@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Check, Minus, Plus, ShoppingCart, Star } from "lucide-react";
+import api from "../api";
 
 export default function ProductModal({ product }) {
   const navigate = useNavigate();
@@ -19,6 +20,26 @@ export default function ProductModal({ product }) {
     console.log(`Ajouter au panier: ${product.name}, quantité: ${quantity}`);
   };
 
+  const buildImageUrl = (path) => {
+    if (!path) return "/placeholder.svg";
+    try {
+      const base = api.defaults.baseURL || '';
+      const host = base.replace(/\/api\/?$/, '')
+      if (path.startsWith('http')) return path
+      if (path.startsWith('/')) return host + path
+      return host + '/' + path
+    } catch (err) {
+      return path
+    }
+  }
+
+  // Price calculations (handle different API field names)
+  const rawPrice = parseFloat(product.prix_detail || product.prix || product.price || 0)
+  const promoPercent = product.pourcentage_promo ? parseFloat(product.pourcentage_promo) : (product.promotion ? 0 : 0)
+  const displayPrice = promoPercent > 0 ? rawPrice * (1 - promoPercent / 100) : rawPrice
+  const reviews = product.reviews_count || product.reviews || 0
+  const rating = parseFloat(product.rating || 0)
+
   return (
     <div className="container mx-auto p-6">
       {/* Bouton retour */}
@@ -33,13 +54,13 @@ export default function ProductModal({ product }) {
         {/* Image */}
         <div className="md:w-1/2 bg-[#F9F9F9] p-6 flex items-center justify-center rounded-lg relative">
           <img
-            src={product.image}
+            src={buildImageUrl(product.image_principale || product.image)}
             alt={product.name}
             className="w-full h-auto max-h-[400px] object-contain"
           />
-          {product.discount > 0 && (
+          {promoPercent > 0 && (
             <span className="absolute top-4 right-4 bg-[#FF3B30] text-white font-bold px-3 py-1.5 rounded-lg shadow-sm">
-              -{product.discount}%
+              -{promoPercent}%
             </span>
           )}
         </div>
@@ -66,20 +87,20 @@ export default function ProductModal({ product }) {
               </div>
             </div>
             <span className="text-gray-600 font-medium">
-              {product.rating} <span className="text-gray-400 font-normal">({product.reviews} avis)</span>
+              {rating.toFixed(1)} <span className="text-gray-400 font-normal">({reviews} avis)</span>
             </span>
           </div>
 
           {/* Prix */}
           <div className="flex items-baseline gap-3 mb-4">
-            <span className="text-3xl font-bold text-emerald-600">{product.discountPrice.toFixed(2)} €</span>
-            {product.discount > 0 && (
-              <span className="text-xl text-gray-400 line-through">{product.price.toFixed(2)} €</span>
+            <span className="text-3xl font-bold text-emerald-600">{displayPrice.toFixed(2)} DH</span>
+            {promoPercent > 0 && (
+              <span className="text-xl text-gray-400 line-through">{rawPrice.toFixed(2)} DH</span>
             )}
           </div>
 
           {/* Stock */}
-          {product.price > 0 && (
+          {rawPrice > 0 && (
             <div className="flex items-center gap-2 text-emerald-600 mb-6 pb-6 border-b border-gray-100">
               <Check className="w-5 h-5" />
               <span className="font-medium">En stock - Livraison rapide</span>
@@ -130,7 +151,7 @@ export default function ProductModal({ product }) {
               className="w-full bg-[#0088CC] hover:bg-[#0077B3] text-white font-bold py-3.5 px-6 rounded-lg shadow-lg shadow-blue-200/50 flex items-center justify-center gap-2"
             >
               <ShoppingCart className="w-5 h-5" />
-              <span>Ajouter au panier - {(product.discountPrice * quantity).toFixed(2)} €</span>
+              <span>Ajouter au panier - {(displayPrice * quantity).toFixed(2)} DH</span>
             </button>
           </div>
         </div>

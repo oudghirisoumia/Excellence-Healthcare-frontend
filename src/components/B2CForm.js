@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import "../styles/forms.css"
+import toast from "react-hot-toast"
 
 export default function B2CForm() {
   const [formData, setFormData] = useState({
@@ -40,7 +41,7 @@ export default function B2CForm() {
 
     if (Object.keys(newErrors).length === 0) {
       console.log("B2C Signup:", formData)
-      alert("Inscription réussie!")
+      toast("Inscription réussie!")
     } else {
       setErrors(newErrors)
     }

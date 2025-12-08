@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import api from "../api";
+import "../styles/ProductGrid.css"
 
 export default function Home({ onAddToCart, onToggleFavorite }) {
   const [products, setProducts] = useState([]);
@@ -53,16 +54,18 @@ export default function Home({ onAddToCart, onToggleFavorite }) {
             Aucun produit disponible pour le moment
           </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={onAddToCart}
-                onToggleFavorite={onToggleFavorite}
-                isFavorite={false} // Tu peux améliorer avec un check plus tard
-              />
-            ))}
+          <div className="product-grid-container">
+            <div className="product-grid">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={onAddToCart}
+                  onToggleFavorite={onToggleFavorite}
+                  isFavorite={false} // Tu peux améliorer avec un check plus tard
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
