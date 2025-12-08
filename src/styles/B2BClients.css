@@ -1,0 +1,140 @@
+.b2b-clients-page {
+  padding: 32px;
+  font-family: "Inter", Arial, sans-serif;
+  color: #1f2937;
+  margin-left: -70px;
+    margin-right: -70px;
+
+}
+
+.client-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 28px;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.client-form input,
+.client-form select {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  flex: 1;
+  min-width: 200px;
+  transition: border-color 0.2s ease;
+  background: #fdfdfd;
+}
+
+.client-form input:focus,
+.client-form select:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.client-form button {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: background 0.25s ease, transform 0.1s ease;
+}
+
+.client-form button:hover {
+  background: #1d4ed8;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.clients-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.clients-table th {
+  padding: 14px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.clients-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #374151;
+  font-size: 14px;
+}
+
+.clients-table tr:hover td {
+  background: #f9fafb;
+}
+
+.empty {
+  text-align: center;
+  padding: 28px;
+  color: #9ca3af;
+  font-size: 15px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 50px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+}
+
+.status-active { background: #10b981; }
+.status-inactive { background: #9ca3af; }
+.status-vip { 
+  background: #7c3aed; 
+}
+
+button.danger {
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.25s ease;
+  background: #ef4444;
+
+}
+
+button.danger:hover {
+  background: #dc2626;
+}
+
+button.edit-btn {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.25s ease;
+}
+
+.edit-btn:hover {
+  background: #2563eb;
+}
