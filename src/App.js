@@ -19,7 +19,9 @@ import AdminDashboard from "./pages/AdminDashboard"
 import OrderConfirmation from "./pages/OrderConfirmation"
 import NotificationPanel from "./components/NotificationPanel"
 import ProductPage from "./pages/ProductPage"
-import api from "./api"  // Your axios instance
+import B2BDashboard from "./pages/B2BDashboardPage";
+import api from "./api"
+
 
 function AppContent() {
   const { user, logout } = useAuth()
@@ -67,8 +69,8 @@ function AppContent() {
   const handleToggleFavorite = async (productId) => {
     try {
       await api.post(`/favorites/toggle/${productId}`)
-      setFavorites(prev => 
-        prev.includes(productId) 
+      setFavorites(prev =>
+        prev.includes(productId)
           ? prev.filter(id => id !== productId)
           : [...prev, productId]
       )
@@ -80,7 +82,7 @@ function AppContent() {
   const handleAddToCart = async (product) => {
     // Check if user has a token (logged in)
     const token = localStorage.getItem('token')
-    
+
     if (!token) {
       navigate('/auth')
       return
@@ -135,15 +137,20 @@ function AppContent() {
     return <div className="flex items-center justify-center h-screen">Chargement...</div>
   }
 
+  const cartArray = Array.isArray(cart) ? cart : (cart?.items || []);
+
   return (
     <>
       <Header
-        cartCount={cart.reduce((sum, i) => sum + i.quantity, 0)}
+        cartCount={cartArray.reduce((sum, i) => sum + i.quantity, 0)}
         favoritesCount={favorites.length}
         notificationsCount={notifications.filter(n => !n.read).length}
-        onOpenNotifications={() => {}}
-      />
-      <Categories />
+        onOpenNotifications={() => { }}
+      >
+        <Categories />
+      </Header>
+
+
 
       <main className="container">
         <Routes>
@@ -153,7 +160,7 @@ function AppContent() {
           <Route path="/product/:id" element={<ProductPage onAddToCart={handleAddToCart} />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          
+
           <Route path="/cart" element={
             <CartPage
               cart={cart}
@@ -161,14 +168,17 @@ function AppContent() {
               onUpdateQuantity={handleUpdateCartQuantity}
             />
           } />
-          
+
           <Route path="/checkout" element={
             <CheckoutPage cart={cart} onClearCart={handleClearCart} />
           } />
-          
+
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/order-tracking" element={<OrderTrackingPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
+
+          <Route path="/b2b/dashboard" element={<B2BDashboard />} />
+
         </Routes>
       </main>
 

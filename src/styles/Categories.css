@@ -1,27 +1,24 @@
-/* WRAPPER sticky — seulement pour le sticky */
 .categories-sticky-wrapper {
   position: sticky;
-  top: 60px; /* met la distance par rapport au header */
-  z-index: 100;
+  top: 60px;
+  z-index: 1000;
 }
-
-/* Section visuelle */
 .categories-section {
   background: #e6f0f8;
   padding: 1rem 0;
   position: relative;
-  overflow: visible; /* important ! */
+  overflow: visible;
+  z-index: 1000;
 }
 
 .categories-container {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   overflow-x: auto;
-  padding: 0 1rem;
+  padding: 0 0.8rem;
   scroll-behavior: smooth;
 }
 
-/* Scrollbar */
 .categories-container::-webkit-scrollbar {
   height: 6px;
 }
@@ -31,30 +28,48 @@
   border-radius: 3px;
 }
 
-/* Cards */
 .category-card {
   flex: 0 0 auto;
   background: white;
-  border-radius: 20px;
-  padding: 12px 24px;
+  border: 1px solid #d4e3ef;
+  border-radius: 12px;
+  padding: 6px 14px;
   font-weight: 600;
-  color: #5C96B3;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  color: #4d7fa0;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 13px;
   white-space: nowrap;
-  text-align: center;
-  min-width: 140px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: unset;
+  transition: background 0.2s ease, color 0.2s ease, border 0.2s ease;
 }
 
 .category-card:hover {
-  background: #5C96B3;
+  background: #17a2b8;
+  border-color: #17a2b8;
   color: white;
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Gradient */
+.category-card:hover i,
+.category-card:hover svg {
+  color: white;
+}
+
+.category-card.active {
+  background: #17a2b8;
+  border-color: #17a2b8;
+  color: white;
+}
+
+.category-card i,
+.category-card svg {
+  font-size: 14px;
+  color: #4d7fa0;
+}
+
+
 .categories-section::before,
 .categories-section::after {
   content: '';
@@ -76,14 +91,12 @@
   background: linear-gradient(to left, #e6f0f8, transparent);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .category-card {
-    padding: 10px 16px;
-    font-size: 0.85rem;
-    min-width: 120px;
+    padding: 6px 12px;
+    font-size: 12px;
   }
   .categories-container {
-    gap: 10px;
+    gap: 8px;
   }
 }
