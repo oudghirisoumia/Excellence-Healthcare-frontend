@@ -1,139 +1,221 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api"
-import "../styles/admin.css"  // We'll create this
+import "../styles/admin.css"
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({ total: 0, lowStock: 0, outOfStock: 0 })
+  const [stats, setStats] = useState({
+    total: 0,
+    lowStock: 0,
+    outOfStock: 0,
+    totalValue: 0
+  })
   const [alerts, setAlerts] = useState([])
-  const [outOfStock, setOutOfStock] = useState([])
+  const [ruptures, setRuptures] = useState([])
   const [loading, setLoading] = useState(true)
+  const [updating, setUpdating] = useState(null)
   const navigate = useNavigate()
 
-  // Check if user is admin (you can improve this later)
+  // Vérification admin + chargement
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "{}")
-    if (user.type !== "admin" && user.role !== "admin") {
-      alert("Accès refusé")
-      navigate("/")
-      return
+    const checkAdmin = async () => {
+      try {
+        const res = await api.get("/user")
+        if (res.data.type !== "admin") {
+          alert("Accès refusé – Réservé aux administrateurs")
+          navigate("/")
+          return
+        }
+        loadDashboard()
+      } catch (err) {
+        navigate("/auth")
+      }
     }
-
-    loadDashboard()
+    checkAdmin()
   }, [navigate])
 
   const loadDashboard = async () => {
     try {
-      const [dashRes, alertRes, outRes] = await Promise.all([
+      const [statsRes, alertsRes, rupturesRes] = await Promise.all([
         api.get("/dashboard"),
         api.get("/alerts"),
         api.get("/out-of-stock")
       ])
 
-      setStats(dashRes.data)
-      setAlerts(alertRes.data)
-      setOutOfStock(outRes.data)
+      setStats(statsRes.data)
+      setAlerts(alertsRes.data)
+      setRuptures(rupturesRes.data)
     } catch (err) {
-      alert("Erreur de chargement du tableau de bord")
+      alert("Impossible de charger le tableau de bord")
+      console.error(err)
     } finally {
       setLoading(false)
     }
   }
 
-  const updateStock = async (id, newStock) => {
-    if (newStock < 0) return
+  const updateStock = async (productId, newStock) => {
+    if (newStock < 0 || newStock === "") return
+    setUpdating(productId)
+
     try {
-      await api.patch(`/products/${id}/stock`, { stock: newStock })
-      loadDashboard() // refresh
-      alert("Stock mis à jour !")
+      await api.patch(`/products/${productId}/stock`, { stock: parseInt(newStock) })
+      loadDashboard()
     } catch (err) {
-      alert("Erreur")
+      alert("Erreur lors de la mise à jour du stock")
+    } finally {
+      setUpdating(null)
     }
   }
 
-  if (loading) return <div className="admin-loading">Chargement du Back-Office...</div>
+  if (loading) {
+    return (
+      <div className="admin-loading">
+        <div className="spinner"></div>
+        <p>Chargement du Back-Office...</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="admin-container">
-      <header className="admin-header">
-        <h1>Back-Office Parapharmacie</h1>
-        <p>Gestion des produits & stocks</p>
-      </header>
+    <div className="admin-dashboard">
+      <div className="admin-header">
+        <div className="header-content">
+          <h1>Back-Office Excellence Healthcare</h1>
+          <p>Gestion complète des produits et stocks</p>
+        </div>
+      </div>
 
-      {/* Stats Cards */}
+      {/* CARTES DE STATISTIQUES */}
       <div className="stats-grid">
-        <div className="stat-card total">
-          <h3>{stats.total || 0}</h3>
-          <p>Produits total</p>
+        <div className="stat-card blue">
+          <div className="stat-icon">Box</div>
+          <div className="stat-value">{stats.total}</div>
+          <div className="stat-label">Produits total</div>
         </div>
-        <div className="stat-card warning">
-          <h3>{stats.lowStock || 0}</h3>
-          <p>Stock bas</p>
+        <div className="stat-card orange">
+          <div className="stat-icon">Warning</div>
+          <div className="stat-value">{stats.lowStock}</div>
+          <div className="stat-label">Stock bas</div>
         </div>
-        <div className="stat-card danger">
-          <h3>{stats.outOfStock || 0}</h3>
-          <p>Rupture</p>
+        <div className="stat-card red">
+          <div className="stat-icon">Alert</div>
+          <div className="stat-value">{stats.outOfStock}</div>
+          <div className="stat-label">Rupture de stock</div>
+        </div>
+        <div className="stat-card green">
+          <div className="stat-icon">Money</div>
+          <div className="stat-value">{stats.totalValue?.toLocaleString() || 0} DH</div>
+          <div className="stat-label">Valeur du stock</div>
         </div>
       </div>
 
-      <div className="admin-sections">
-        {/* Low Stock Alerts */}
+      <div className="admin-content">
+
+        {/* ALERTES STOCK BAS */}
         <section className="admin-section">
-          <h2>Alertes Stock Bas</h2>
+          <h2>Alertes Stock Bas (à réapprovisionner rapidement)</h2>
           {alerts.length === 0 ? (
-            <p className="empty">Tout est OK !</p>
+            <div className="empty-state">
+              <span className="big-icon">Check</span>
+              <p>Tous les produits sont bien approvisionnés !</p>
+            </div>
           ) : (
-            <div className="products-table">
+            <div className="products-grid">
               {alerts.map(p => (
-                <div key={p.id} className="product-row warning">
-                  <div>
-                    <strong>{p.name}</strong><br />
-                    <small>Réf: {p.reference} • Stock: {p.stock} (seuil: {p.seuil_alerte})</small>
+                <div key={p.id} className="product-card warning">
+                  {p.image_principale && (
+                    <img src={p.image_principale} alt={p.name} className="product-img" />
+                  )}
+                  <div className="product-info">
+                    <h3>{p.name}</h3>
+                    <p className="ref">Réf: {p.reference || "N/A"}</p>
+                    <p className="brand">{p.brand}</p>
+                    <div className="stock-info">
+                      <span className="stock-current">Stock: {p.stock}</span>
+                      <span className="stock-threshold">Seuil: {p.seuil_alerte}</span>
+                    </div>
                   </div>
-                  <input
-                    type="number"
-                    min="0"
-                    defaultValue={p.stock}
-                    onBlur={(e) => updateStock(p.id, parseInt(e.target.value))}
-                    className="stock-input"
-                  />
+                  <div className="stock-update">
+                    <input
+                      type="number"
+                      min="0"
+                      defaultValue={p.stock}
+                      disabled={updating === p.id}
+                      onKeyUp={(e) => e.key === "Enter" && updateStock(p.id, e.target.value)}
+                      className="stock-input"
+                    />
+                    <button
+                      onClick={(e) => {
+                        const input = e.currentTarget.previousElementSibling
+                        updateStock(p.id, input.value)
+                      }}
+                      disabled={updating === p.id}
+                      className="btn-update"
+                    >
+                      {updating === p.id ? "..." : "Update"}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </section>
 
-        {/* Out of Stock */}
+        {/* RUPTURES DE STOCK */}
         <section className="admin-section">
-          <h2>Rupture de Stock</h2>
-          {outOfStock.length === 0 ? (
-            <p className="empty">Aucune rupture</p>
+          <h2>Rupture de Stock (urgence)</h2>
+          {ruptures.length === 0 ? (
+            <div className="empty-state">
+              <span className="big-icon">Check</span>
+              <p>Aucune rupture pour le moment</p>
+            </div>
           ) : (
-            <div className="products-table">
-              {outOfStock.map(p => (
-                <div key={p.id} className="product-row danger">
-                  <div>
-                    <strong>{p.name}</strong><br />
-                    <small>Réf: {p.reference}</small>
+            <div className="products-grid">
+              {ruptures.map(p => (
+                <div key={p.id} className="product-card danger">
+                  {p.image_principale && (
+                    <img src={p.image_principale} alt={p.name} className="product-img" />
+                  )}
+                  <div className="product-info">
+                    <h3>{p.name}</h3>
+                    <p className="ref">Réf: {p.reference || "N/A"}</p>
+                    <p className="brand">{p.brand}</p>
+                    <div className="rupture-badge">RUPTURE</div>
                   </div>
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="Nouveau stock"
-                    onBlur={(e) => e.target.value && updateStock(p.id, parseInt(e.target.value))}
-                    className="stock-input"
-                  />
+                  <div className="stock-update">
+                    <input
+                      type="number"
+                      min="1"
+                      placeholder="Nouveau stock"
+                      disabled={updating === p.id}
+                      onKeyUp={(e) => e.key === "Enter" && updateStock(p.id, e.target.value)}
+                      className="stock-input"
+                    />
+                    <button
+                      onClick={(e) => {
+                        const input = e.currentTarget.previousElementSibling
+                        if (input.value) updateStock(p.id, input.value)
+                      }}
+                      disabled={updating === p.id}
+                      className="btn-restock"
+                    >
+                      {updating === p.id ? "..." : "Restock"}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </section>
-      </div>
 
-      <div className="admin-actions">
-        <button onClick={() => navigate("/admin/products")} className="btn-primary">
-          Gérer tous les produits
-        </button>
+        <div className="admin-footer">
+          <button
+            onClick={() => navigate("/admin/products")}
+            className="btn-large"
+          >
+            Gérer tous les produits →
+          </button>
+        </div>
       </div>
     </div>
   )
