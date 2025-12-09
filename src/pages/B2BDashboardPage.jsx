@@ -55,7 +55,7 @@ const B2BDashboard = () => {
 
   return (
     <div className="b2b-dashboard-page">
-      {/* Header */}
+
       <div className="b2b-header">
         <div>
           <h1>Bienvenue, {companyName}</h1>
@@ -63,7 +63,7 @@ const B2BDashboard = () => {
         </div>
       </div>
 
-      {/* Stats cards */}
+      {/* Stats */}
       <div className="cards">
         <div className="card">
           <div className="card-title">Ventes totales</div>

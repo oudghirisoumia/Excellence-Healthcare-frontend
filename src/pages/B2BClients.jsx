@@ -58,7 +58,7 @@ const B2BClients = () => {
     <div className="b2b-clients-page">
       <h1>Gestion des clients</h1>
 
-      {/* Form */}
+      {/* Form : add/update */}
       <form className="client-form" onSubmit={handleSubmit}>
         <input placeholder="Nom" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
         <input placeholder="Email" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
@@ -73,7 +73,7 @@ const B2BClients = () => {
         <button type="submit">{editingId ? "Mettre à jour" : "Ajouter"}</button>
       </form>
 
-      {/* Table */}
+      {/* Clients */}
       <div className="table-wrap">
         <table className="clients-table">
           <thead>

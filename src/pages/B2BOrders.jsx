@@ -27,17 +27,25 @@ const B2BOrders = () => {
     loadOrders()
   }, [filters])
 
-  const loadOrders = async () => {
-    setLoading(true)
-    try {
-      const res = await api.get("/b2b/orders", { params: filters })
-      setOrders(res.data.data)
-    } catch (err) {
-      console.error("Error loading orders:", err)
-    } finally {
-      setLoading(false)
-    }
+const loadOrders = async () => {
+  setLoading(true)
+  try {
+    const res = await api.get("/b2b/orders", {
+      params: {
+        ...(filters.status && { status: filters.status }),
+        ...(filters.search && { search: filters.search }),
+      }
+    })
+    console.log("Orders response:", res.data)
+    setOrders(res.data.data || res.data.orders?.data || [])
+  } catch (err) {
+    console.error("Error loading orders:", err.response?.data || err.message)
+    setOrders([])
+  } finally {
+    setLoading(false)
   }
+}
+
 
   return (
     <div className="b2b-orders-page">

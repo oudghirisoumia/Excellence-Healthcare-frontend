@@ -20,6 +20,10 @@ import OrderConfirmation from "./pages/OrderConfirmation"
 import NotificationPanel from "./components/NotificationPanel"
 import ProductPage from "./pages/ProductPage"
 import B2BDashboard from "./pages/B2BDashboardPage";
+import B2BClients from "./pages/B2BClients";
+import B2BOrders from "./pages/B2BOrders";
+
+
 import api from "./api"
 
 
@@ -178,6 +182,8 @@ function AppContent() {
           <Route path="/admin" element={<AdminDashboard />} />
 
           <Route path="/b2b/dashboard" element={<B2BDashboard />} />
+          <Route path="/b2b/clients" element={<B2BClients />} />
+          <Route path="/b2b/orders" element={<B2BOrders />} />
 
         </Routes>
       </main>
