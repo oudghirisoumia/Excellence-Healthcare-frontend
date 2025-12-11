@@ -1,7 +1,9 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api"
-import "../styles/admin.css"
+import "../styles/AdminDashboard.css"
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -16,7 +18,6 @@ export default function AdminDashboard() {
   const [updating, setUpdating] = useState(null)
   const navigate = useNavigate()
 
-  // Vérification admin + chargement
   useEffect(() => {
     const checkAdmin = async () => {
       try {
@@ -34,34 +35,43 @@ export default function AdminDashboard() {
     checkAdmin()
   }, [navigate])
 
-  const loadDashboard = async () => {
-    try {
-      const [statsRes, alertsRes, rupturesRes] = await Promise.all([
-        api.get("/dashboard"),
-        api.get("/alerts"),
-        api.get("/out-of-stock")
-      ])
+ const loadDashboard = async () => {
+  try {
+    const [statsRes, alertsRes, rupturesRes] = await Promise.all([
+      api.get("/dashboard"),
+      api.get("/alerts"),
+      api.get("/out-of-stock")
+    ])
 
-      setStats(statsRes.data)
-      setAlerts(alertsRes.data)
-      setRuptures(rupturesRes.data)
-    } catch (err) {
-      alert("Impossible de charger le tableau de bord")
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
+    // TON CONTROLLER RENVOIE ÇA :
+    // { total, inStock, lowStock, outOfStock, totalValue }
+    setStats({
+      total: statsRes.data.total || 0,
+      lowStock: statsRes.data.lowStock || 0,
+      outOfStock: statsRes.data.outOfStock || 0,
+      totalValue: statsRes.data.totalValue || 0
+    })
+
+    setAlerts(alertsRes.data || [])
+    setRuptures(rupturesRes.data || [])
+
+  } catch (err) {
+    console.error("Erreur chargement dashboard :", err.response?.data)
+    alert("Impossible de charger les statistiques")
+  } finally {
+    setLoading(false)
   }
+}
 
   const updateStock = async (productId, newStock) => {
-    if (newStock < 0 || newStock === "") return
+    if (!newStock || newStock < 0) return
     setUpdating(productId)
 
     try {
       await api.patch(`/products/${productId}/stock`, { stock: parseInt(newStock) })
       loadDashboard()
     } catch (err) {
-      alert("Erreur lors de la mise à jour du stock")
+      alert("Erreur mise à jour")
     } finally {
       setUpdating(null)
     }
@@ -78,33 +88,35 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <div className="admin-header">
+      <header className="admin-header">
         <div className="header-content">
           <h1>Back-Office Excellence Healthcare</h1>
-          <p>Gestion complète des produits et stocks</p>
+          <p className="header-subtitle">Gestion complète • Stock • Commandes • Statistiques</p>
         </div>
-      </div>
+      </header>
 
-      {/* CARTES DE STATISTIQUES */}
+      {/* STATISTIQUES */}
       <div className="stats-grid">
-        <div className="stat-card blue">
-          <div className="stat-icon">Box</div>
+        <div className="stat-card total">
+          <div className="stat-icon">Package</div>
           <div className="stat-value">{stats.total}</div>
           <div className="stat-label">Produits total</div>
         </div>
-        <div className="stat-card orange">
-          <div className="stat-icon">Warning</div>
+        <div className="stat-card warning">
+          <div className="stat-icon">AlertTriangle</div>
           <div className="stat-value">{stats.lowStock}</div>
           <div className="stat-label">Stock bas</div>
         </div>
-        <div className="stat-card red">
-          <div className="stat-icon">Alert</div>
+        <div className="stat-card danger">
+          <div className="stat-icon">XCircle</div>
           <div className="stat-value">{stats.outOfStock}</div>
-          <div className="stat-label">Rupture de stock</div>
+          <div className="stat-label">Rupture</div>
         </div>
-        <div className="stat-card green">
-          <div className="stat-icon">Money</div>
-          <div className="stat-value">{stats.totalValue?.toLocaleString() || 0} DH</div>
+        <div className="stat-card success">
+          <div className="stat-icon">TrendingUp</div>
+          <div className="stat-value">
+            {Number(stats.totalValue).toLocaleString("fr-MA")} DH
+          </div>
           <div className="stat-label">Valeur du stock</div>
         </div>
       </div>
@@ -113,26 +125,23 @@ export default function AdminDashboard() {
 
         {/* ALERTES STOCK BAS */}
         <section className="admin-section">
-          <h2>Alertes Stock Bas (à réapprovisionner rapidement)</h2>
+          <h2>Alertes Stock Bas – À réapprovisionner rapidement</h2>
           {alerts.length === 0 ? (
-            <div className="empty-state">
-              <span className="big-icon">Check</span>
-              <p>Tous les produits sont bien approvisionnés !</p>
+            <div className="empty-state success">
+              <span className="big-icon">CheckCircle</span>
+              <p>Tout est bien approvisionné ! Excellent travail</p>
             </div>
           ) : (
             <div className="products-grid">
               {alerts.map(p => (
-                <div key={p.id} className="product-card warning">
-                  {p.image_principale && (
-                    <img src={p.image_principale} alt={p.name} className="product-img" />
-                  )}
+                <div key={p.id} className="product-card alert">
+                  <img src={p.image_principale || "/placeholder.jpg"} alt={p.name} className="product-img" />
                   <div className="product-info">
                     <h3>{p.name}</h3>
                     <p className="ref">Réf: {p.reference || "N/A"}</p>
                     <p className="brand">{p.brand}</p>
-                    <div className="stock-info">
-                      <span className="stock-current">Stock: {p.stock}</span>
-                      <span className="stock-threshold">Seuil: {p.seuil_alerte}</span>
+                    <div className="stock-badge warning">
+                      Stock: {p.stock} / Seuil: {p.seuil_alerte}
                     </div>
                   </div>
                   <div className="stock-update">
@@ -143,6 +152,7 @@ export default function AdminDashboard() {
                       disabled={updating === p.id}
                       onKeyUp={(e) => e.key === "Enter" && updateStock(p.id, e.target.value)}
                       className="stock-input"
+                      placeholder="Nouveau stock"
                     />
                     <button
                       onClick={(e) => {
@@ -152,7 +162,7 @@ export default function AdminDashboard() {
                       disabled={updating === p.id}
                       className="btn-update"
                     >
-                      {updating === p.id ? "..." : "Update"}
+                      {updating === p.id ? "..." : "Mettre à jour"}
                     </button>
                   </div>
                 </div>
@@ -163,33 +173,31 @@ export default function AdminDashboard() {
 
         {/* RUPTURES DE STOCK */}
         <section className="admin-section">
-          <h2>Rupture de Stock (urgence)</h2>
+          <h2>Rupture de Stock – Urgence</h2>
           {ruptures.length === 0 ? (
-            <div className="empty-state">
-              <span className="big-icon">Check</span>
-              <p>Aucune rupture pour le moment</p>
+            <div className="empty-state success">
+              <span className="big-icon">CheckCircle</span>
+              <p>Aucune rupture – Parfait !</p>
             </div>
           ) : (
             <div className="products-grid">
               {ruptures.map(p => (
-                <div key={p.id} className="product-card danger">
-                  {p.image_principale && (
-                    <img src={p.image_principale} alt={p.name} className="product-img" />
-                  )}
+                <div key={p.id} className="product-card rupture">
+                  <img src={p.image_principale || "/placeholder.jpg"} alt={p.name} className="product-img" />
                   <div className="product-info">
                     <h3>{p.name}</h3>
                     <p className="ref">Réf: {p.reference || "N/A"}</p>
                     <p className="brand">{p.brand}</p>
-                    <div className="rupture-badge">RUPTURE</div>
+                    <div className="rupture-badge">RUPTURE DE STOCK</div>
                   </div>
-                  <div className="stock-update">
+                  <div className="stock-update urgent">
                     <input
                       type="number"
                       min="1"
-                      placeholder="Nouveau stock"
+                      placeholder="Restocker..."
                       disabled={updating === p.id}
                       onKeyUp={(e) => e.key === "Enter" && updateStock(p.id, e.target.value)}
-                      className="stock-input"
+                      className="stock-input urgent"
                     />
                     <button
                       onClick={(e) => {
@@ -199,7 +207,7 @@ export default function AdminDashboard() {
                       disabled={updating === p.id}
                       className="btn-restock"
                     >
-                      {updating === p.id ? "..." : "Restock"}
+                      {updating === p.id ? "..." : "Restocker"}
                     </button>
                   </div>
                 </div>
@@ -208,12 +216,12 @@ export default function AdminDashboard() {
           )}
         </section>
 
-        <div className="admin-footer">
-          <button
-            onClick={() => navigate("/admin/products")}
-            className="btn-large"
-          >
+        <div className="admin-actions">
+          <button onClick={() => navigate("/admin/products")} className="btn-large">
             Gérer tous les produits →
+          </button>
+          <button onClick={() => navigate("/admin/orders")} className="btn-large secondary">
+            Voir toutes les commandes
           </button>
         </div>
       </div>
