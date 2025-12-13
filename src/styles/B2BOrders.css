@@ -1,0 +1,102 @@
+.b2b-orders-page {
+  padding: 24px;
+  font-family: "Inter", Arial, sans-serif;
+  color: #222;
+    margin-left: -70px;
+    margin-right: -70px;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.filters input,
+.filters select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.filters button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #0b63d6;
+  color: #fff;
+  cursor: pointer;
+}
+.filters button:hover {
+  background: #0857d1;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  text-align: left;
+}
+
+.orders-table th {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.amount {
+  color: #059669;
+  font-weight: 600;
+}
+
+.empty {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 100px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.status-pending { background: #f59e0b; }
+.status-processing { background: #3b82f6; }
+.status-shipped { background: #6366f1; }
+.status-delivered { background: #10b981; }
+.status-cancelled { background: #9ca3af; }
+.status-default { background: #6b7280; }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #0b63d6;
+  color: #fff;
+  cursor: pointer;
+}
+.pagination button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
