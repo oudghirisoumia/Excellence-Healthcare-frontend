@@ -6,7 +6,7 @@ import axios from 'axios';
 // - In production:  value is set in Vercel environment → https://excellence-healthcare-backend.onrender.com/api
 
 const api = axios.create({
-  baseURL: 'https://excellence-healthcare-backend.onrender.com/api',
+  baseURL: 'http://localhost:8000/api',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
