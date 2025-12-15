@@ -24,8 +24,6 @@ import B2BClients from "./pages/B2BClients";
 import B2BOrders from "./pages/B2BOrders";
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import { ToastContainer, toast } from "react-toastify"
-
 import api from "./api"
 
 
