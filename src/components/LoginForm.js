@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import "../styles/forms.css"
+import { toast } from "react-toastify"
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({
@@ -29,7 +30,7 @@ export default function LoginForm() {
 
     if (Object.keys(newErrors).length === 0) {
       console.log("Login:", formData)
-      alert("Connexion réussie!")
+      toast.success("Connexion réussie!")
     } else {
       setErrors(newErrors)
     }

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import "../styles/forms.css"
+import { toast } from "react-toastify"
 
 export default function B2BForm() {
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ export default function B2BForm() {
 
     if (Object.keys(newErrors).length === 0) {
       console.log("B2B Signup:", formData)
-      alert("Inscription réussie! Votre compte sera validé sous 24-48h.")
+      toast.success("Inscription réussie ! Votre compte sera validé sous 24–48h.")
     } else {
       setErrors(newErrors)
     }
