@@ -7,10 +7,13 @@ import { getTranslation } from "../translations/translations"
 import "../styles/Header.css"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faHeart, faBell, faUser, faShoppingCart } from "@fortawesome/free-solid-svg-icons"
-import { library } from "@fortawesome/fontawesome-svg-core"
-
-library.add(faHeart, faBell, faUser, faShoppingCart)
+import {
+  faHeart,
+  faBell,
+  faUser,
+  faShoppingCart,
+  faUserShield
+} from "@fortawesome/free-solid-svg-icons"
 
 export default function Header({
   cartCount = 0,
@@ -18,7 +21,7 @@ export default function Header({
   notificationsCount = 0,
   onOpenFavorites,
   onOpenNotifications,
-  children   //categories
+  children
 }) {
   const { language, changeLanguage } = useLanguage()
   const t = (key) => getTranslation(language, key)
@@ -27,9 +30,17 @@ export default function Header({
 
   let user = null
   try {
-    user = JSON.parse(localStorage.getItem("user") || "null")
+    user = JSON.parse(localStorage.getItem("user"))
   } catch (e) { }
-  const userType = user?.type || "b2c"
+
+  const isAuth = !!user
+  const userType = user?.type // b2c / b2b / admin
+
+  const logout = () => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    navigate("/auth")
+  }
 
   return (
     <header className="header">
@@ -38,7 +49,7 @@ export default function Header({
         <div className="logo">
           <Link to="/">
             <img src="/images/logo.jpg" alt="Logo" className="logo-img" />
-            <span> Excellence Healthcare</span>
+            <span>Excellence Healthcare</span>
           </Link>
         </div>
 
@@ -49,30 +60,29 @@ export default function Header({
           <Link to="/contact">{t("contact")}</Link>
         </nav>
 
-        {/* Search bar */}
+        {/* Search */}
         <div className="search-bar">
           <input type="text" placeholder={t("search")} />
         </div>
 
-        {/* Right side */}
+        {/* Right */}
         <div className="header-right">
           <select
             value={language}
             onChange={(e) => changeLanguage(e.target.value)}
             className="language-select"
-            title={t("language")}
           >
-            <option value="fr">Français</option>
-            <option value="en">English</option>
-            <option value="ar">العربية</option>
+            <option value="fr">FR</option>
+            <option value="en">EN</option>
+            <option value="ar">AR</option>
           </select>
 
-          <button className="icon-btn" onClick={onOpenFavorites} title={t("favorites")}>
+          <button className="icon-btn" onClick={onOpenFavorites}>
             <FontAwesomeIcon icon={faHeart} />
             {favoritesCount > 0 && <span className="badge">{favoritesCount}</span>}
           </button>
 
-          <button className="icon-btn" onClick={onOpenNotifications} title={t("notifications")}>
+          <button className="icon-btn" onClick={onOpenNotifications}>
             <FontAwesomeIcon icon={faBell} />
             {notificationsCount > 0 && <span className="badge">{notificationsCount}</span>}
           </button>
@@ -80,56 +90,76 @@ export default function Header({
           <button
             className="icon-btn"
             onClick={() => setShowDropdown(!showDropdown)}
-            title={t("auth")}
           >
             <FontAwesomeIcon icon={faUser} />
           </button>
 
-          <Link to="/cart" className="icon-btn" title={t("cart")}>
+          <Link to="/cart" className="icon-btn">
             <FontAwesomeIcon icon={faShoppingCart} />
             {cartCount > 0 && <span className="badge">{cartCount}</span>}
           </Link>
         </div>
       </div>
 
-      {/* categories */}
       {children}
 
-      {/* Dropdown menu */}
+      {/* Dropdown */}
       {showDropdown && (
         <div className="profile-dropdown">
           <ul>
-            {userType === "b2c" && (
+            {/* NOT AUTHENTICATED */}
+            {!isAuth && (
               <>
-                <li><Link to="/profile">Mon profil</Link></li>
-                <li><Link to="/orders">Mes commandes</Link></li>
-                <li><Link to="/favorites">Mes favoris</Link></li>
+                <li>
+                  <Link to="/auth">Login / signup</Link>
+                </li>
               </>
             )}
 
-            {userType === "b2b" && (
+            {/* AUTHENTICATED */}
+            {isAuth && (
               <>
-                <li><Link to="/b2b/profile">Mon profil</Link></li>
-                <li><Link to="/b2b/dashboard">Dashboard</Link></li>
-                <li><Link to="/b2b/orders">Commandes en gros</Link></li>
-                <li><Link to="/b2b/clients">Gestion des clients</Link></li>
+                {/* B2C */}
+                {userType === "b2c" && (
+                  <>
+                    {/* <li><Link to="/profile">Mon profil</Link></li> */}
+                    <li><Link to="/orders">Mes commandes</Link></li>
+                    <li><Link to="/favorites">Mes favoris</Link></li>
+                  </>
+                )}
+
+                {/* B2B */}
+                {userType === "b2b" && (
+                  <>
+                    {/* <li><Link to="/b2b/profile">Mon profil</Link></li> */}
+                    <li><Link to="/b2b/dashboard">Tableau de bord</Link></li>
+                    <li><Link to="/b2b/orders">Commandes en gros</Link></li>
+                    <li><Link to="/b2b/clients">Gestion des clients</Link></li>
+                    {/* <li><Link to="/b2b/settings">Paramètres</Link></li> */}
+                  </>
+                )}
+
+                {/* ADMIN */}
+                {userType === "admin" && (
+                  <>
+                    <li><Link to="/admin">Back-Office Admin</Link></li>
+                    {/* <li><Link to="/admin/settings">Paramètres</Link></li> */}
+                  </>
+                )}
+
+                {/* LOGOUT */}
+                <hr className="dropdown-separator" />
+                <li>
+                  <button className="logout" onClick={logout}>
+                    Logout
+                  </button>
+                </li>
               </>
             )}
-            <hr class="dropdown-separator"></hr>
-            <li>
-              <button className="logout"
-                onClick={() => {
-                  localStorage.removeItem("token")
-                  localStorage.removeItem("user")
-                  navigate("/auth")
-                }}
-              >
-                Déconnexion
-              </button>
-            </li>
           </ul>
         </div>
       )}
+
     </header>
   )
 }
