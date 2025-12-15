@@ -25,6 +25,7 @@ import B2BOrders from "./pages/B2BOrders";
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import Invoice from "./pages/invoices"
+import OrdersPage from "./pages/OrdersPage"
 
 import api from "./api"
 
@@ -163,6 +164,7 @@ function AppContent() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/products" element={<Products onAddToCart={handleAddToCart} onToggleFavorite={handleToggleFavorite} />} />
           <Route path="/product/:id" element={<ProductPage onAddToCart={handleAddToCart} />} />
+          <Route path="/orders" element={<OrdersPage />} />
           <Route path="/contact" element={<Contact />} />
 
           <Route path="/admin" element={<AdminDashboard />} />
