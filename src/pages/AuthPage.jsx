@@ -2,16 +2,18 @@
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import api from "../api"  // ←  axios instance[](http://localhost:8000/api)
+import { toast } from "react-toastify"
+import api from "../api"
 import "../styles/auth.css"
 
 export default function AuthPage() {
   const [mode, setMode] = useState("login")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [accountType, setAccountType] = useState("b2c")
+
   const navigate = useNavigate()
 
-  // Shared handler for both login & register
   const handleAuth = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -29,7 +31,6 @@ export default function AuthPage() {
           password: data.password,
         })
       } else {
-        // Register
         response = await api.post("/register", {
           email: data.email,
           password: data.password,
@@ -39,9 +40,8 @@ export default function AuthPage() {
           phone: data.phone || null,
           address: data.address || null,
           city: data.city || null,
-          type: data.type || "b2c",
-          // B2B fields (only sent if type === b2b)
-          ...(data.type === "b2b" && {
+          type: accountType,
+          ...(accountType === "b2b" && {
             companyName: data.companyName,
             taxId: data.taxId,
             licenseNumber: data.licenseNumber,
@@ -49,25 +49,27 @@ export default function AuthPage() {
         })
       }
 
-      // Success → save token + redirect
-      const token = response.data.token
-      const user = response.data.user
+      const { token, user } = response.data
 
+      // temporary storage
       localStorage.setItem("token", token)
-      // Optional: save user info
       localStorage.setItem("user", JSON.stringify(user))
 
-      // Success message
-      alert(mode === "login" ? "Connexion réussie !" : "Inscription réussie !")
+      toast.success(
+        mode === "login"
+          ? "Connexion réussie"
+          : "Inscription réussie"
+      )
 
-      // Redirect to home
       navigate("/")
-      
     } catch (err) {
-      const msg = err.response?.data?.error || 
-                  err.response?.data?.errors?.email?.[0] || 
-                  err.response?.data?.message || 
-                  "Une erreur est survenue"
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.errors?.email?.[0] ||
+        err.response?.data?.message ||
+        "Une erreur est survenue"
+
+      toast.error(msg)
       setError(msg)
     } finally {
       setLoading(false)
@@ -83,10 +85,16 @@ export default function AuthPage() {
         </div>
 
         <div className="auth-tabs">
-          <button className={`tab-button ${mode === "login" ? "active" : ""}`} onClick={() => setMode("login")}>
+          <button
+            className={`tab-button ${mode === "login" ? "active" : ""}`}
+            onClick={() => setMode("login")}
+          >
             Connexion
           </button>
-          <button className={`tab-button ${mode === "signup" ? "active" : ""}`} onClick={() => setMode("signup")}>
+          <button
+            className={`tab-button ${mode === "signup" ? "active" : ""}`}
+            onClick={() => setMode("signup")}
+          >
             Inscription
           </button>
         </div>
@@ -110,21 +118,36 @@ export default function AuthPage() {
 
               <div className="form-row">
                 <label>
-                  <input type="radio" name="type" value="b2c" defaultChecked /> Particulier (B2C)
+                  <input
+                    type="radio"
+                    checked={accountType === "b2c"}
+                    onChange={() => setAccountType("b2c")}
+                  />
+                  Particulier (B2C)
                 </label>
+
                 <label>
-                  <input type="radio" name="type" value="b2b" /> Professionnel (B2B)
+                  <input
+                    type="radio"
+                    checked={accountType === "b2b"}
+                    onChange={() => setAccountType("b2b")}
+                  />
+                  Professionnel (B2B)
                 </label>
               </div>
+
+              {accountType === "b2b" && (
+                <>
+                  <input name="companyName" type="text" placeholder="Nom de la société" required />
+                  <input name="taxId" type="text" placeholder="Identifiant fiscal" required />
+                  <input name="licenseNumber" type="text" placeholder="Numéro de licence" required />
+                </>
+              )}
             </>
           )}
 
           <input name="email" type="email" placeholder="Email" required />
-          <input name="password" type="password" placeholder="Mot de passe" required minLength="8" />
-
-          {mode === "signup" && (
-            <p className="text-xs text-gray-500">Minimum 8 caractères</p>
-          )}
+          <input name="password" type="password" placeholder="Mot de passe" minLength="8" required />
 
           <button type="submit" disabled={loading} className="submit-btn">
             {loading ? "Patientez..." : mode === "login" ? "Se connecter" : "Créer mon compte"}
@@ -135,7 +158,12 @@ export default function AuthPage() {
           {mode === "login" ? (
             <p>Mot de passe oublié ? <a href="#">Réinitialiser</a></p>
           ) : (
-            <p>Déjà un compte ? <span onClick={() => setMode("login")} className="link">Se connecter</span></p>
+            <p>
+              Déjà un compte ?{" "}
+              <span onClick={() => setMode("login")} className="link">
+                Se connecter
+              </span>
+            </p>
           )}
         </div>
       </div>
