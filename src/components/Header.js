@@ -7,13 +7,10 @@ import { getTranslation } from "../translations/translations"
 import "../styles/Header.css"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  faHeart,
-  faBell,
-  faUser,
-  faShoppingCart,
-  faUserShield
-} from "@fortawesome/free-solid-svg-icons"
+import { faHeart, faBell, faUser, faShoppingCart } from "@fortawesome/free-solid-svg-icons"
+import { library } from "@fortawesome/fontawesome-svg-core"
+
+library.add(faHeart, faBell, faUser, faShoppingCart)
 
 export default function Header({
   cartCount = 0,
