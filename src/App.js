@@ -23,6 +23,7 @@ import B2BDashboard from "./pages/B2BDashboardPage";
 import B2BClients from "./pages/B2BClients";
 import B2BOrders from "./pages/B2BOrders";
 import Invoice from "./pages/invoices"
+import OrdersPage from "./pages/OrdersPage"
 
 import api from "./api"
 
@@ -162,6 +163,7 @@ function AppContent() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/products" element={<Products onAddToCart={handleAddToCart} onToggleFavorite={handleToggleFavorite} />} />
           <Route path="/product/:id" element={<ProductPage onAddToCart={handleAddToCart} />} />
+          <Route path="/orders" element={<OrdersPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/invoice/:id" element={<Invoice/>} />
