@@ -1,12 +1,9 @@
 import axios from 'axios';
 
-// The API base URL is dynamically loaded from environment variables.
-// This allows the frontend to call different backends depending on the environment:
-// - In development: value comes from .env.development  → http://localhost:8000/api
-// - In production:  value is set in Vercel environment → https://excellence-healthcare-backend.onrender.com/api
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: process.env.REACT_APP_API_URL,
+
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',

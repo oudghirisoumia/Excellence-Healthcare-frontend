@@ -22,8 +22,9 @@ import ProductPage from "./pages/ProductPage"
 import B2BDashboard from "./pages/B2BDashboardPage";
 import B2BClients from "./pages/B2BClients";
 import B2BOrders from "./pages/B2BOrders";
+import { ToastContainer, toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 import Invoice from "./pages/invoices"
-import OrdersPage from "./pages/OrdersPage"
 
 import api from "./api"
 
@@ -80,12 +81,11 @@ function AppContent() {
           : [...prev, productId]
       )
     } catch (err) {
-      alert("Connectez-vous pour ajouter aux favoris")
+      toast.error("Connectez-vous pour ajouter aux favoris")
     }
   }
 
   const handleAddToCart = async (product) => {
-    // Check if user has a token (logged in)
     const token = localStorage.getItem('token')
 
     if (!token) {
@@ -103,7 +103,7 @@ function AppContent() {
         return [...prev, { product_id: product.id, product, quantity: 1 }]
       })
     } catch (err) {
-      alert("Erreur lors de l'ajout au panier")
+      toast.error("Erreur lors de l'ajout au panier")
     }
   }
 
@@ -163,10 +163,11 @@ function AppContent() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/products" element={<Products onAddToCart={handleAddToCart} onToggleFavorite={handleToggleFavorite} />} />
           <Route path="/product/:id" element={<ProductPage onAddToCart={handleAddToCart} />} />
-          <Route path="/orders" element={<OrdersPage />} />
           <Route path="/contact" element={<Contact />} />
+
           <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/invoice/:id" element={<Invoice/>} />
+              
           <Route path="/cart" element={
             <CartPage
               cart={cart}
@@ -191,6 +192,7 @@ function AppContent() {
       </main>
 
       <Footer />
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
   )
 }

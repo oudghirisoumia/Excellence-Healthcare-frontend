@@ -2,6 +2,10 @@
 import React, { useEffect, useState } from "react"
 import api from "../api"
 import "../styles/B2BClients.css"
+<<<<<<< HEAD
+=======
+import { toast } from "react-toastify"
+>>>>>>> main
 
 const B2BClients = () => {
   const [clients, setClients] = useState([])
@@ -29,10 +33,18 @@ const B2BClients = () => {
     try {
       const payload = editingId ? { ...form, id: editingId } : form
       await api.post("/b2b/clients", payload)
+<<<<<<< HEAD
+=======
+      toast.success(editingId ? "Client mis à jour" : "Client ajouté")
+>>>>>>> main
       setForm({ name: "", email: "", phone: "", address: "", city: "", status: "active" })
       setEditingId(null)
       loadClients()
     } catch (err) {
+<<<<<<< HEAD
+=======
+      toast.error("Erreur lors de l’enregistrement du client")
+>>>>>>> main
       console.error("Error saving client:", err)
     }
   }
@@ -46,8 +58,15 @@ const B2BClients = () => {
     if (!window.confirm("Supprimer ce client ?")) return
     try {
       await api.delete(`/b2b/clients/${id}`)
+<<<<<<< HEAD
       loadClients()
     } catch (err) {
+=======
+      toast.success("Client supprimé")
+      loadClients()
+    } catch (err) {
+      toast.error("Erreur lors de la suppression du client")
+>>>>>>> main
       console.error("Error deleting client:", err)
     }
   }
