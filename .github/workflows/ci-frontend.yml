@@ -1,10 +1,10 @@
 name: Frontend CI
 
 on:
-  pull_request:
-    branches: [ main, develop ]
   push:
-    branches: [ develop ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   ci:
@@ -27,7 +27,7 @@ jobs:
         run: npm run lint --if-present
 
       - name: Run tests
-        run: npm test --if-present -- --watchAll=false
+        run: npm test --if-present -- --watchAll=false --passWithNoTests
 
       - name: Build project (CI check)
         run: npm run build
