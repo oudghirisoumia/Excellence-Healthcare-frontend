@@ -27,38 +27,26 @@ const B2BOrders = () => {
     loadOrders()
   }, [filters])
 
-const loadOrders = async () => {
-  try {
-    const res = await api.get("/orders")
-    
-    // PROTECTION CONTRE TOUS LES FORMATS POSSIBLES
-    let ordersArray = []
-    if (Array.isArray(res.data)) {
-      ordersArray = res.data
-    } else if (res.data && Array.isArray(res.data.data)) {
-      ordersArray = res.data.data
-    } else if (res.data && Array.isArray(res.data.orders)) {
-      ordersArray = res.data.orders
-    } else {
-      console.warn("Format commandes inconnu :", res.data)
-      ordersArray = []
-    }
+  const loadOrders = async () => {
+    try {
+      setLoading(true)
 
-    setOrders(ordersArray)
-  } catch (err) {
-    console.error(err)
-    if (err.response?.status === 401) {
-      alert("Veuillez vous connecter")
-      navigate("/auth")
-    } else {
-      alert("Impossible de charger vos commandes")
+      const res = await api.get("/b2b/orders", {
+        params: {
+          status: filters.status || undefined,
+          search: filters.search || undefined,
+        },
+      })
+
+      setOrders(res.data.data || [])
+    } catch (err) {
+      console.error("Erreur chargement commandes B2B :", err)
+      alert("Impossible de charger vos commandes B2B")
+    } finally {
+      setLoading(false)
     }
-  } finally {
-    setLoading(false)
   }
-}
-
-
+  
   return (
     <div className="b2b-orders-page">
       <h1>Commandes B2B</h1>
