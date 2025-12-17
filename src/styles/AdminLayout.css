@@ -1,0 +1,167 @@
+body {
+  margin: 0px;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.admin-layout {
+  margin-left: -70px;
+  margin-right: -70px;
+}
+
+.admin-layout > .admin-wrapper {
+  width: 100%;
+}
+
+.admin-header {
+  padding: 18px 32px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-header h1 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  letter-spacing: -0.3px;
+}
+
+.admin-header h1::before {
+  display: none;
+}
+
+.subtitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.1px;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 0;
+  padding: 0 32px;
+  border-bottom: 1px solid #e5e7eb;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.admin-nav::-webkit-scrollbar {
+  height: 2px;
+}
+
+.admin-nav::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 1px;
+}
+
+.admin-nav a {
+  text-decoration: none;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 13px;
+  padding: 14px 16px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  letter-spacing: 0.1px;
+}
+
+.admin-nav a .nav-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2px;
+}
+
+.admin-nav a:hover {
+  color: #111827;
+  background: #fafafa;
+}
+
+.admin-nav a.active {
+  color: #111827;
+  border-bottom-color: #111827;
+}
+
+.admin-content {
+  padding: 24px 32px;
+  min-height: calc(100vh - 150px);
+}
+
+@media (max-width: 1024px) {
+  .admin-header {
+    padding: 16px 24px;
+  }
+
+  .admin-nav {
+    padding: 0 24px;
+  }
+
+  .admin-content {
+    padding: 20px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 14px 20px;
+  }
+
+  .admin-header h1 {
+    font-size: 18px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .admin-nav {
+    padding: 0 20px;
+  }
+
+  .admin-nav a {
+    padding: 12px 14px;
+    font-size: 12px;
+  }
+
+  .admin-nav a .nav-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .admin-content {
+    padding: 18px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-header {
+    padding: 12px 16px;
+  }
+
+  .admin-header h1 {
+    font-size: 17px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+  }
+
+  .admin-nav {
+    padding: 0 16px;
+  }
+
+  .admin-nav a {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+
+  .admin-content {
+    padding: 16px;
+  }
+}

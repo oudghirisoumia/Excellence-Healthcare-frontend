@@ -15,7 +15,6 @@ import Footer from "./components/Footer"
 import AuthPage from "./pages/AuthPage"
 import CheckoutPage from "./pages/CheckoutPage"
 import OrderTrackingPage from "./pages/OrderTrackingPage"
-import AdminDashboard from "./pages/AdminDashboard"
 import OrderConfirmation from "./pages/OrderConfirmation"
 import NotificationPanel from "./components/NotificationPanel"
 import ProductPage from "./pages/ProductPage"
@@ -26,6 +25,10 @@ import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import Invoice from "./pages/invoices"
 import OrdersPage from "./pages/OrdersPage"
+
+import AdminDashboard from "./pages/AdminDashboard"
+import AdminDeliveries from "./pages/AdminDeliveries"
+import AdminUsers from "./pages/AdminUsers"
 
 import api from "./api"
 
@@ -167,9 +170,9 @@ function AppContent() {
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/contact" element={<Contact />} />
 
-          <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/invoice/:id" element={<Invoice/>} />
-              
+
+          <Route path="/invoice/:id" element={<Invoice />} />
+
           <Route path="/cart" element={
             <CartPage
               cart={cart}
@@ -184,11 +187,16 @@ function AppContent() {
 
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/order-tracking" element={<OrderTrackingPage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+
+
 
           <Route path="/b2b/dashboard" element={<B2BDashboard />} />
           <Route path="/b2b/clients" element={<B2BClients />} />
           <Route path="/b2b/orders" element={<B2BOrders />} />
+
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/deliveries" element={<AdminDeliveries />} />
 
         </Routes>
       </main>

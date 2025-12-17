@@ -1,254 +1,236 @@
-.admin-dashboard {
-  max-width: 1400px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
-
-.admin-dashboard h1 {
-  margin-bottom: 2rem;
-  color: #333;
-}
-
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .stat-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #0066cc;
+  background: #ffffff;
+  padding: 24px 20px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  transition: border-color 0.2s ease;
 }
 
-.stat-card h3 {
-  margin: 0 0 1rem;
-  color: #666;
-  font-size: 0.9rem;
-  text-transform: uppercase;
+.stat-card:hover {
+  border-color: #d1d5db;
 }
 
-.stat-value {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin: 0;
-  color: #0066cc;
-}
-
-.stat-card.pending {
-  border-left-color: #ffa500;
-}
-
-.stat-card.pending .stat-value {
-  color: #ffa500;
-}
-
-.stat-card.shipped {
-  border-left-color: #2ecc71;
-}
-
-.stat-card.shipped .stat-value {
-  color: #2ecc71;
-}
-
-.stat-card.delivered {
-  border-left-color: #27ae60;
-}
-
-.stat-card.delivered .stat-value {
-  color: #27ae60;
-}
-
-.admin-filters {
+.stat-top {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
-.admin-filters button {
-  padding: 0.75rem 1.5rem;
-  background: white;
-  border: 2px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: bold;
+.stat-title {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6b7280;
+  letter-spacing: 0.2px;
 }
 
-.admin-filters button:hover {
-  border-color: #0066cc;
+.stat-val {
+  font-size: 20px;
+  font-weight: 400;
+  color: #e50000;
+  line-height: 1;
+  letter-spacing: -0.5px;
 }
 
-.admin-filters button.active {
-  background: #0066cc;
-  color: white;
-  border-color: #0066cc;
+.stat-change {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 8px;
+  font-weight: 400;
 }
 
-.admin-container {
-  display: grid;
-  grid-template-columns: 1fr 350px;
-  gap: 2rem;
-}
-
-.orders-table {
-  background: white;
-  border-radius: 8px;
+.panel {
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
 }
 
-table {
+.panel h2 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  padding: 16px 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #e5e7eb;
+  letter-spacing: 0.1px;
+}
+
+.recent-orders {
   width: 100%;
   border-collapse: collapse;
+  font-size: 13px;
 }
 
-table th {
-  background: #f5f5f5;
-  padding: 1rem;
+.recent-orders thead {
+  background: #ffffff;
+}
+
+.recent-orders th {
   text-align: left;
-  font-weight: bold;
-  border-bottom: 2px solid #ddd;
+  padding: 14px 20px;
+  font-weight: 500;
+  color: #6b7280;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid #f3f4f6;
 }
 
-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #eee;
+.recent-orders td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f9fafb;
+  color: #4b5563;
+  font-weight: 400;
 }
 
-table tr:hover {
-  background: #f9f9f9;
-  cursor: pointer;
+.recent-orders tbody tr:last-child td {
+  border-bottom: none;
 }
 
-table tr.active {
-  background: #e3f2fd;
+.recent-orders tbody tr {
+  transition: background-color 0.15s ease;
 }
 
-.status-select,
-.carrier-select {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
+.recent-orders tbody tr:hover {
+  background: #fafafa;
+}
+
+.recent-orders td.amount {
+  font-weight: 500;
+  color: #023e10;
+}
+
+.status {
+  display: inline-block;
+  padding: 3px 10px;
   border-radius: 4px;
-  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
 }
 
-.view-btn {
-  padding: 0.5rem 1rem;
-  background: #0066cc;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s;
+.status.Livrée,
+.status.livree,
+.status.delivered {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #d1fae5;
 }
 
-.view-btn:hover {
-  background: #0052a3;
+.status.Expédiée,
+.status.expediee,
+.status.shipped {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #dbeafe;
 }
 
-.order-panel {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  height: fit-content;
-  position: sticky;
-  top: 2rem;
+.status.En.traitement,
+.status.en-traitement,
+.status.processing {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fef3c7;
 }
 
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 2px solid #eee;
+.status.Annulée,
+.status.annulee,
+.status.cancelled {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fee2e2;
 }
 
-.panel-header h2 {
-  margin: 0;
+.recent-orders td:last-child {
+  text-align: center;
+  width: 60px;
 }
 
-.close-btn {
+.recent-orders td button,
+.recent-orders td .action-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  color: #9ca3af;
   cursor: pointer;
-  color: #666;
-}
-
-.panel-content {
-  padding: 1rem;
-}
-
-.section {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
-}
-
-.section h3 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-  color: #0066cc;
-}
-
-.section p {
-  margin: 0.5rem 0;
-  font-size: 0.9rem;
-}
-
-.item {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  font-size: 0.9rem;
-}
-
-.section.actions {
-  border: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.send-notification-btn,
-.print-label-btn {
-  width: 100%;
-  padding: 0.75rem;
-  background: #0066cc;
-  color: white;
-  border: none;
+  padding: 6px;
   border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s;
+  transition: all 0.2s ease;
 }
 
-.send-notification-btn:hover,
-.print-label-btn:hover {
-  background: #0052a3;
+.recent-orders td button:hover,
+.recent-orders td .action-btn:hover {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
-  .admin-container {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 20px 16px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .panel h2 {
+    font-size: 13px;
+    padding: 14px 16px;
+  }
+
+  .recent-orders th,
+  .recent-orders td {
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
     grid-template-columns: 1fr;
   }
 
-  .order-panel {
-    position: static;
+  .stat-card {
+    padding: 18px 16px;
   }
 
-  table {
-    font-size: 0.85rem;
+  .stat-value {
+    font-size: 22px;
   }
 
-  table th,
-  table td {
-    padding: 0.75rem;
+  .panel h2 {
+    padding: 12px 16px;
+  }
+
+  .recent-orders {
+    font-size: 11px;
+  }
+
+  .recent-orders th,
+  .recent-orders td {
+    padding: 10px 12px;
+  }
+
+  .status {
+    padding: 2px 8px;
+    font-size: 10px;
   }
 }

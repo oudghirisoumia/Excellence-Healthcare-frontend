@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import "../styles/AdminDashboard.css"
+import "../styles/AdminDeliveries.css"
 import { CARRIERS, ORDER_STATUSES } from "../data/deliveryData"
 
-const AdminDashboard = () => {
+const AdminDeliveries = () => {
   const [orders, setOrders] = useState([])
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [filters, setFilters] = useState("all")
@@ -38,7 +38,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      <h1>Tableau de bord Admin - Gestion des livraisons</h1>
+      <h1>Gestion des livraisons</h1>
 
       <div className="stats-grid">
         <div className="stat-card">
@@ -191,4 +191,4 @@ const AdminDashboard = () => {
   )
 }
 
-export default AdminDashboard
+export default AdminDeliveries
