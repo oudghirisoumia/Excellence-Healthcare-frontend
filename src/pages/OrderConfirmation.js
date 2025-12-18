@@ -38,7 +38,7 @@ const OrderConfirmation = () => {
 
           <div className="detail-section">
             <h3>Montant total</h3>
-            <p className="total-amount">{order.total.toFixed(2)} €</p>
+            <p className="total-amount">{order.total.toFixed(2)} DH</p>
           </div>
 
           <div className="detail-section">
@@ -54,7 +54,7 @@ const OrderConfirmation = () => {
                   <span>
                     {item.name} x{item.quantity}
                   </span>
-                  <span>{(item.discountPrice * item.quantity).toFixed(2)} €</span>
+                  <span>{(item.discountPrice * item.quantity).toFixed(2)} DH</span>
                 </div>
               ))}
             </div>

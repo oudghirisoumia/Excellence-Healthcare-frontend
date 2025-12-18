@@ -2,10 +2,8 @@
 
 import { useState } from "react"
 import "../styles/forms.css"
-<<<<<<< HEAD
-=======
 import { toast } from "react-toastify"
->>>>>>> main
+
 
 export default function B2CForm() {
   const [formData, setFormData] = useState({
@@ -44,11 +42,9 @@ export default function B2CForm() {
 
     if (Object.keys(newErrors).length === 0) {
       console.log("B2C Signup:", formData)
-<<<<<<< HEAD
-      alert("Inscription réussie!")
-=======
+
       toast.success("Inscription réussie !")
->>>>>>> main
+
     } else {
       setErrors(newErrors)
     }

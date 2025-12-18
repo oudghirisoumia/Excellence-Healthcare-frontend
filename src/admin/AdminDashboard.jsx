@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api"
-import "../styles/admin.css"  // We'll create this
+import "../styles/admin.css" 
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ total: 0, lowStock: 0, outOfStock: 0 })

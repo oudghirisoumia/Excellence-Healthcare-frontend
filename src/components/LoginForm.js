@@ -2,10 +2,8 @@
 
 import { useState } from "react"
 import "../styles/forms.css"
-<<<<<<< HEAD
-=======
 import { toast } from "react-toastify"
->>>>>>> main
+
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({
@@ -33,11 +31,9 @@ export default function LoginForm() {
 
     if (Object.keys(newErrors).length === 0) {
       console.log("Login:", formData)
-<<<<<<< HEAD
-      alert("Connexion réussie!")
-=======
+
       toast.success("Connexion réussie!")
->>>>>>> main
+
     } else {
       setErrors(newErrors)
     }

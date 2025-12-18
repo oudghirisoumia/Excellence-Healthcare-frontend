@@ -30,7 +30,7 @@ const FavoritesPage = ({ favorites, products, onRemoveFavorite, onAddToCart, onC
                 <div className="favorite-info">
                   <h3>{product.name}</h3>
                   <p className="brand">{product.brand}</p>
-                  <p className="price">{product.discountPrice.toFixed(2)} €</p>
+                  <p className="price">{product.discountPrice.toFixed(2)} DH</p>
                 </div>
                 <div className="favorite-actions">
                   <button className="delete-btn" onClick={() => onRemoveFavorite(product.id)} title="Supprimer">

@@ -97,7 +97,7 @@ const CheckoutPage = ({ cart, onClearCart }) => {
                       <h3>{mode.name}</h3>
                       <p>{mode.description}</p>
                       <span className="price">
-                        {mode.basePrice === 0 ? "Gratuit" : mode.basePrice.toFixed(2) + " €"}
+                        {mode.basePrice === 0 ? "Gratuit" : mode.basePrice.toFixed(2) + " DH"}
                       </span>
                     </div>
                   </div>
@@ -217,7 +217,7 @@ const CheckoutPage = ({ cart, onClearCart }) => {
                 <span>
                   {item.name} x{item.quantity}
                 </span>
-                <span>{(item.discountPrice * item.quantity).toFixed(2)} €</span>
+                <span>{(item.discountPrice * item.quantity).toFixed(2)} DH</span>
               </div>
             ))}
           </div>
@@ -225,15 +225,15 @@ const CheckoutPage = ({ cart, onClearCart }) => {
           <div className="summary-totals">
             <div className="summary-line">
               <span>Sous-total</span>
-              <span>{subtotal.toFixed(2)} €</span>
+              <span>{subtotal.toFixed(2)} DH</span>
             </div>
             <div className="summary-line">
               <span>Livraison</span>
-              <span>{deliveryFee.toFixed(2)} €</span>
+              <span>{deliveryFee.toFixed(2)} DH</span>
             </div>
             <div className="summary-total">
               <span>Total</span>
-              <span>{total.toFixed(2)} €</span>
+              <span>{total.toFixed(2)} DH</span>
             </div>
           </div>
         </div>
