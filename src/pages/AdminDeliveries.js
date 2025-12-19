@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { toast } from "react-toastify"
 import "../styles/AdminDeliveries.css"
 import { CARRIERS, ORDER_STATUSES } from "../data/deliveryData"
 
@@ -10,18 +11,32 @@ const AdminDeliveries = () => {
   const [filters, setFilters] = useState("all")
 
   useEffect(() => {
-    const lastOrder = JSON.parse(localStorage.getItem("lastOrder") || "null")
-    if (lastOrder) {
-      setOrders([lastOrder])
+    try {
+      const lastOrder = JSON.parse(localStorage.getItem("lastOrder") || "null")
+      if (lastOrder) {
+        setOrders([lastOrder])
+      }
+    } catch (err) {
+      toast.error("Erreur lors du chargement des commandes")
     }
   }, [])
 
   const handleStatusChange = (orderId, newStatus) => {
-    setOrders(orders.map((order) => (order.id === orderId ? { ...order, status: newStatus } : order)))
+    setOrders(
+      orders.map((order) =>
+        order.id === orderId ? { ...order, status: newStatus } : order
+      )
+    )
+    toast.success("Statut de la commande mis à jour")
   }
 
   const handleCarrierChange = (orderId, newCarrier) => {
-    setOrders(orders.map((order) => (order.id === orderId ? { ...order, carrier: newCarrier } : order)))
+    setOrders(
+      orders.map((order) =>
+        order.id === orderId ? { ...order, carrier: newCarrier } : order
+      )
+    )
+    toast.success("Transporteur mis à jour")
   }
 
   const filteredOrders = orders.filter((order) => {
@@ -152,24 +167,16 @@ const AdminDeliveries = () => {
             <div className="panel-content">
               <div className="section">
                 <h3>Informations de livraison</h3>
-                <p>
-                  <strong>Adresse:</strong> {selectedOrder.deliveryAddress}
-                </p>
-                <p>
-                  <strong>Téléphone:</strong> {selectedOrder.phone}
-                </p>
-                <p>
-                  <strong>Numéro de suivi:</strong> {selectedOrder.trackingNumber}
-                </p>
+                <p><strong>Adresse:</strong> {selectedOrder.deliveryAddress}</p>
+                <p><strong>Téléphone:</strong> {selectedOrder.phone}</p>
+                <p><strong>Numéro de suivi:</strong> {selectedOrder.trackingNumber}</p>
               </div>
 
               <div className="section">
                 <h3>Articles de la commande</h3>
                 {selectedOrder.items.map((item) => (
                   <div key={item.id} className="item">
-                    <span>
-                      {item.name} x{item.quantity}
-                    </span>
+                    <span>{item.name} x{item.quantity}</span>
                     <span>{(item.discountPrice * item.quantity).toFixed(2)} €</span>
                   </div>
                 ))}

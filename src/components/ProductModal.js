@@ -33,7 +33,7 @@ export default function ProductModal({ product }) {
         {/* Image */}
         <div className="md:w-1/2 bg-[#F9F9F9] p-6 flex items-center justify-center rounded-lg relative">
           <img
-            src={product.image}
+            src={product.image_principale}
             alt={product.name}
             className="w-full h-auto max-h-[400px] object-contain"
           />
