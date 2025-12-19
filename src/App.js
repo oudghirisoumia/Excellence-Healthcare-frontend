@@ -26,9 +26,11 @@ import "react-toastify/dist/ReactToastify.css"
 import Invoice from "./pages/invoices"
 import OrdersPage from "./pages/OrdersPage"
 
+import AdminLayout from "./components/AdminLayout"
 import AdminDashboard from "./pages/AdminDashboard"
 import AdminDeliveries from "./pages/AdminDeliveries"
 import AdminUsers from "./pages/AdminUsers"
+import AdminProducts from "./pages/AdminProducts"
 
 import api from "./api"
 
@@ -163,42 +165,33 @@ function AppContent() {
 
       <main className="container">
         <Routes>
+          {/* Public site */}
           <Route path="/" element={<Home onAddToCart={handleAddToCart} onToggleFavorite={handleToggleFavorite} />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/products" element={<Products onAddToCart={handleAddToCart} onToggleFavorite={handleToggleFavorite} />} />
           <Route path="/product/:id" element={<ProductPage onAddToCart={handleAddToCart} />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/contact" element={<Contact />} />
-
-
           <Route path="/invoice/:id" element={<Invoice />} />
-
-          <Route path="/cart" element={
-            <CartPage
-              cart={cart}
-              onRemoveFromCart={handleRemoveFromCart}
-              onUpdateQuantity={handleUpdateCartQuantity}
-            />
-          } />
-
-          <Route path="/checkout" element={
-            <CheckoutPage cart={cart} onClearCart={handleClearCart} />
-          } />
-
+          <Route path="/cart" element={<CartPage cart={cart} onRemoveFromCart={handleRemoveFromCart} onUpdateQuantity={handleUpdateCartQuantity} />} />
+          <Route path="/checkout" element={<CheckoutPage cart={cart} onClearCart={handleClearCart} />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/order-tracking" element={<OrderTrackingPage />} />
 
-
-
+          {/* B2B */}
           <Route path="/b2b/dashboard" element={<B2BDashboard />} />
           <Route path="/b2b/clients" element={<B2BClients />} />
           <Route path="/b2b/orders" element={<B2BOrders />} />
 
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/deliveries" element={<AdminDeliveries />} />
-
+          {/* Admin */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="deliveries" element={<AdminDeliveries />} />
+          </Route>
         </Routes>
+
       </main>
 
       <Footer />
