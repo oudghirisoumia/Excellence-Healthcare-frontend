@@ -165,7 +165,7 @@ export default function OrdersPage() {
                       <p>Prix unitaire: {item.price} DH</p>
                     </div>
                     <div className="item-total">
-                      {(item.quantity * item.price).toFixed(2)} DH
+                      {((item.quantity || 0) * (item.price || 0)).toFixed(2)} DH
                     </div>
                   </div>
                 ))}

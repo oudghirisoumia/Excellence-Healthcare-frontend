@@ -92,22 +92,22 @@ export default function Invoice({ invoice }) {
               <tr key={idx}>
                 <td>{it.desc}</td>
                 <td>{it.qty}</td>
-                <td>{it.unit.toFixed(2)}</td>
-                <td>{(it.qty * it.unit).toFixed(2)}</td>
+                <td>{(it.unit || 0).toFixed(2)}</td>
+                <td>{((it.qty || 0) * (it.unit || 0)).toFixed(2)}</td>
               </tr>
             ))}
             <tr>
               <td> <b>Total HT</b></td>
-              <td><b>{subtotal.toFixed(2)}</b></td>
+              <td><b>{(subtotal || 0).toFixed(2)}</b></td>
               
             </tr>
             <tr>
               <td><b>TVA {data.taxPercent}%</b></td>
-              <td><b>{tax.toFixed(2)}</b></td>
+              <td><b>{(tax || 0).toFixed(2)}</b></td>
             </tr>
             <tr>
               <td>  <b>Total TTC - DH</b></td>
-              <td><b>{total.toFixed(2)}</b></td>
+              <td><b>{(total || 0).toFixed(2)}</b></td>
             </tr>
 
           </tbody>
