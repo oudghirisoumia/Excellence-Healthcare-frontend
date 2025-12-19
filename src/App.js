@@ -25,6 +25,9 @@ import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import Invoice from "./pages/invoices"
 import OrdersPage from "./pages/OrdersPage"
+import B2BDashboard from "./components/DashboardB2B";
+import B2BClients from "./pages/B2BClients";
+import B2BOrders from "./pages/B2BOrders";
 
 import AdminLayout from "./components/AdminLayout"
 import AdminDashboard from "./pages/AdminDashboard"
@@ -179,6 +182,11 @@ function AppContent() {
           <Route path="/order-tracking" element={<OrderTrackingPage />} />
 
           {/* B2B */}
+          {/* B2B ADMIN */}
+          <Route path="/b2b-admin/dashboard" element={<B2BDashboard />} />
+          <Route path="/b2b-admin/clients" element={<B2BClients />} />
+          <Route path="/b2b-admin/orders" element={<B2BOrders />} />
+
           <Route path="/b2b/dashboard" element={<B2BDashboard />} />
           <Route path="/b2b/clients" element={<B2BClients />} />
           <Route path="/b2b/orders" element={<B2BOrders />} />
