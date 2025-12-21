@@ -64,9 +64,10 @@ function AppContent() {
         api.get('/notifications')
       ])
 
-      setCart(cartRes.data.items || cartRes.data)
-      setFavorites(favRes.data.map(f => f.product_id || f.id))
-      setNotifications(notifRes.data)
+      const cartData = cartRes.data?.items || cartRes.data || []
+      setCart(Array.isArray(cartData) ? cartData : [])
+      setFavorites(Array.isArray(favRes.data) ? favRes.data.map(f => f.product_id || f.id) : [])
+      setNotifications(Array.isArray(notifRes.data) ? notifRes.data : [])
     } catch (err) {
       console.error("Failed to load user data", err)
       if (err.response?.status === 401) {
@@ -81,11 +82,12 @@ function AppContent() {
   const handleToggleFavorite = async (productId) => {
     try {
       await api.post(`/favorites/toggle/${productId}`)
-      setFavorites(prev =>
-        prev.includes(productId)
-          ? prev.filter(id => id !== productId)
-          : [...prev, productId]
-      )
+      setFavorites(prev => {
+        const favArray = Array.isArray(prev) ? prev : []
+        return favArray.includes(productId)
+          ? favArray.filter(id => id !== productId)
+          : [...favArray, productId]
+      })
     } catch (err) {
       toast.error("Connectez-vous pour ajouter aux favoris")
     }
@@ -102,11 +104,12 @@ function AppContent() {
     try {
       await api.post('/cart', { product_id: product.id, quantity: 1 })
       setCart(prev => {
-        const exists = prev.find(i => i.product_id === product.id)
+        const cartArray = Array.isArray(prev) ? prev : []
+        const exists = cartArray.find(i => i.product_id === product.id)
         if (exists) {
-          return prev.map(i => i.product_id === product.id ? { ...i, quantity: i.quantity + 1 } : i)
+          return cartArray.map(i => i.product_id === product.id ? { ...i, quantity: i.quantity + 1 } : i)
         }
-        return [...prev, { product_id: product.id, product, quantity: 1 }]
+        return [...cartArray, { product_id: product.id, product, quantity: 1 }]
       })
     } catch (err) {
       toast.error("Erreur lors de l'ajout au panier")
@@ -116,7 +119,7 @@ function AppContent() {
   const handleRemoveFromCart = async (productId) => {
     try {
       await api.delete(`/cart/${productId}`)
-      setCart(prev => prev.filter(i => i.product_id !== productId))
+      setCart(prev => Array.isArray(prev) ? prev.filter(i => i.product_id !== productId) : [])
     } catch (err) {
       console.error(err)
     }
@@ -129,7 +132,10 @@ function AppContent() {
     }
     try {
       await api.put(`/cart/${productId}`, { quantity })
-      setCart(prev => prev.map(i => i.product_id === productId ? { ...i, quantity } : i))
+      setCart(prev => {
+        const cartArray = Array.isArray(prev) ? prev : []
+        return cartArray.map(i => i.product_id === productId ? { ...i, quantity } : i)
+      })
     } catch (err) {
       console.error(err)
     }

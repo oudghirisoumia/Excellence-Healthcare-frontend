@@ -46,7 +46,7 @@ const OrderTrackingPage = () => {
                   </span>
                 </div>
                 <p className="order-date">{new Date(order.createdAt).toLocaleDateString("fr-FR")}</p>
-                <p className="order-total">{order.total.toFixed(2)} €</p>
+                <p className="order-total">{(order.total || 0).toFixed(2)} DH</p>
               </div>
             ))}
           </div>
@@ -95,13 +95,13 @@ const OrderTrackingPage = () => {
                 <div className="info-section">
                   <h3>Résumé financier</h3>
                   <p>
-                    <strong>Sous-total:</strong> {selectedOrder.subtotal.toFixed(2)} €
+                    <strong>Sous-total:</strong> {(selectedOrder.subtotal || 0).toFixed(2)} DH
                   </p>
                   <p>
-                    <strong>Livraison:</strong> {selectedOrder.deliveryFee.toFixed(2)} €
+                    <strong>Livraison:</strong> {(selectedOrder.deliveryFee || 0).toFixed(2)} DH
                   </p>
                   <p className="total">
-                    <strong>Total:</strong> {selectedOrder.total.toFixed(2)} €
+                    <strong>Total:</strong> {(selectedOrder.total || 0).toFixed(2)} DH
                   </p>
                 </div>
 
@@ -115,7 +115,7 @@ const OrderTrackingPage = () => {
                           <p>{item.name}</p>
                           <p className="qty">Quantité: {item.quantity}</p>
                         </div>
-                        <span>{(item.discountPrice * item.quantity).toFixed(2)} €</span>
+                        <span>{((item.discountPrice || 0) * item.quantity).toFixed(2)} DH</span>
                       </div>
                     ))}
                   </div>
