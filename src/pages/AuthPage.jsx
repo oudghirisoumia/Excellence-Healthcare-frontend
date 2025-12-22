@@ -9,7 +9,6 @@ import "../styles/auth.css"
 export default function AuthPage() {
   const [mode, setMode] = useState("login")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
   const [accountType, setAccountType] = useState("b2c")
 
   const navigate = useNavigate()
@@ -17,7 +16,6 @@ export default function AuthPage() {
   const handleAuth = async (e) => {
     e.preventDefault()
     setLoading(true)
-    setError("")
 
     const formData = new FormData(e.target)
     const data = Object.fromEntries(formData)
@@ -51,26 +49,26 @@ export default function AuthPage() {
 
       const { token, user } = response.data
 
-      // temporary storage
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(user))
 
-      toast.success(
-        mode === "login"
-          ? "Connexion réussie"
-          : "Inscription réussie"
-      )
+      if (user.type === "b2b" && !user.approved) {
+        toast.info("Votre compte B2B est en attente de validation par un administrateur.")
+        return
+      }
 
+      toast.success(mode === "login" ? "Connexion réussie" : "Inscription réussie")
       navigate("/")
     } catch (err) {
       const msg =
-        err.response?.data?.error ||
-        err.response?.data?.errors?.email?.[0] ||
-        err.response?.data?.message ||
-        "Une erreur est survenue"
+        err.response?.status === 403
+          ? "Votre compte B2B est en attente de validation par un administrateur."
+          : err.response?.data?.error ||
+            err.response?.data?.errors?.email?.[0] ||
+            err.response?.data?.message ||
+            "Une erreur est survenue"
 
       toast.error(msg)
-      setError(msg)
     } finally {
       setLoading(false)
     }
@@ -98,8 +96,6 @@ export default function AuthPage() {
             Inscription
           </button>
         </div>
-
-        {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleAuth} className="auth-form">
           {mode === "signup" && (

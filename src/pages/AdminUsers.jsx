@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import api from "../api"
 import "../styles/AdminUsers.css"
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa"
+import { FaEdit, FaTrash, FaPlus, FaCheck } from "react-icons/fa"
 import { toast } from "react-toastify"
 
 const AdminUsers = () => {
@@ -128,6 +128,16 @@ const AdminUsers = () => {
             setUserToDelete(null)
         }
     }
+    // Approve B2B User
+    const handleApprove = async (userId) => {
+        try {
+            await api.post(`/admin/users/${userId}/approve`)
+            toast.success("Utilisateur B2B validé avec succès")
+            fetchUsers()
+        } catch {
+            toast.error("Erreur lors de la validation")
+        }
+    }
 
     if (loading) return <p>Chargement...</p>
 
@@ -168,6 +178,7 @@ const AdminUsers = () => {
                         <th>Société</th>
                         <th>Tax ID</th>
                         <th>Licence</th>
+                        <th>Account Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -184,6 +195,18 @@ const AdminUsers = () => {
                             <td>{user.type === "b2b" ? user.company_name : "-"}</td>
                             <td>{user.type === "b2b" ? user.tax_id : "-"}</td>
                             <td>{user.type === "b2b" ? user.license_number : "-"}</td>
+                            <td>
+                                {user.type === "b2b" ? (
+                                    user.approved ? (
+                                        <span className="status-approved">Validé</span>
+                                    ) : (
+                                        <span className="status-pending">En attente</span>
+                                    )
+                                ) : (
+                                    <span className="status-approved">Validé</span>
+                                )}
+                            </td>
+
                             <td className="actions">
                                 <button onClick={() => openEditModal(user)} title="Modifier">
                                     <FaEdit />
@@ -191,6 +214,13 @@ const AdminUsers = () => {
                                 <button onClick={() => confirmDelete(user)} title="Supprimer">
                                     <FaTrash />
                                 </button>
+                                {user.type === "b2b" && !user.approved && (
+                                    <button className="approve-btn" onClick={() => handleApprove(user.id)}
+                                        title="Valider"
+                                    >
+                                        <FaCheck />
+                                    </button>
+                                )}
                             </td>
                         </tr>
                     ))}
