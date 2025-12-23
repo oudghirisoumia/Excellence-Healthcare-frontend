@@ -55,6 +55,7 @@ export default function Header({
           <Link to="/">{t("home")}</Link>
           <Link to="/products">{t("products")}</Link>
           <Link to="/contact">{t("contact")}</Link>
+          <Link to="/about">À propos</Link>
         </nav>
 
         {/* Search */}
