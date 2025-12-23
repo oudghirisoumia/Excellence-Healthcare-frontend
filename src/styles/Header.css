@@ -220,6 +220,20 @@
   color: #c12e2a;
 }
 
+.profile-dropdown .muted {
+  padding: 10px 14px;
+  color: #64748b;
+  font-size: 14px;
+  font-style: italic;
+  cursor: default;
+}
+
+.dropdown-separator {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid #e6e6e6;
+}
+
 @media (max-width: 1024px) {
   .header-content {
     gap: 20px;
@@ -306,6 +320,11 @@
     right: 10px;
     min-width: 200px;
   }
+
+  .profile-dropdown .muted {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -371,6 +390,11 @@
   .profile-dropdown button {
     padding: 8px 10px;
     font-size: 12px;
+  }
+
+  .profile-dropdown .muted {
+    font-size: 11px;
+    padding: 7px 10px;
   }
 }
 

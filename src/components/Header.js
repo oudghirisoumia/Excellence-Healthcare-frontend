@@ -128,11 +128,15 @@ export default function Header({
                 {/* B2B */}
                 {userType === "b2b" && (
                   <>
-                    {/* <li><Link to="/b2b/profile">Mon profil</Link></li> */}
-                    <li><Link to="/b2b/dashboard">Tableau de bord</Link></li>
-                    <li><Link to="/b2b/orders">Commandes en gros</Link></li>
-                    <li><Link to="/b2b/clients">Gestion des clients</Link></li>
-                    {/* <li><Link to="/b2b/settings">Paramètres</Link></li> */}
+                    {user?.approved ? (
+                      <>
+                        <li><Link to="/b2b/dashboard">Tableau de bord</Link></li>
+                        <li><Link to="/b2b/orders">Commandes en gros</Link></li>
+                        <li><Link to="/b2b/clients">Gestion des clients</Link></li>
+                      </>
+                    ) : (
+                      <li className="muted">Accès en cours d’activation</li>
+                    )}
                   </>
                 )}
 

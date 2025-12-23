@@ -31,6 +31,7 @@ import AdminDashboard from "./pages/AdminDashboard"
 import AdminDeliveries from "./pages/AdminDeliveries"
 import AdminUsers from "./pages/AdminUsers"
 import AdminProducts from "./pages/AdminProducts"
+import WaitingApprovalPage from "./pages/WaitingApprovalPage" 
 
 import api from "./api"
 
@@ -188,6 +189,7 @@ function AppContent() {
           <Route path="/b2b/dashboard" element={<B2BDashboard />} />
           <Route path="/b2b/clients" element={<B2BClients />} />
           <Route path="/b2b/orders" element={<B2BOrders />} />
+          <Route path="/waiting-approval" element={<WaitingApprovalPage />} />
 
           {/* Admin */}
           <Route path="/admin" element={<AdminLayout />}>
