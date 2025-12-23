@@ -10,7 +10,6 @@ const About = () => {
     <div className="about-page">
 
       {/* HERO / À PROPOS */}
-
       <section className="about-hero">
         <div className="about-hero-text">
           <h1>À propos de Excellence Healthcare</h1>
