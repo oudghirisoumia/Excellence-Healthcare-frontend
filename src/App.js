@@ -33,6 +33,7 @@ import AdminUsers from "./pages/AdminUsers"
 import AdminProducts from "./pages/AdminProducts"
 import WaitingApprovalPage from "./pages/WaitingApprovalPage" 
 
+import About from "./components/About";
 import api from "./api"
 
 
@@ -184,6 +185,8 @@ function AppContent() {
           <Route path="/checkout" element={<CheckoutPage cart={cart} onClearCart={handleClearCart} />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/order-tracking" element={<OrderTrackingPage />} />
+          {/* About */}
+          <Route path="/about" element={<About />} />
 
           {/* B2B */}
           <Route path="/b2b/dashboard" element={<B2BDashboard />} />
