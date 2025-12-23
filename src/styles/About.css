@@ -1,129 +1,302 @@
 .about-page {
-  font-family: "Segoe UI", sans-serif;
-  color: #333;
+  font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
+  color: #2c3e50;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-/* HERO */
 .about-hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  padding: 80px 10%;
-  gap: 40px;
+  padding: 120px 8%;
+  gap: 80px;
   align-items: center;
-  background: #f8f9fa;
+  min-height: 75vh;
+  margin: 0;
+  width: 100%;
+}
+
+.about-hero-text {
+  max-width: 560px;
 }
 
 .about-hero h1 {
-  color: #17a2b8;
-  font-size: 40px;
-  margin-bottom: 15px;
+  color: #1a5f7a;
+  font-size: 48px;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.about-slogan {
+  font-size: 20px;
+  color: #86a8b8;
+  font-weight: 300;
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+.about-hero-text > p:last-child {
+  color: #5a6c7d;
+  line-height: 1.8;
+  font-size: 16px;
+  font-weight: 300;
 }
 
 .about-hero-image img {
   width: 100%;
-  border-radius: 20px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(26, 95, 122, 0.12);
+  transition: transform 0.6s ease;
 }
 
-/* MISSION */
+.about-hero-image img:hover {
+  transform: scale(1.02);
+}
+
 .about-mission {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  padding: 70px 10%;
-  gap: 40px;
+  padding: 100px 8%;
+  gap: 80px;
   align-items: center;
+  margin: 0;
+  width: 100%;
 }
 
 .mission-text h2 {
-  color: #17a2b8;
-  margin-bottom: 15px;
+  color: #1a5f7a;
+  font-size: 36px;
+  font-weight: 300;
+  margin-bottom: 28px;
+  letter-spacing: -0.3px;
+}
+
+.mission-text p {
+  color: #5a6c7d;
+  line-height: 1.9;
+  font-size: 16px;
+  font-weight: 300;
+  margin-bottom: 20px;
 }
 
 .mission-image img {
   width: 100%;
-  border-radius: 20px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(26, 95, 122, 0.12);
 }
 
-/* SERVICES */
 .about-services {
-  padding: 70px 10%;
-  background: #ffffff;
+  padding: 100px 8%;
   text-align: center;
+  margin: 0;
+  width: 100%;
+}
+
+.about-services h2 {
+  color: #1a5f7a;
+  font-size: 36px;
+  font-weight: 300;
+  margin-bottom: 60px;
+  letter-spacing: -0.3px;
 }
 
 .services-grid {
-  margin-top: 40px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .service-card {
-  padding: 30px;
-  border-radius: 15px;
-  background: #fff;
-  border: 1px solid #eee;
-  transition: 0.3s;
-}
-
-.service-card i {
-  font-size: 36px;
-  color: #17a2b8;
-  margin-bottom: 15px;
-}
-
-.service-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-}
-
-/* VALEURS */
-.about-values {
-  background: #17a2b8;
-  color: #fff;
-  padding: 80px 10%;
+  padding: 48px 32px;
+  border-radius: 12px;
+  border: 1px solid #e8ecef;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
 }
 
+.service-card i {
+  font-size: 40px;
+  color: #86a8b8;
+  margin-bottom: 24px;
+  transition: color 0.3s ease;
+}
+
+.service-card h4 {
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 16px;
+  letter-spacing: -0.2px;
+}
+
+.service-card p {
+  color: #6c7a89;
+  font-size: 14px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(26, 95, 122, 0.15);
+  border-color: #d0dce5;
+}
+
+.service-card:hover i {
+  color: #1a5f7a;
+}
+
+.about-values {
+    color: #2c3e50;
+  padding: 100px 8%;
+  text-align: center;
+}
+
+.about-values h2 {
+  color: #1a5f7a;
+  font-size: 36px;
+  font-weight: 300;
+  margin-bottom: 60px;
+  letter-spacing: -0.3px;
+}
+
 .values-grid {
-  margin-top: 40px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .value-box {
-  background: #fff;
-  color: #333;
-  padding: 30px;
-  border-radius: 18px;
+  background: linear-gradient(135deg, #1a5f7a 0%, #2c7a94 100%);
+  color: #ffffff;
+  padding: 48px 36px;
+  border-radius: 12px;
+  transition: all 0.4s ease;
+  box-shadow: 0 8px 24px rgba(26, 95, 122, 0.15);
 }
 
 .value-box i {
-  font-size: 28px;
-  color: #17a2b8;
-  margin-bottom: 10px;
+  font-size: 36px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
 }
 
-/* POURQUOI */
+.value-box h4 {
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.value-box p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.value-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(26, 95, 122, 0.25);
+}
+
+.value-box:hover i {
+  transform: scale(1.1);
+}
+
 .about-why {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  padding: 80px 10%;
-  gap: 40px;
+  padding: 100px 8%;
+  gap: 80px;
   align-items: center;
-  background: #f8f9fa;
 }
 
-.about-why h2 {
-  color: #17a2b8;
-  margin-bottom: 15px;
+.why-text h2 {
+  color: #1a5f7a;
+  font-size: 36px;
+  font-weight: 300;
+  margin-bottom: 32px;
+  letter-spacing: -0.3px;
 }
 
-.about-why ul li {
-  margin-bottom: 10px;
+.why-text ul {
+  list-style: none;
+  padding: 0;
+}
+
+.why-text ul li {
+  color: #5a6c7d;
+  font-size: 16px;
+  font-weight: 300;
+  margin-bottom: 18px;
+  padding-left: 32px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.why-text ul li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #86a8b8;
+  font-size: 18px;
+  font-weight: 400;
 }
 
 .why-image img {
   width: 100%;
-  border-radius: 20px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(26, 95, 122, 0.12);
+}
+
+@media (max-width: 968px) {
+  .about-hero,
+  .about-mission,
+  .about-why {
+    grid-template-columns: 1fr;
+    padding: 80px 6%;
+    gap: 50px;
+  }
+
+  .about-hero h1 {
+    font-size: 38px;
+  }
+
+  .about-services h2,
+  .about-values h2,
+  .mission-text h2,
+  .why-text h2 {
+    font-size: 30px;
+  }
+
+  .about-services,
+  .about-values {
+    padding: 80px 6%;
+  }
+}
+
+@media (max-width: 640px) {
+  .about-hero {
+    padding: 60px 5%;
+  }
+
+  .about-hero h1 {
+    font-size: 32px;
+  }
+
+  .services-grid,
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
 }
