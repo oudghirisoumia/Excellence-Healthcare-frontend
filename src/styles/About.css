@@ -1,0 +1,129 @@
+.about-page {
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+}
+
+/* HERO */
+.about-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 80px 10%;
+  gap: 40px;
+  align-items: center;
+  background: #f8f9fa;
+}
+
+.about-hero h1 {
+  color: #17a2b8;
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.about-hero-image img {
+  width: 100%;
+  border-radius: 20px;
+}
+
+/* MISSION */
+.about-mission {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 70px 10%;
+  gap: 40px;
+  align-items: center;
+}
+
+.mission-text h2 {
+  color: #17a2b8;
+  margin-bottom: 15px;
+}
+
+.mission-image img {
+  width: 100%;
+  border-radius: 20px;
+}
+
+/* SERVICES */
+.about-services {
+  padding: 70px 10%;
+  background: #ffffff;
+  text-align: center;
+}
+
+.services-grid {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+.service-card {
+  padding: 30px;
+  border-radius: 15px;
+  background: #fff;
+  border: 1px solid #eee;
+  transition: 0.3s;
+}
+
+.service-card i {
+  font-size: 36px;
+  color: #17a2b8;
+  margin-bottom: 15px;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+
+/* VALEURS */
+.about-values {
+  background: #17a2b8;
+  color: #fff;
+  padding: 80px 10%;
+  text-align: center;
+}
+
+.values-grid {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+.value-box {
+  background: #fff;
+  color: #333;
+  padding: 30px;
+  border-radius: 18px;
+}
+
+.value-box i {
+  font-size: 28px;
+  color: #17a2b8;
+  margin-bottom: 10px;
+}
+
+/* POURQUOI */
+.about-why {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 80px 10%;
+  gap: 40px;
+  align-items: center;
+  background: #f8f9fa;
+}
+
+.about-why h2 {
+  color: #17a2b8;
+  margin-bottom: 15px;
+}
+
+.about-why ul li {
+  margin-bottom: 10px;
+}
+
+.why-image img {
+  width: 100%;
+  border-radius: 20px;
+}
