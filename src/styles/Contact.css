@@ -1,39 +1,41 @@
-/* PAGE */
 .contact-page {
-  background: #f4f7fb;
-  font-family: "Poppins", sans-serif;
+  font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
+  color: #2c3e50;
 }
 
-/* HEADER */
 .contact-header {
-  background: #009ceb;
+  background: linear-gradient(135deg, #1a5f7a 0%, #2c7a94 100%);
   text-align: center;
   padding: 50px 20px;
   color: white;
 }
 
 .contact-header h1 {
-  font-size: 40px;
-  font-weight: 700;
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: -0.4px;
+  color: rgb(224, 235, 246);
 }
 
 .contact-header p {
   font-size: 16px;
-  opacity: 0.9;
+  opacity: 0.85;
+  font-weight: 300;
+  margin-top: 12px;
+  font-style: italic;
 }
 
 /* CONTAINER */
 .contact-container {
   max-width: 1200px;
   margin: auto;
-  padding: 40px 20px;
+  padding: 80px 20px;
 }
 
-/* GRID */
 .contact-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 40px;
+  gap: 50px;
 }
 
 @media (max-width: 992px) {
@@ -42,29 +44,32 @@
   }
 }
 
-/* FORM CARD */
 .contact-form-card {
   background: white;
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(26, 95, 122, 0.08);
 }
 
 .card-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 25px;
+  margin-bottom: 35px;
 }
 
 .card-title .icon {
-  color: #009ceb;
+  color: #2c7a94;
+}
+
+.card-title h2 {
+  font-weight: 300;
+  font-size: 26px;
+  color: #2c7a94;
 }
 
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
 .form-row {
@@ -80,126 +85,159 @@
 
 .form-group label {
   font-size: 14px;
-  font-weight: 600;
-  color: #444;
+  font-weight: 500;
+  color: #5a6c7d;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 12px 15px;
+  padding: 14px 16px;
   border-radius: 10px;
-  border: 1px solid #ccc;
-  background: #f9fbfd;
+  border: 1px solid #dde6ec;
+  background: #fafcfd;
   font-size: 14px;
   outline: none;
-  transition: 0.2s;
+  transition: all 0.25s ease;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-  border-color: #009ceb;
-  box-shadow: 0 0 0 2px rgba(0,156,235,0.2);
+  border-color: #86a8b8;
+  box-shadow: 0 0 0 2px rgba(134, 168, 184, 0.25);
 }
 
 .btn-send {
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #009ceb;
+  background: linear-gradient(135deg, #1a5f7a, #2c7a94);
   color: white;
-  padding: 12px 22px;
-  border-radius: 10px;
+  padding: 14px 28px;
+  border-radius: 999px;
   border: none;
   cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s;
+  font-weight: 400;
+  transition: all 0.3s ease;
 }
 
 .btn-send:hover {
-  background: #007fc4;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(26, 95, 122, 0.3);
 }
 
-/* INFO */
 .contact-info-col {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 28px;
 }
 
 .info-card {
   background: white;
-  padding: 25px;
-  border-radius: 14px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(26, 95, 122, 0.08);
+}
+
+.info-card h3 {
+  font-weight: 300;
+  font-size: 22px;
+  margin-bottom: 28px;
+  color: #1a5f7a;
 }
 
 .info-item {
   display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 18px;
+  margin-bottom: 22px;
 }
 
 .icon-circle {
-  background: #e5f4ff;
-  padding: 10px;
+  padding: 12px;
   border-radius: 50%;
-  color: #009ceb;
+  color: #1a5f7a;
 }
 
 .info-label {
-  font-size: 14px;
-  color: #666;
+  font-size: 13px;
+  color: #86a8b8;
+  font-weight: 500;
 }
 
 .info-text {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 400;
 }
 
 .info-sub {
   font-size: 12px;
-  color: #777;
+  color: #7b8b98;
+}
+.schedule-card {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(26, 95, 122, 0.08);
 }
 
-/* HORAIRES */
+.schedule-card h3 {
+  font-weight: 300;
+  font-size: 22px;
+  margin-bottom: 28px;
+  color: #1a5f7a;
+}
 .schedule-row {
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px dashed #ddd;
+  padding: 8px 0;
+  border-bottom: 1px dashed #dce6ec;
+  font-size: 14px;
 }
 
 .closed {
-  color: red;
-  font-weight: bold;
+  color: #c0392b;
+  font-weight: 500;
 }
 
-/* URGENT */
 .urgent-card {
-  background: #e7f6ff;
-  border-left: 4px solid #009ceb;
-  padding: 18px;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #1a5f7a, #2c7a94);
+  color: white;
+  padding: 24px;
+  border-radius: 14px;
 }
 
-/* FAQ */
+.urgent-card h3 {
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
 .faq-card {
   background: white;
-  margin-top: 40px;
-  padding: 35px;
-  border-radius: 14px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+  margin-top: 80px;
+  padding: 50px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(26, 95, 122, 0.08);
 }
 
 .faq-card h2 {
-  margin-bottom: 25px;
+  font-weight: 300;
+  font-size: 30px;
+  margin-bottom: 40px;
+  color: #1a5f7a;
+}
+.faq-card h3 {
+  font-weight: 300;
+  font-size: 30px;
+  margin-bottom: 40px;
+  color: #12a1d1;
+  font-style: italic;
 }
 
 .faq-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 25px;
+  gap: 30px;
 }
 
 @media (max-width: 768px) {
@@ -210,20 +248,26 @@
 
 .faq-item h3 {
   font-size: 17px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  font-weight: 400;
 }
 
-/* STORES */
 .stores-section {
-  margin-top: 40px;
+  margin-top: 80px;
   text-align: center;
 }
 
+.stores-section h2 {
+  font-weight: 300;
+  font-size: 30px;
+  color: #1a5f7a;
+}
+
 .stores-grid {
-  margin-top: 25px;
+  margin-top: 40px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 28px;
 }
 
 @media (max-width: 768px) {
@@ -234,17 +278,18 @@
 
 .store-card {
   background: white;
-  padding: 25px;
-  border-radius: 14px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(26, 95, 122, 0.08);
 }
 
 .store-card h3 {
   font-size: 18px;
+  font-weight: 400;
 }
 
 .store-phone {
-  margin-top: 8px;
-  color: #009ceb;
-  font-weight: bold;
+  margin-top: 10px;
+  color: #1a5f7a;
+  font-weight: 500;
 }
