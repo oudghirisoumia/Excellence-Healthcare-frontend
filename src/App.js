@@ -6,6 +6,7 @@ import { LanguageProvider } from "./context/LanguageContext"
 import { AuthProvider, useAuth } from "./context/AuthContext"  // We'll create this
 import Header from "./components/Header"
 import Categories from "./components/Categories"
+import StripeProvider from "./components/StripeProvider"
 import Home from "./pages/Home"
 import Products from "./pages/Products"
 import Contact from "./pages/Contact"
@@ -207,7 +208,9 @@ function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <AppContent />
+        <StripeProvider>
+          <AppContent />
+        </StripeProvider>
       </AuthProvider>
     </LanguageProvider>
   )

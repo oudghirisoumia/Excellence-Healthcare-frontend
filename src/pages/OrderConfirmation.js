@@ -1,9 +1,49 @@
 import { useLocation, Link } from "react-router-dom"
+import { useState } from "react"
+import api from "../api"
 import "../styles/OrderConfirmation.css"
 
 const OrderConfirmation = () => {
   const location = useLocation()
   const order = location.state?.order
+  const [downloadingInvoice, setDownloadingInvoice] = useState(false)
+  const [invoiceError, setInvoiceError] = useState("")
+
+  const handleDownloadInvoice = async () => {
+    if (!order?.id) {
+      setInvoiceError("Numéro de commande manquant")
+      return
+    }
+
+    setDownloadingInvoice(true)
+    setInvoiceError("")
+
+    try {
+      // Call your backend endpoint to download the invoice
+      const response = await api.get(`/orders/${order.id}/invoice`, {
+        responseType: "blob",
+        headers: {
+          Accept: "application/pdf"
+        }
+      })
+
+      // Create a blob URL and trigger download
+      const blob = new Blob([response.data], { type: "application/pdf" })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `Facture_${order.order_number || order.id}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error("Erreur lors du téléchargement de la facture:", err)
+      setInvoiceError("Impossible de télécharger la facture. Veuillez réessayer.")
+    } finally {
+      setDownloadingInvoice(false)
+    }
+  }
 
   if (!order) {
     return (
@@ -38,7 +78,7 @@ const OrderConfirmation = () => {
 
           <div className="detail-section">
             <h3>Montant total</h3>
-            <p className="total-amount">{(order.total || 0).toFixed(2)} DH</p>
+            <p className="total-amount">{(parseFloat(order.total) || parseFloat(order.calculated_total) || 0).toFixed(2)} DH</p>
           </div>
 
           <div className="detail-section">
@@ -49,12 +89,12 @@ const OrderConfirmation = () => {
           <div className="detail-section">
             <h3>Articles commandés</h3>
             <div className="order-items-list">
-              {order.items.map((item) => (
-                <div key={item.id} className="item-line">
+              {(order.items || []).map((item) => (
+                <div key={item.id || item.product_id} className="item-line">
                   <span>
                     {item.name} x{item.quantity}
                   </span>
-                  <span>{((item.discountPrice || 0) * item.quantity).toFixed(2)} DH</span>
+                  <span>{(parseFloat(item.discountPrice || item.price || item.prix_detail) * (item.quantity || 1) || 0).toFixed(2)} DH</span>
                 </div>
               ))}
             </div>
@@ -67,6 +107,14 @@ const OrderConfirmation = () => {
         </div>
 
         <div className="confirmation-actions">
+          <button 
+            className="download-invoice-btn"
+            onClick={handleDownloadInvoice}
+            disabled={downloadingInvoice}
+          >
+            <i className="fas fa-file-pdf"></i>
+            {downloadingInvoice ? "Téléchargement..." : "Télécharger la facture"}
+          </button>
           <Link to="/order-tracking" className="track-btn">
             <i className="fas fa-map-marker-alt"></i> Suivre ma commande
           </Link>
@@ -74,6 +122,13 @@ const OrderConfirmation = () => {
             Continuer vos achats
           </Link>
         </div>
+
+        {invoiceError && (
+          <div className="invoice-error">
+            <i className="fas fa-exclamation-circle"></i>
+            <span>{invoiceError}</span>
+          </div>
+        )}
       </div>
     </div>
   )
