@@ -1,0 +1,119 @@
+.waiting-approval {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+}
+
+.waiting-approval .card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  padding: 60px 50px;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  border: 1px solid rgba(37, 99, 235, 0.1);
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.waiting-approval .card::before {
+  content: '⏳';
+  display: block;
+  font-size: 56px;
+  margin-bottom: 20px;
+  opacity: 0.9;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.waiting-approval .card h2 {
+  font-size: 25px;
+  font-weight: 600;
+  color: #2563eb;
+  margin: 0 0 18px 0;
+  letter-spacing: 0.2px;
+}
+
+.waiting-approval .card p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #64748b;
+  margin: 0 auto;
+  max-width: 480px;
+}
+
+@media (max-width: 768px) {
+  .waiting-approval {
+    min-height: calc(100vh - 100px);
+    padding: 30px 16px;
+  }
+
+  .waiting-approval .card {
+    padding: 48px 32px;
+    border-radius: 14px;
+  }
+
+  .waiting-approval .card h2 {
+    font-size: 24px;
+  }
+
+  .waiting-approval .card p {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .waiting-approval .card {
+    padding: 40px 24px;
+    border-radius: 12px;
+  }
+
+  .waiting-approval .card::before {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .waiting-approval .card h2 {
+    font-size: 22px;
+  }
+
+  .waiting-approval .card p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .waiting-approval .card {
+    padding: 32px 20px;
+  }
+
+  .waiting-approval .card h2 {
+    font-size: 20px;
+  }
+
+  .waiting-approval .card p {
+    font-size: 13px;
+  }
+}

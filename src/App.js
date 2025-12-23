@@ -31,6 +31,8 @@ import AdminDashboard from "./pages/AdminDashboard"
 import AdminDeliveries from "./pages/AdminDeliveries"
 import AdminUsers from "./pages/AdminUsers"
 import AdminProducts from "./pages/AdminProducts"
+import WaitingApprovalPage from "./pages/WaitingApprovalPage" 
+
 import About from "./components/About";
 import api from "./api"
 
@@ -184,12 +186,13 @@ function AppContent() {
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/order-tracking" element={<OrderTrackingPage />} />
           {/* About */}
-              <Route path="/about" element={<About />} />
+          <Route path="/about" element={<About />} />
 
           {/* B2B */}
           <Route path="/b2b/dashboard" element={<B2BDashboard />} />
           <Route path="/b2b/clients" element={<B2BClients />} />
           <Route path="/b2b/orders" element={<B2BOrders />} />
+          <Route path="/waiting-approval" element={<WaitingApprovalPage />} />
 
           {/* Admin */}
           <Route path="/admin" element={<AdminLayout />}>

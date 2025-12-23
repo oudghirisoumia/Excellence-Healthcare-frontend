@@ -54,6 +54,7 @@ export default function AuthPage() {
 
       if (user.type === "b2b" && !user.approved) {
         toast.info("Votre compte B2B est en attente de validation par un administrateur.")
+        navigate("/waiting-approval")
         return
       }
 
@@ -64,9 +65,9 @@ export default function AuthPage() {
         err.response?.status === 403
           ? "Votre compte B2B est en attente de validation par un administrateur."
           : err.response?.data?.error ||
-            err.response?.data?.errors?.email?.[0] ||
-            err.response?.data?.message ||
-            "Une erreur est survenue"
+          err.response?.data?.errors?.email?.[0] ||
+          err.response?.data?.message ||
+          "Une erreur est survenue"
 
       toast.error(msg)
     } finally {
