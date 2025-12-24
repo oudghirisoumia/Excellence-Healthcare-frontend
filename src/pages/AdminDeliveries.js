@@ -111,7 +111,7 @@ const AdminDeliveries = () => {
                 >
                   <td>{order.id}</td>
                   <td>{order.phone}</td>
-                  <td>{order.total.toFixed(2)} €</td>
+                  <td>{order.total.toFixed(2)} DH</td>
                   <td>
                     <select
                       value={order.status}
@@ -177,7 +177,7 @@ const AdminDeliveries = () => {
                 {selectedOrder.items.map((item) => (
                   <div key={item.id} className="item">
                     <span>{item.name} x{item.quantity}</span>
-                    <span>{(item.discountPrice * item.quantity).toFixed(2)} €</span>
+                    <span>{(item.discountPrice * item.quantity).toFixed(2)} DH</span>
                   </div>
                 ))}
               </div>

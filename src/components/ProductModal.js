@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Check, Minus, Plus, ShoppingCart, Star } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ProductModal({ product }) {
   const navigate = useNavigate();
@@ -15,8 +17,20 @@ export default function ProductModal({ product }) {
   };
 
   const handleAddToCart = () => {
-    // Ici tu peux appeler ton handler global ou local pour ajouter au panier
     console.log(`Ajouter au panier: ${product.name}, quantité: ${quantity}`);
+
+    toast.success(
+      `${product.name} ajouté au panier (x${quantity})`,
+      {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      }
+    );
   };
 
   return (
@@ -72,9 +86,9 @@ export default function ProductModal({ product }) {
 
           {/* Prix */}
           <div className="flex items-baseline gap-3 mb-4">
-            <span className="text-3xl font-bold text-emerald-600">{product.discountPrice.toFixed(2)} €</span>
+            <span className="text-3xl font-bold text-emerald-600">{product.discountPrice.toFixed(2)} DH</span>
             {product.discount > 0 && (
-              <span className="text-xl text-gray-400 line-through">{product.price.toFixed(2)} €</span>
+              <span className="text-xl text-gray-400 line-through">{product.price.toFixed(2)} DH</span>
             )}
           </div>
 
@@ -130,7 +144,7 @@ export default function ProductModal({ product }) {
               className="w-full bg-[#0088CC] hover:bg-[#0077B3] text-white font-bold py-3.5 px-6 rounded-lg shadow-lg shadow-blue-200/50 flex items-center justify-center gap-2"
             >
               <ShoppingCart className="w-5 h-5" />
-              <span>Ajouter au panier - {(product.discountPrice * quantity).toFixed(2)} €</span>
+              <span>Ajouter au panier - {(product.discountPrice * quantity).toFixed(2)} DH</span>
             </button>
           </div>
         </div>
