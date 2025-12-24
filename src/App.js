@@ -31,7 +31,9 @@ import AdminDashboard from "./pages/AdminDashboard"
 import AdminDeliveries from "./pages/AdminDeliveries"
 import AdminUsers from "./pages/AdminUsers"
 import AdminProducts from "./pages/AdminProducts"
-import WaitingApprovalPage from "./pages/WaitingApprovalPage" 
+import WaitingApprovalPage from "./pages/WaitingApprovalPage"
+
+import StripeProvider from "./components/StripeProvider"
 
 import About from "./components/About";
 import api from "./api"
@@ -215,7 +217,9 @@ function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <AppContent />
+        <StripeProvider>
+          <AppContent />
+        </StripeProvider>
       </AuthProvider>
     </LanguageProvider>
   )

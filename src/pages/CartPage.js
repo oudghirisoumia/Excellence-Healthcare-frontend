@@ -47,7 +47,7 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
               <div className="item-details">
                 <h3>{item.name}</h3>
                 <p className="brand">{item.brand}</p>
-                <p className="price">{parseFloat(item.price).toFixed(2)} €</p>
+                <p className="price">{parseFloat(item.price).toFixed(2)} DH</p>
               </div>
 
               <div className="quantity-control">
@@ -65,7 +65,7 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
                 </button>
               </div>
 
-              <div className="item-total">{(parseFloat(item.price) * item.quantity).toFixed(2)} €</div>
+              <div className="item-total">{(parseFloat(item.price) * item.quantity).toFixed(2)} DH</div>
 
               <button className="remove-btn" onClick={() => onRemoveFromCart(item.itemId)} title="Supprimer">
                 <i className="fas fa-trash"></i>
@@ -79,13 +79,13 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
 
           <div className="summary-line">
             <span>Sous-total</span>
-            <span>{subtotal.toFixed(2)} €</span>
+            <span>{subtotal.toFixed(2)} DH</span>
           </div>
 
           <div className="summary-line">
             <span>Livraison</span>
             <span className={shipping === 0 ? "free" : ""}>
-              {shipping === 0 ? "Gratuite" : shipping.toFixed(2) + " €"}
+              {shipping === 0 ? "Gratuite" : shipping.toFixed(2) + " DH"}
             </span>
           </div>
 
@@ -97,7 +97,7 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
 
           <div className="summary-total">
             <span>Total</span>
-            <span>{total.toFixed(2)} €</span>
+            <span>{total.toFixed(2)} DH</span>
           </div>
 
           <Link

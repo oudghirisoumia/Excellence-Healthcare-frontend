@@ -25,9 +25,10 @@ export default function Header({
   const navigate = useNavigate()
   const [showDropdown, setShowDropdown] = useState(false)
 
-  let user = null
+  let user = null;
+
   try {
-    user = JSON.parse(localStorage.getItem("user"))
+    user = JSON.parse(localStorage.getItem("user") || "null");
   } catch (e) { }
 
   const isAuth = !!user
