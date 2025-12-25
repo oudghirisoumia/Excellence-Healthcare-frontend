@@ -32,6 +32,7 @@ import AdminDeliveries from "./pages/AdminDeliveries"
 import AdminUsers from "./pages/AdminUsers"
 import AdminProducts from "./pages/AdminProducts"
 import WaitingApprovalPage from "./pages/WaitingApprovalPage"
+import AdminOrders from "./pages/AdminOrders"
 
 import StripeProvider from "./components/StripeProvider"
 
@@ -202,6 +203,7 @@ function AppContent() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="deliveries" element={<AdminDeliveries />} />
+            <Route path="orders" element={<AdminOrders />} />
           </Route>
         </Routes>
 
