@@ -96,7 +96,7 @@ const OrderTrackingPage = () => {
                 <div className="info-section">
                   <h3>Résumé financier</h3>
                   <p>
-                    <strong>Sous-total:</strong> {(selectedOrder.subtotal || 0).toFixed(2)} DH
+                    <strong>Sous-total:</strong> {(parseFloat(selectedOrder.subtotal) || 0).toFixed(2)} DH
                   </p>
                   <p>
                     <strong>Livraison:</strong> {(parseFloat(selectedOrder.deliveryFee) || 0).toFixed(2)} DH
