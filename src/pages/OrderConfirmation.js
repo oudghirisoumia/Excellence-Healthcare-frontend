@@ -1,12 +1,11 @@
 import { useLocation, Link } from "react-router-dom"
-import "../styles/OrderConfirmation.css"
 import { useState } from "react"
 import api from "../api"
+import "../styles/OrderConfirmation.css"
 
 const OrderConfirmation = () => {
   const location = useLocation()
   const order = location.state?.order
-
   const [downloadingInvoice, setDownloadingInvoice] = useState(false)
   const [invoiceError, setInvoiceError] = useState("")
 
@@ -95,7 +94,8 @@ const OrderConfirmation = () => {
                   <span>
                     {item.name} x{item.quantity}
                   </span>
-                  <span>{(parseFloat(item.discountPrice || item.price || item.prix_detail) * (item.quantity || 1) || 0).toFixed(2)} DH</span>                </div>
+                  <span>{(parseFloat(item.discountPrice || item.price || item.prix_detail) * (item.quantity || 1) || 0).toFixed(2)} DH</span>
+                </div>
               ))}
             </div>
           </div>
@@ -107,7 +107,7 @@ const OrderConfirmation = () => {
         </div>
 
         <div className="confirmation-actions">
-          <button
+          <button 
             className="download-invoice-btn"
             onClick={handleDownloadInvoice}
             disabled={downloadingInvoice}
@@ -122,6 +122,7 @@ const OrderConfirmation = () => {
             Continuer vos achats
           </Link>
         </div>
+
         {invoiceError && (
           <div className="invoice-error">
             <i className="fas fa-exclamation-circle"></i>
