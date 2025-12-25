@@ -1,6 +1,6 @@
 "use client"
 import { Link, Outlet, useLocation } from "react-router-dom"
-import { LayoutDashboard, Users, Truck, Package } from "lucide-react"
+import { LayoutDashboard, Users, Truck, Package, ClipboardList } from "lucide-react"
 import "../styles/AdminLayout.css"
 
 export default function AdminLayout() {
@@ -10,7 +10,8 @@ export default function AdminLayout() {
     { label: "Vue d'ensemble", path: "/admin", icon: LayoutDashboard },
     { label: "Utilisateurs", path: "/admin/users", icon: Users },
     { label: "Produits", path: "/admin/products", icon: Package },
-    { label: "Livraisons", path: "/admin/deliveries", icon: Truck },
+    { label: "Commandes", path: "/admin/orders", icon: ClipboardList },
+    { label: "Livraisons", path: "/admin/deliveries", icon: Truck }
   ]
 
   return (
