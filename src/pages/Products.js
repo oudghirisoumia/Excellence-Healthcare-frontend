@@ -1,24 +1,38 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import api from '../api';
-import ProductCard from '../components/ProductCard'; // your card we fixed
+import ProductCard from '../components/ProductCard';
 
 export default function Products() {
+  const [searchParams] = useSearchParams();
+  const categoryId = searchParams.get('category');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.get('/products')
-      .then(response => {
-        setProducts(response.data.data); // Laravel paginates → data.data
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        let endpoint = '/products';
+        
+        // If category is selected, filter by category
+        if (categoryId) {
+          endpoint = `/categories/${categoryId}/products`;
+        }
+        
+        const response = await api.get(endpoint);
+        setProducts(response.data.data || response.data.products || response.data);
         setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error(err);
         setError("Impossible de charger les produits");
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchProducts();
+  }, [categoryId]);
 
   const handleAddToCart = (product) => {
     alert(`Ajouté au panier : ${product.name}`);
@@ -32,6 +46,7 @@ export default function Products() {
 
   if (loading) return <div className="text-center py-20 text-xl">Chargement des produits...</div>;
   if (error) return <div className="text-center py-20 text-red-600">{error}</div>;
+  if (products.length === 0) return <div className="text-center py-20 text-xl">Aucun produit trouvé</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -16,8 +16,8 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
   }))
 
   const subtotal = normalizedCart.reduce((total, item) => total + (parseFloat(item.price) || 0) * (item.quantity || 1), 0)
-  const shipping = subtotal > 50 ? 0 : 4.9
-  const total = subtotal + shipping
+
+  const total = subtotal 
 
   if (cart.length === 0) {
     return (
@@ -82,18 +82,8 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
             <span>{subtotal.toFixed(2)} DH</span>
           </div>
 
-          <div className="summary-line">
-            <span>Livraison</span>
-            <span className={shipping === 0 ? "free" : ""}>
-              {shipping === 0 ? "Gratuite" : shipping.toFixed(2) + " DH"}
-            </span>
-          </div>
-
-          {shipping === 0 && (
-            <p className="free-shipping-msg">
-              <i className="fas fa-check"></i> Livraison gratuite !
-            </p>
-          )}
+          
+         
 
           <div className="summary-total">
             <span>Total</span>

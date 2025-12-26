@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api"
+import StripeCheckoutForm from "../components/StripeCheckoutForm"
 import "../styles/CheckoutPage.css"
 
 export default function CheckoutPage({ cart = [] }) {
@@ -334,7 +335,7 @@ export default function CheckoutPage({ cart = [] }) {
             {/* STEP 3 */}
             {step === 3 && (
               <div className="checkout-form">
-                <h2 className="section-title">Check Vérification finale</h2>
+                <h2 className="section-title">Paiement</h2>
 
                 <div className="summary-preview">
                   <p><strong>Client :</strong> {personalInfo.first_name} {personalInfo.last_name}</p>
@@ -344,15 +345,45 @@ export default function CheckoutPage({ cart = [] }) {
                   <p><strong>Total :</strong> {(total || 0).toFixed(2)} DH</p>
                 </div>
 
+                <StripeCheckoutForm
+                  amount={Math.round((total || 0) * 100)}
+                  onPaymentSuccess={() => {
+                    navigate("/order-confirmation", {
+                      state: { 
+                        order: { id: "pending" },
+                        cart_items: cart
+                      }
+                    })
+                  }}
+                  disabled={loading}
+                  checkoutData={{
+                    first_name: personalInfo.first_name.trim(),
+                    last_name: personalInfo.last_name.trim() || "",
+                    email: personalInfo.email.trim() || "",
+                    phone: personalInfo.phone.trim(),
+                    address: personalInfo.address.trim(),
+                    city: personalInfo.city.trim() || "Casablanca",
+                    notes: deliveryInfo.notes?.trim() || null,
+                    shipping_method: deliveryInfo.carrier || "amana",
+                    payment_method: "stripe",
+                    subtotal: parseFloat((subtotal || 0).toFixed(2)),
+                    shipping_fee: parseFloat((shippingFee || 0).toFixed(2)),
+                    total: parseFloat((total || 0).toFixed(2)),
+                    cart_items: cart.map(item => {
+                      const productId = item.product?.id || item.product_id || item.id
+                      const quantity = item.quantity || 1
+                      const price = parseFloat(item.product?.prix_detail || item.prix_detail || item.price || 0)
+                      return {
+                        product_id: productId,
+                        quantity,
+                        price
+                      }
+                    })
+                  }}
+                />
+
                 <div className="form-actions">
                   <button className="btn-back" onClick={() => setStep(2)}>← Modifier</button>
-                  <button
-                    className="btn-submit"
-                    onClick={handleConfirmOrder}
-                    disabled={loading}
-                  >
-                    {loading ? "Traitement en cours..." : "Confirmer & Commander"}
-                  </button>
                 </div>
               </div>
             )}
