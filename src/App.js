@@ -69,7 +69,11 @@ function AppContent() {
         api.get('/notifications')
       ])
 
-      const cartData = cartRes.data?.items || cartRes.data || []
+      // Backend returns 'cartItems' key
+      const cartData = cartRes.data?.cartItems || cartRes.data?.items || cartRes.data || []
+      console.log("Raw cart data from API:", cartData)
+      console.log("First item structure:", cartData[0])
+      
       setCart(Array.isArray(cartData) ? cartData : [])
       setFavorites(Array.isArray(favRes.data) ? favRes.data.map(f => f.product_id || f.id) : [])
       setNotifications(Array.isArray(notifRes.data) ? notifRes.data : [])
@@ -107,42 +111,71 @@ function AppContent() {
     }
 
     try {
-      await api.post('/cart', { product_id: product.id, quantity: 1 })
+      const response = await api.post('/cart', { product_id: product.id, quantity: 1 })
+      const newCartItem = response.data?.cartItem
+      
       setCart(prev => {
         const cartArray = Array.isArray(prev) ? prev : []
         const exists = cartArray.find(i => i.product_id === product.id)
         if (exists) {
           return cartArray.map(i => i.product_id === product.id ? { ...i, quantity: i.quantity + 1 } : i)
         }
-        return [...cartArray, { product_id: product.id, product, quantity: 1 }]
+        return [...cartArray, newCartItem || { id: Date.now(), product_id: product.id, product, quantity: 1 }]
       })
+      toast.success("Produit ajouté au panier")
     } catch (err) {
-      toast.error("Erreur lors de l'ajout au panier")
+      console.error("Add to cart error:", err)
+      if (err.response?.status === 401) {
+        navigate('/auth')
+      } else {
+        toast.error("Erreur lors de l'ajout au panier")
+      }
     }
   }
 
-  const handleRemoveFromCart = async (productId) => {
+  const handleRemoveFromCart = async (itemId) => {
     try {
-      await api.delete(`/cart/${productId}`)
-      setCart(prev => Array.isArray(prev) ? prev.filter(i => i.product_id !== productId) : [])
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  const handleUpdateCartQuantity = async (productId, quantity) => {
-    if (quantity <= 0) {
-      handleRemoveFromCart(productId)
-      return
-    }
-    try {
-      await api.put(`/cart/${productId}`, { quantity })
+      await api.delete(`/cart/${itemId}`)
       setCart(prev => {
         const cartArray = Array.isArray(prev) ? prev : []
-        return cartArray.map(i => i.product_id === productId ? { ...i, quantity } : i)
+        return cartArray.filter(i => i.id !== itemId)
+      })
+      toast.info("Produit retiré du panier")
+    } catch (err) {
+      console.error("Remove from cart error:", err)
+      toast.error("Erreur lors de la suppression")
+    }
+  }
+
+  const handleUpdateCartQuantity = async (itemId, quantity) => {
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      toast.error("Quantité invalide")
+      return
+    }
+
+    if (quantity === 0) {
+      handleRemoveFromCart(itemId)
+      return
+    }
+
+    try {
+      const response = await api.put(`/cart/${itemId}`, { quantity })
+      const updatedItem = response.data?.cartItem
+      
+      setCart(prev => {
+        const cartArray = Array.isArray(prev) ? prev : []
+        return cartArray.map(i => 
+          i.id === itemId ? { ...i, quantity: updatedItem?.quantity || quantity } : i
+        )
       })
     } catch (err) {
-      console.error(err)
+      console.error("Error updating quantity:", err)
+      if (err.response?.status === 404) {
+        toast.error("Produit non trouvé")
+        setCart(prev => Array.isArray(prev) ? prev.filter(i => i.id !== itemId) : [])
+      } else {
+        toast.error("Erreur lors de la mise à jour")
+      }
     }
   }
 
