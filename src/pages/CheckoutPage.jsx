@@ -6,7 +6,7 @@ import api from "../api"
 import StripeCheckoutForm from "../components/StripeCheckoutForm"
 import "../styles/CheckoutPage.css"
 
-export default function CheckoutPage({ cart = [] }) {
+export default function CheckoutPage({ cart = [], onClearCart }) {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -27,6 +27,8 @@ export default function CheckoutPage({ cart = [] }) {
     time_slot: "",
     notes: "",
   })
+
+  const [paymentMethod, setPaymentMethod] = useState("cash")
 
   const deliveryModes = [
     { id: "standard", name: "Standard", icon: "Box", desc: "3-5 jours", price: 4.9 },
@@ -137,15 +139,30 @@ export default function CheckoutPage({ cart = [] }) {
       const response = await api.post("/orders", payload)
       console.log("✓ Commande créée :", response.data)
 
-      // Optionnel : vider le panier local
+      // Clear cart from localStorage and App state
       localStorage.removeItem("cart")
+      if (onClearCart) {
+        onClearCart()
+      }
 
       // Handle various response structures from backend
       const orderData = response.data?.order || response.data?.data || response.data
       
+      // Extract the actual order ID from the response
+      const orderId = orderData?.id || response.data?.order?.id || response.data?.id
+      
+      console.log("Order ID extracted:", orderId)
+      
       navigate("/order-confirmation", {
         state: { 
-          order: orderData,
+          order: {
+            ...orderData,
+            id: orderId,
+            total: parseFloat((total || 0).toFixed(2)),
+            subtotal: parseFloat((subtotal || 0).toFixed(2)),
+            shipping_fee: parseFloat((shippingFee || 0).toFixed(2)),
+            items: cart
+          },
           cart_items: cart
         }
       })
@@ -335,7 +352,7 @@ export default function CheckoutPage({ cart = [] }) {
             {/* STEP 3 */}
             {step === 3 && (
               <div className="checkout-form">
-                <h2 className="section-title">Paiement</h2>
+                <h2 className="section-title">Mode de Paiement</h2>
 
                 <div className="summary-preview">
                   <p><strong>Client :</strong> {personalInfo.first_name} {personalInfo.last_name}</p>
@@ -345,45 +362,112 @@ export default function CheckoutPage({ cart = [] }) {
                   <p><strong>Total :</strong> {(total || 0).toFixed(2)} DH</p>
                 </div>
 
-                <StripeCheckoutForm
-                  amount={Math.round((total || 0) * 100)}
-                  onPaymentSuccess={() => {
-                    navigate("/order-confirmation", {
-                      state: { 
-                        order: { id: "pending" },
-                        cart_items: cart
-                      }
-                    })
-                  }}
-                  disabled={loading}
-                  checkoutData={{
-                    first_name: personalInfo.first_name.trim(),
-                    last_name: personalInfo.last_name.trim() || "",
-                    email: personalInfo.email.trim() || "",
-                    phone: personalInfo.phone.trim(),
-                    address: personalInfo.address.trim(),
-                    city: personalInfo.city.trim() || "Casablanca",
-                    notes: deliveryInfo.notes?.trim() || null,
-                    shipping_method: deliveryInfo.carrier || "amana",
-                    payment_method: "stripe",
-                    subtotal: parseFloat((subtotal || 0).toFixed(2)),
-                    shipping_fee: parseFloat((shippingFee || 0).toFixed(2)),
-                    total: parseFloat((total || 0).toFixed(2)),
-                    cart_items: cart.map(item => {
-                      const productId = item.product?.id || item.product_id || item.id
-                      const quantity = item.quantity || 1
-                      const price = parseFloat(item.product?.prix_detail || item.prix_detail || item.price || 0)
-                      return {
-                        product_id: productId,
-                        quantity,
-                        price
-                      }
-                    })
-                  }}
-                />
+                {/* Payment Method Selection */}
+                <div className="payment-methods">
+                  <h3 className="payment-title">Choisissez votre mode de paiement :</h3>
+                  
+                  <div className="payment-options">
+                    <label className={`payment-option ${paymentMethod === 'cash' ? 'active' : ''}`}>
+                      <input
+                        type="radio"
+                        name="payment_method"
+                        value="cash"
+                        checked={paymentMethod === 'cash'}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      />
+                      <span className="option-content">
+                        <strong>💰 À la livraison</strong>
+                        <small>Payer en espèces à la livraison</small>
+                      </span>
+                    </label>
+
+                    <label className={`payment-option ${paymentMethod === 'stripe' ? 'active' : ''}`}>
+                      <input
+                        type="radio"
+                        name="payment_method"
+                        value="stripe"
+                        checked={paymentMethod === 'stripe'}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      />
+                      <span className="option-content">
+                        <strong>💳 Paiement par Carte</strong>
+                        <small>Carte bancaire sécurisée via Stripe</small>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Stripe Payment Form - Only show if stripe is selected */}
+                {paymentMethod === 'stripe' && (
+                  <div className="stripe-section">
+                    <h3 className="payment-title">Informations de Paiement</h3>
+                    <StripeCheckoutForm
+                      amount={Math.round((total || 0) * 100)}
+                      onPaymentSuccess={(orderId) => {
+                        navigate("/order-confirmation", {
+                          state: { 
+                            order: { 
+                              id: orderId,
+                              total: parseFloat((total || 0).toFixed(2)),
+                              subtotal: parseFloat((subtotal || 0).toFixed(2)),
+                              shipping_fee: parseFloat((shippingFee || 0).toFixed(2)),
+                              items: cart
+                            },
+                            cart_items: cart
+                          }
+                        })
+                      }}
+                      onClearCart={onClearCart}
+                      disabled={loading}
+                      checkoutData={{
+                        first_name: personalInfo.first_name.trim(),
+                        last_name: personalInfo.last_name.trim() || "",
+                        email: personalInfo.email.trim() || "",
+                        phone: personalInfo.phone.trim(),
+                        address: personalInfo.address.trim(),
+                        city: personalInfo.city.trim() || "Casablanca",
+                        notes: deliveryInfo.notes?.trim() || null,
+                        shipping_method: deliveryInfo.carrier || "amana",
+                        payment_method: "stripe",
+                        subtotal: parseFloat((subtotal || 0).toFixed(2)),
+                        shipping_fee: parseFloat((shippingFee || 0).toFixed(2)),
+                        total: parseFloat((total || 0).toFixed(2)),
+                        cart_items: cart.map(item => {
+                          const productId = item.product?.id || item.product_id || item.id
+                          const quantity = item.quantity || 1
+                          const price = parseFloat(item.product?.prix_detail || item.prix_detail || item.price || 0)
+                          return {
+                            product_id: productId,
+                            quantity,
+                            price
+                          }
+                        })
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Cash Payment - Only show if cash is selected */}
+                {paymentMethod === 'cash' && (
+                  <div className="cash-section">
+                    <div className="info-box">
+                      <p>✓ Vous pouvez payer en espèces à la livraison</p>
+                      <p>Préparez le montant exact : <strong>{(total || 0).toFixed(2)} DH</strong></p>
+                    </div>
+                  </div>
+                )}
 
                 <div className="form-actions">
                   <button className="btn-back" onClick={() => setStep(2)}>← Modifier</button>
+                  {paymentMethod === 'cash' && (
+                    <button
+                      className="btn-confirm"
+                      onClick={handleConfirmOrder}
+                      disabled={loading}
+                    >
+                      {loading ? "Traitement en cours..." : "Confirmer la Commande →"}
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -393,12 +477,16 @@ export default function CheckoutPage({ cart = [] }) {
           <div className="checkout-summary">
             <h3 className="summary-title">Récapitulatif</h3>
             <div className="summary-items">
-              {cart.map((item, i) => (
-                <div key={i} className="summary-item">
-                  <span>{item.product?.name || item.name} × {item.quantity}</span>
-                  <span>{((item.price || 0) * item.quantity).toFixed(2)} DH</span>
-                </div>
-              ))}
+              {cart.map((item, i) => {
+                const itemPrice = parseFloat(item.product?.prix_detail || item.prix_detail || item.price || 0)
+                const itemTotal = (itemPrice * (item.quantity || 1)).toFixed(2)
+                return (
+                  <div key={i} className="summary-item">
+                    <span>{item.product?.name || item.name} × {item.quantity}</span>
+                    <span>{itemTotal} DH</span>
+                  </div>
+                )
+              })}
             </div>
             <div className="summary-line"><span>Sous-total</span><span>{(subtotal || 0).toFixed(2)} DH</span></div>
             <div className="summary-line"><span>Livraison</span><span>{(shippingFee || 0).toFixed(2)} DH</span></div>

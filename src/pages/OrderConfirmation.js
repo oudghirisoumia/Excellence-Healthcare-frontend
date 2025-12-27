@@ -69,35 +69,73 @@ const OrderConfirmation = () => {
         <div className="confirmation-details">
           <div className="detail-section">
             <h3>Numéro de commande</h3>
-            <p className="order-id">{order.id}</p>
+            <p className="order-id">{order.order_number || order.id}</p>
           </div>
 
           <div className="detail-section">
             <h3>Numéro de suivi</h3>
-            <p className="tracking-number">{order.trackingNumber}</p>
+            <p className="tracking-number">
+              {order.trackingNumber || order.tracking_number || "À venir"}
+            </p>
           </div>
 
           <div className="detail-section">
             <h3>Montant total</h3>
-            <p className="total-amount">{(parseFloat(order.total) || parseFloat(order.calculated_total) || 0).toFixed(2)} DH</p>
+            <p className="total-amount">
+              {(parseFloat(order.total || order.calculated_total || 0)).toFixed(2)} DH
+            </p>
           </div>
 
           <div className="detail-section">
             <h3>Adresse de livraison</h3>
-            <p>{order.deliveryAddress}</p>
+            <p>
+              {order.deliveryAddress || 
+               `${order.address || ''} ${order.city || ''}`}
+            </p>
           </div>
 
           <div className="detail-section">
-            <h3>Articles commandés</h3>
+            <h3>Récapitulatif du panier</h3>
             <div className="order-items-list">
-              {(order.items || []).map((item) => (
-                <div key={item.id || item.product_id} className="item-line">
-                  <span>
-                    {item.name} x{item.quantity}
-                  </span>
-                  <span>{(parseFloat(item.discountPrice || item.price || item.prix_detail) * (item.quantity || 1) || 0).toFixed(2)} DH</span>                </div>
-              ))}
+              {(order.items || []).map((item, idx) => {
+                const itemName = item.name || item.product?.name || item.product_name || "Produit";
+                const itemPrice = parseFloat(
+                  item.price || 
+                  item.product?.prix_detail || 
+                  item.prix_detail || 
+                  0
+                );
+                const itemQty = item.quantity || 1;
+                const itemTotal = (itemPrice * itemQty).toFixed(2);
+
+                return (
+                  <div key={item.id || item.product_id || idx} className="item-line">
+                    <span className="item-info">
+                      {itemName} × {itemQty}
+                    </span>
+                    <span className="item-price">{itemTotal} DH</span>
+                  </div>
+                );
+              })}
             </div>
+            
+            {/* Show breakdown if available */}
+            {(order.subtotal || order.shipping_fee) && (
+              <div className="order-breakdown">
+                <div className="breakdown-line">
+                  <span>Sous-total</span>
+                  <span>{parseFloat(order.subtotal || 0).toFixed(2)} DH</span>
+                </div>
+                <div className="breakdown-line">
+                  <span>Frais de livraison</span>
+                  <span>{parseFloat(order.shipping_fee || 0).toFixed(2)} DH</span>
+                </div>
+                <div className="breakdown-total">
+                  <span>Total</span>
+                  <span>{(parseFloat(order.total || 0)).toFixed(2)} DH</span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="confirmation-message">
