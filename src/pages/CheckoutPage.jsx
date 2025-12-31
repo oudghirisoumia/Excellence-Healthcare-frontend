@@ -1,12 +1,29 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api"
+import StripeCheckoutForm from "../components/StripeCheckoutForm"
 import "../styles/CheckoutPage.css"
+import { Box, Zap, DollarSign, Store } from "lucide-react"
 
 export default function CheckoutPage({ cart = [] }) {
   const navigate = useNavigate()
+
+  const cartItems = () =>
+    cart.map(item => {
+      const price = parseFloat(
+        item.product?.prix_detail ||
+        item.prix_detail ||
+        0
+      )
+
+      return {
+        product_id: item.product_id || item.product?.id || item.id,
+        quantity: parseInt(item.quantity) || 1,
+        price: price,
+        total: price * (parseInt(item.quantity) || 1),
+      }
+    })
+
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -27,11 +44,15 @@ export default function CheckoutPage({ cart = [] }) {
     notes: "",
   })
 
+  const getPaymentMethodFromDelivery = (deliveryMode) => {
+    return deliveryMode === "cash" ? "cash" : "stripe"
+  }
+
   const deliveryModes = [
-    { id: "standard", name: "Standard", icon: "Box", desc: "3-5 jours", price: 4.9 },
-    { id: "express", name: "Express", icon: "Lightning", desc: "24h", price: 12.9 },
-    { id: "cash", name: "À la livraison", icon: "Money", desc: "Paiement livraison", price: 6.9 },
-    { id: "pickup", name: "Retrait", icon: "Store", desc: "Point de vente", price: 0 },
+    { id: "standard", name: "Standard", icon: Box, desc: "3-5 jours", prix_detail: 4.9 },
+    { id: "express", name: "Express", icon: Zap, desc: "24h", prix_detail: 12.9 },
+    { id: "cash", name: "À la livraison", icon: DollarSign, desc: "Paiement livraison", prix_detail: 6.9 },
+    { id: "pickup", name: "Retrait", icon: Store, desc: "Point de vente", prix_detail: 0 },
   ]
 
   const carriers = [
@@ -47,15 +68,22 @@ export default function CheckoutPage({ cart = [] }) {
   ]
 
   const subtotal = cart.reduce((sum, item) => {
-    const price = parseFloat(item.product?.prix_detail || item.prix_detail || item.price || 0)
-    return sum + price * item.quantity
+    const prix_detail = parseFloat(
+      item.product?.prix_detail ||
+      item.prix_detail ||
+      item.prix_detail ||
+      0
+    )
+    return sum + prix_detail * item.quantity
   }, 0)
 
   const shippingFee = deliveryInfo.delivery_mode
-    ? deliveryModes.find(m => m.id === deliveryInfo.delivery_mode)?.price || 0
+    ? deliveryModes.find(m => m.id === deliveryInfo.delivery_mode)?.prix_detail || 0
     : 0
 
   const total = subtotal + shippingFee
+  const paymentMethod = getPaymentMethodFromDelivery(deliveryInfo.delivery_mode)
+
 
   const handlePersonalInfoChange = (e) => {
     const { name, value } = e.target
@@ -93,27 +121,8 @@ export default function CheckoutPage({ cart = [] }) {
     setError("")
 
     try {
-      // FORMATTAGE DES ITEMS DU PANIER - STRICT VALIDATION
-      const cart_items = cart.map(item => {
-        const productId = item.product_id || item.product?.id || item.id
-        const quantity = parseInt(item.quantity) || 1
-        const price = parseFloat(item.product?.prix_detail || item.prix_detail || item.price || 0)
-        
-        // Validation
-        if (!productId) throw new Error('Product ID manquant dans le panier')
-        if (quantity < 1) throw new Error('Quantité invalide')
-        if (price < 0) throw new Error('Prix invalide')
-        
-        console.log(`✓ Item valide: productId=${productId}, qty=${quantity}, price=${price}`)
-        
-        return {
-          product_id: productId,
-          quantity,
-          price
-        }
-      })
+      const cart_items = cartItems()
 
-      // PAYLOAD MINIMAL - EXACTEMENT CE QUE LE BACKEND ATTEND
       const payload = {
         first_name: personalInfo.first_name.trim(),
         last_name: personalInfo.last_name.trim() || "",
@@ -123,63 +132,37 @@ export default function CheckoutPage({ cart = [] }) {
         city: personalInfo.city.trim() || "Casablanca",
         notes: deliveryInfo.notes?.trim() || null,
         shipping_method: deliveryInfo.carrier || "amana",
-        payment_method: "cash",
-        subtotal: parseFloat((subtotal || 0).toFixed(2)),
-        shipping_fee: parseFloat((shippingFee || 0).toFixed(2)),
-        total: parseFloat((total || 0).toFixed(2)),
-        cart_items // REQUIS PAR LE BACKEND
+        payment_method: paymentMethod,
+        subtotal: parseFloat(subtotal.toFixed(2)),
+        shipping_fee: parseFloat(shippingFee.toFixed(2)),
+        total: parseFloat(total.toFixed(2)),
+        cart_items
       }
-
-      console.log("✓ Validation complète réussie")
-      console.log("Envoi vers Laravel :", payload)
 
       const response = await api.post("/orders", payload)
-      console.log("✓ Commande créée :", response.data)
 
-      // Optionnel : vider le panier local
       localStorage.removeItem("cart")
 
-      // Handle various response structures from backend
       const orderData = response.data?.order || response.data?.data || response.data
-      
+
       navigate("/order-confirmation", {
-        state: { 
-          order: orderData,
-          cart_items: cart
-        }
+        state: { order: orderData, cart_items: cart }
       })
-
     } catch (err) {
-      // Validation errors before sending to backend
-      if (err.message && !err.response) {
-        console.error("❌ Erreur validation:", err.message)
-        setError(err.message)
-        setLoading(false)
-        return
-      }
-
-      // Backend errors
-      console.error("❌ Erreur complète :", err.response?.data)
-      console.error("❌ Erreur status :", err.response?.status)
-      console.error("❌ Payload envoyé :", err.config?.data)
-      
-      // Build a detailed error message
       let errorMessage = "Erreur lors de la création de la commande"
-      
-      if (err.response?.data?.message) {
+
+      if (err.message && !err.response) {
+        errorMessage = err.message
+      } else if (err.response?.data?.message) {
         errorMessage = err.response.data.message
       } else if (err.response?.data?.error) {
         errorMessage = err.response.data.error
       } else if (err.response?.data?.errors) {
-        // Handle validation errors (Laravel often returns errors object)
-        const errors = err.response.data.errors
-        const errorArray = Object.entries(errors).map(([key, msgs]) => {
-          return `${key}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`
-        })
-        errorMessage = errorArray.join(' | ')
+        errorMessage = Object.entries(err.response.data.errors)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(" | ")
       }
-      
-      console.error("❌ Message d'erreur finalisé :", errorMessage)
+
       setError(errorMessage)
     } finally {
       setLoading(false)
@@ -193,9 +176,7 @@ export default function CheckoutPage({ cart = [] }) {
           <div className="checkout-empty">
             <div className="empty-icon">Shopping Cart</div>
             <p className="empty-text">Votre panier est vide</p>
-            <a href="/products" className="empty-link">
-              Continuer les achats
-            </a>
+            <a href="/products" className="empty-link">Continuer les achats</a>
           </div>
         </div>
       </div>
@@ -230,7 +211,7 @@ export default function CheckoutPage({ cart = [] }) {
             {/* STEP 1 */}
             {step === 1 && (
               <div className="checkout-form">
-                <h2 className="section-title">Person Vos informations</h2>
+                <h2 className="section-title">Vos informations</h2>
 
                 <div className="form-section">
                   <h3 className="form-section-title">Informations personnelles</h3>
@@ -270,11 +251,15 @@ export default function CheckoutPage({ cart = [] }) {
                       className={`delivery-option ${deliveryInfo.delivery_mode === mode.id ? "selected" : ""}`}
                       onClick={() => handleDeliveryInfoChange("delivery_mode", mode.id)}
                     >
-                      <div className="delivery-option-icon">{mode.icon}</div>
+                      <div className="delivery-option-icon">
+                        <mode.icon size={22} />
+                      </div>
+
                       <div className="delivery-option-name">{mode.name}</div>
                       <div className="delivery-option-desc">{mode.desc}</div>
-                      <div className="delivery-option-price">
-                        {mode.price === 0 ? "Gratuit" : `${(mode.price || 0).toFixed(2)} DH`}
+
+                      <div className="delivery-option-prix_detail">
+                        {mode.prix_detail === 0 ? "Gratuit" : `${mode.prix_detail.toFixed(2)} DH`}
                       </div>
                     </div>
                   ))}
@@ -334,7 +319,7 @@ export default function CheckoutPage({ cart = [] }) {
             {/* STEP 3 */}
             {step === 3 && (
               <div className="checkout-form">
-                <h2 className="section-title">Check Vérification finale</h2>
+                <h2 className="section-title">Paiement</h2>
 
                 <div className="summary-preview">
                   <p><strong>Client :</strong> {personalInfo.first_name} {personalInfo.last_name}</p>
@@ -343,31 +328,72 @@ export default function CheckoutPage({ cart = [] }) {
                   <p><strong>Livraison :</strong> {deliveryModes.find(m => m.id === deliveryInfo.delivery_mode)?.name}</p>
                   <p><strong>Total :</strong> {(total || 0).toFixed(2)} DH</p>
                 </div>
-
-                <div className="form-actions">
-                  <button className="btn-back" onClick={() => setStep(2)}>← Modifier</button>
+                
+                {paymentMethod === "cash" && (
                   <button
-                    className="btn-submit"
+                    className="btn-next"
                     onClick={handleConfirmOrder}
                     disabled={loading}
                   >
-                    {loading ? "Traitement en cours..." : "Confirmer & Commander"}
+                    Confirmer la commande
+                  </button>
+                )}
+
+                {/* Show Stripe form only for card-required modes */}
+                {paymentMethod === "stripe" && (
+                  <StripeCheckoutForm
+                    amount={Math.round((total || 0) * 100)}
+                    disabled={loading}
+                    checkoutData={{
+                      first_name: personalInfo.first_name.trim(),
+                      last_name: personalInfo.last_name.trim() || "",
+                      email: personalInfo.email.trim() || "",
+                      phone: personalInfo.phone.trim(),
+                      address: personalInfo.address.trim(),
+                      city: personalInfo.city.trim() || "Casablanca",
+                      notes: deliveryInfo.notes?.trim() || null,
+                      shipping_method: deliveryInfo.carrier || "amana",
+                      payment_method: "stripe",
+                      subtotal,
+                      shipping_fee: shippingFee,
+                      total,
+                      cart_items: cartItems()
+                    }}
+                    onPaymentSuccess={handleConfirmOrder}
+                  />
+                )}
+
+                <div className="form-actions">
+
+                  <button className="btn-back" onClick={() => setStep(2)}>
+                    ← Modifier
                   </button>
                 </div>
               </div>
             )}
+
           </div>
 
-          {/* RÉCAPITULATIF FIXE */}
+          {/* RÉCAPITULATIF */}
           <div className="checkout-summary">
             <h3 className="summary-title">Récapitulatif</h3>
             <div className="summary-items">
-              {cart.map((item, i) => (
-                <div key={i} className="summary-item">
-                  <span>{item.product?.name || item.name} × {item.quantity}</span>
-                  <span>{((item.price || 0) * item.quantity).toFixed(2)} DH</span>
-                </div>
-              ))}
+              {cart.map((item, i) => {
+                const unitPrice = parseFloat(
+                  item.product?.prix_detail ||
+                  item.prix_detail ||
+                  item.prix_detail ||
+                  0
+                )
+
+                return (
+                  <div key={i} className="summary-item">
+                    <span>{item.product?.name || item.name} × {item.quantity}</span>
+                    <span>{(unitPrice * item.quantity).toFixed(2)} DH</span>
+                  </div>
+                )
+              })}
+
             </div>
             <div className="summary-line"><span>Sous-total</span><span>{(subtotal || 0).toFixed(2)} DH</span></div>
             <div className="summary-line"><span>Livraison</span><span>{(shippingFee || 0).toFixed(2)} DH</span></div>

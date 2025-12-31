@@ -1,5 +1,7 @@
 import { useLocation, Link } from "react-router-dom"
-import { useState } from "react"
+
+import "../styles/OrderConfirmation.css"
+import { useState, useEffect } from "react"
 import api from "../api"
 import "../styles/OrderConfirmation.css"
 
@@ -9,37 +11,37 @@ const OrderConfirmation = () => {
   const [downloadingInvoice, setDownloadingInvoice] = useState(false)
   const [invoiceError, setInvoiceError] = useState("")
 
+  useEffect(() => {
+    if (order?.id) {
+      localStorage.setItem("lastOrderId", order.id)
+    }
+  }, [order])
+
   const handleDownloadInvoice = async () => {
     if (!order?.id) {
       setInvoiceError("Numéro de commande manquant")
       return
     }
 
-    setDownloadingInvoice(true)
-    setInvoiceError("")
-
     try {
-      // Call your backend endpoint to download the invoice
+      setDownloadingInvoice(true)
+
       const response = await api.get(`/orders/${order.id}/invoice`, {
         responseType: "blob",
-        headers: {
-          Accept: "application/pdf"
-        }
+        headers: { Accept: "application/pdf" }
       })
 
-      // Create a blob URL and trigger download
       const blob = new Blob([response.data], { type: "application/pdf" })
       const url = window.URL.createObjectURL(blob)
+
       const link = document.createElement("a")
       link.href = url
-      link.download = `Facture_${order.order_number || order.id}.pdf`
-      document.body.appendChild(link)
+      link.download = `Facture_${order.order_number}.pdf`
       link.click()
-      document.body.removeChild(link)
+
       window.URL.revokeObjectURL(url)
     } catch (err) {
-      console.error("Erreur lors du téléchargement de la facture:", err)
-      setInvoiceError("Impossible de télécharger la facture. Veuillez réessayer.")
+      setInvoiceError("Impossible de télécharger la facture")
     } finally {
       setDownloadingInvoice(false)
     }
@@ -48,9 +50,16 @@ const OrderConfirmation = () => {
   if (!order) {
     return (
       <div className="confirmation-page">
-        <div className="confirmation-content">
-          <p>Aucune commande trouvée</p>
-          <Link to="/products">Retour aux produits</Link>
+        <div className="confirmation-card empty-state">
+          <h1>Aucune commande trouvée</h1>
+
+          <p className="empty-text">
+            Nous n’avons pas trouvé de commande à afficher.
+          </p>
+
+          <div className="confirmation-actions">
+            <Link to="/products">Retour aux produits</Link>
+          </div>
         </div>
       </div>
     )
@@ -59,76 +68,38 @@ const OrderConfirmation = () => {
   return (
     <div className="confirmation-page">
       <div className="confirmation-card">
-        <div className="confirmation-header">
-          <i className="fas fa-check-circle"></i>
-          <h1>Commande confirmée !</h1>
-          <p>Merci pour votre achat</p>
-        </div>
 
-        <div className="confirmation-details">
-          <div className="detail-section">
-            <h3>Numéro de commande</h3>
-            <p className="order-id">{order.id}</p>
-          </div>
+        <h1>Commande confirmée </h1>
 
-          <div className="detail-section">
-            <h3>Numéro de suivi</h3>
-            <p className="tracking-number">{order.trackingNumber}</p>
-          </div>
+        <p><strong>Commande :</strong> {order.order_number}</p>
+        <p><strong>Total :</strong> {parseFloat(order.total).toFixed(2)} DH</p>
+        <p><strong>Adresse :</strong> {order.address}</p>
 
-          <div className="detail-section">
-            <h3>Montant total</h3>
-            <p className="total-amount">{(parseFloat(order.total) || parseFloat(order.calculated_total) || 0).toFixed(2)} DH</p>
-          </div>
+        <h3>Articles commandés</h3>
 
-          <div className="detail-section">
-            <h3>Adresse de livraison</h3>
-            <p>{order.deliveryAddress}</p>
-          </div>
-
-          <div className="detail-section">
-            <h3>Articles commandés</h3>
-            <div className="order-items-list">
-              {(order.items || []).map((item) => (
-                <div key={item.id || item.product_id} className="item-line">
-                  <span>
-                    {item.name} x{item.quantity}
-                  </span>
-                  <span>{(parseFloat(item.discountPrice || item.price || item.prix_detail) * (item.quantity || 1) || 0).toFixed(2)} DH</span>
-                </div>
-              ))}
+        <div className="order-items-list">
+          {(order.items || []).map(item => (
+            <div key={item.id} className="item-line">
+              <span>
+                {item.product?.name || "Produit"} × {item.quantity}
+              </span>
+              <span>
+                {(parseFloat(item.price) * item.quantity).toFixed(2)} DH
+              </span>
             </div>
-          </div>
-
-          <div className="confirmation-message">
-            <i className="fas fa-envelope"></i>
-            <p>Un email de confirmation a été envoyé à votre adresse</p>
-          </div>
+          ))}
         </div>
 
         <div className="confirmation-actions">
-          <button 
-            className="download-invoice-btn"
-            onClick={handleDownloadInvoice}
-            disabled={downloadingInvoice}
-          >
-            <i className="fas fa-file-pdf"></i>
+          <button onClick={handleDownloadInvoice} disabled={downloadingInvoice}>
             {downloadingInvoice ? "Téléchargement..." : "Télécharger la facture"}
           </button>
-          <Link to="/order-tracking" className="track-btn">
-            <i className="fas fa-map-marker-alt"></i> Suivre ma commande
-          </Link>
-          <Link to="/products" className="continue-btn">
-            Continuer vos achats
-          </Link>
+
+          <Link to="/order-tracking">Suivre ma commande</Link>
+          <Link to="/products">Continuer vos achats</Link>
         </div>
 
-        {invoiceError && (
-          <div className="invoice-error">
-            <i className="fas fa-exclamation-circle"></i>
-            <span>{invoiceError}</span>
-          </div>
-        )}
+        {invoiceError && <p className="error">{invoiceError}</p>}
       </div>
     </div>
   )

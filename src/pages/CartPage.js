@@ -16,8 +16,8 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
   }))
 
   const subtotal = normalizedCart.reduce((total, item) => total + (parseFloat(item.price) || 0) * (item.quantity || 1), 0)
-  const shipping = subtotal > 50 ? 0 : 4.9
-  const total = subtotal + shipping
+
+  const total = subtotal 
 
   if (cart.length === 0) {
     return (
@@ -51,16 +51,32 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
               </div>
 
               <div className="quantity-control">
-                <button className="qty-btn" onClick={() => onUpdateQuantity(item.itemId, item.quantity - 1)}>
+                <button 
+                  className="qty-btn" 
+                  onClick={() => {
+                    if (item.quantity > 1) {
+                      onUpdateQuantity(item.itemId, item.quantity - 1)
+                    }
+                  }}
+                >
                   −
                 </button>
                 <input
                   type="number"
                   value={item.quantity}
-                  onChange={(e) => onUpdateQuantity(item.itemId, Number.parseInt(e.target.value) || 1)}
+                  onChange={(e) => {
+                    const newQty = Number.parseInt(e.target.value) || 1
+                    if (newQty > 0) {
+                      onUpdateQuantity(item.itemId, newQty)
+                    }
+                  }}
                   className="qty-input"
+                  min="1"
                 />
-                <button className="qty-btn" onClick={() => onUpdateQuantity(item.itemId, item.quantity + 1)}>
+                <button 
+                  className="qty-btn" 
+                  onClick={() => onUpdateQuantity(item.itemId, item.quantity + 1)}
+                >
                   +
                 </button>
               </div>

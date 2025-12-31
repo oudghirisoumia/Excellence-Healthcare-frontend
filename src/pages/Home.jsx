@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import api from "../api";
 
-export default function Home({ onAddToCart, onToggleFavorite }) {
+export default function Home({ favorites, onAddToCart, onToggleFavorite }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,7 +60,7 @@ export default function Home({ onAddToCart, onToggleFavorite }) {
                 product={product}
                 onAddToCart={onAddToCart}
                 onToggleFavorite={onToggleFavorite}
-                isFavorite={false} // Tu peux améliorer avec un check plus tard
+                isFavorite={favorites.includes(Number(product.id))}
               />
             ))}
           </div>

@@ -1,4 +1,3 @@
-
 import "../styles/FavoritesPage.css"
 
 const FavoritesPage = ({ favorites, products, onRemoveFavorite, onAddToCart, onClose }) => {
@@ -24,29 +23,39 @@ const FavoritesPage = ({ favorites, products, onRemoveFavorite, onAddToCart, onC
 
         <div className="favorites-list">
           {favoriteProducts.length > 0 ? (
-            favoriteProducts.map((product) => (
-              <div key={product.id} className="favorite-item">
-                <img src={product.image || "/placeholder.svg"} alt={product.name} />
-                <div className="favorite-info">
-                  <h3>{product.name}</h3>
-                  <p className="brand">{product.brand}</p>
-                  <p className="price">{(product.discountPrice || 0).toFixed(2)} DH</p>
+            favoriteProducts.map((product) => {
+              const price =
+                product.discountPrice || product.prix_detail || product.price || 0
+
+              return (
+                <div key={product.id} className="favorite-item">
+                  <img
+                    src={product.image || product.image_principale || "/placeholder.svg"}
+                    alt={product.name}
+                  />
+                  <div className="favorite-info">
+                    <h3>{product.name}</h3>
+                    <p className="brand">{product.brand}</p>
+                    <p className="price">{parseFloat(price).toFixed(2)} DH</p>
+                  </div>
+                  <div className="favorite-actions">
+                    <button
+                      className="delete-btn"
+                      onClick={() => onRemoveFavorite(product.id)}
+                      title="Supprimer"
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                    <button
+                      className="add-btn"
+                      onClick={() => onAddToCart(product)}
+                    >
+                      Ajouter
+                    </button>
+                  </div>
                 </div>
-                <div className="favorite-actions">
-                  <button className="delete-btn" onClick={() => onRemoveFavorite(product.id)} title="Supprimer">
-                    <i className="fas fa-trash"></i>
-                  </button>
-                  <button
-                    className="add-btn"
-                    onClick={() => {
-                      onAddToCart(product)
-                    }}
-                  >
-                    Ajouter
-                  </button>
-                </div>
-              </div>
-            ))
+              )
+            })
           ) : (
             <p className="empty-message">Aucun produit en favoris</p>
           )}

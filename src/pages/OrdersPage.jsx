@@ -17,7 +17,7 @@ export default function OrdersPage() {
     try {
       const res = await api.get("/orders")
 
-      // PROTECTION ROBUSTE CONTRE TOUS LES FORMATS
+      // PROTECTION CONTRE TOUS LES FORMATS
       let ordersArray = []
 
       if (Array.isArray(res.data)) {
@@ -128,7 +128,6 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      {/* MODAL DÉTAIL */}
       {selectedOrder && (
         <div className="order-modal-overlay" onClick={() => setSelectedOrder(null)}>
           <div className="order-modal" onClick={e => e.stopPropagation()}>
