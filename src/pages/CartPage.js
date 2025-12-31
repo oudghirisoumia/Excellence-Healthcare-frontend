@@ -98,8 +98,12 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
             <span>{subtotal.toFixed(2)} DH</span>
           </div>
 
-          
-         
+          {/* <div className="summary-line">
+            <span>Livraison</span>
+            <span className={shipping === 0 ? "free" : ""}>
+              {shipping === 0 ? "Gratuite" : shipping.toFixed(2) + " DH"}
+            </span>
+          </div> */}
 
           <div className="summary-total">
             <span>Total</span>

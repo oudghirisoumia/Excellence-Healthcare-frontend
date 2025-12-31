@@ -1,12 +1,13 @@
 import { useLocation, Link } from "react-router-dom"
+
 import "../styles/OrderConfirmation.css"
 import { useState, useEffect } from "react"
 import api from "../api"
+import "../styles/OrderConfirmation.css"
 
 const OrderConfirmation = () => {
   const location = useLocation()
   const order = location.state?.order
-
   const [downloadingInvoice, setDownloadingInvoice] = useState(false)
   const [invoiceError, setInvoiceError] = useState("")
 
