@@ -3,7 +3,7 @@ import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js"
 import api from "../api"
 import "../styles/StripePaymentForm.css"
 
-const StripeCheckoutForm = ({ amount, onPaymentSuccess, disabled, checkoutData }) => {
+const StripeCheckoutForm = ({ onPaymentSuccess, disabled, checkoutData }) => {
   const stripe = useStripe()
   const elements = useElements()
   const [loading, setLoading] = useState(false)
@@ -21,31 +21,25 @@ const StripeCheckoutForm = ({ amount, onPaymentSuccess, disabled, checkoutData }
     }
 
     try {
-      // Étape 1 : Créer la commande
-      console.log("📦 Création de la commande...")
-      console.log("Données envoyées:", checkoutData)
+      // Create order (amount in MAD)
       const orderResponse = await api.post("/orders", checkoutData)
       const orderId = orderResponse.data?.order?.id || orderResponse.data?.id
-      
+
       if (!orderId) {
         throw new Error("Impossible de créer la commande")
       }
-      console.log("✓ Commande créée:", orderId)
 
-      // Étape 2 : Créer le PaymentIntent via backend
-      console.log("💳 Création du PaymentIntent...")
-      const paymentIntentResponse = await api.post("/stripe/create-payment-intent", {
-        order_id: orderId,
-      })
+      // Create PaymentIntent (conversion happens in backend)
+      const paymentIntentResponse = await api.post(
+        "/stripe/create-payment-intent",
+        { order_id: orderId }
+      )
 
       const clientSecret = paymentIntentResponse.data.clientSecret
-      console.log("✓ PaymentIntent créé:", clientSecret)
 
-      // Étape 3 : Confirmer le paiement directement avec Stripe Elements
-      console.log("🔐 Confirmation du paiement avec Stripe...")
-      const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
+      // 3Confirm payment with Stripe
+      const { paymentIntent, error: confirmError } =
+        await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
             card: elements.getElement(CardElement),
             billing_details: {
@@ -60,8 +54,7 @@ const StripeCheckoutForm = ({ amount, onPaymentSuccess, disabled, checkoutData }
               },
             },
           },
-        }
-      )
+        })
 
       if (confirmError) {
         setError(confirmError.message)
@@ -70,28 +63,16 @@ const StripeCheckoutForm = ({ amount, onPaymentSuccess, disabled, checkoutData }
       }
 
       if (paymentIntent?.status === "succeeded") {
-        console.log("✅ Paiement réussi!")
         localStorage.removeItem("cart")
         onPaymentSuccess(orderResponse.data)
-      } else if (paymentIntent?.status === "requires_action") {
-        console.log("⏳ Authentification requise (3D Secure)...")
-        setError("Authentification requise. Veuillez compléter la vérification 3D Secure")
       } else {
-        setError("Paiement non confirmé. Statut: " + paymentIntent?.status)
+        setError("Paiement non confirmé")
       }
     } catch (err) {
-      console.error("❌ Erreur paiement:", err)
-      console.error("Response data:", err.response?.data)
-      console.error("Response status:", err.response?.status)
-      
       let errorMsg = "Erreur paiement"
       if (err.response?.data?.message) {
         errorMsg = err.response.data.message
       }
-      if (err.response?.data?.errors) {
-        errorMsg = JSON.stringify(err.response.data.errors)
-      }
-      
       setError(errorMsg)
     } finally {
       setLoading(false)
@@ -103,14 +84,11 @@ const StripeCheckoutForm = ({ amount, onPaymentSuccess, disabled, checkoutData }
       base: {
         fontSize: "16px",
         color: "#424770",
-        fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        "::placeholder": {
-          color: "#aab7c4",
-        },
+        fontFamily: "Segoe UI, Roboto, Arial, sans-serif",
+        "::placeholder": { color: "#aab7c4" },
       },
       invalid: {
         color: "#fa755a",
-        iconColor: "#fa755a",
       },
     },
   }
@@ -118,23 +96,22 @@ const StripeCheckoutForm = ({ amount, onPaymentSuccess, disabled, checkoutData }
   return (
     <div className="stripe-payment-form">
       <form onSubmit={handlePayment}>
+        <p className="total-mad">
+          Total à payer : {checkoutData.total} DH
+        </p>
         <div className="stripe-card-wrapper">
           <label>Informations de la carte</label>
-          <CardElement options={cardElementOptions} className="card-input" />
+          <CardElement options={cardElementOptions} />
         </div>
 
-        {error && (
-          <div className="stripe-error">
-            <span className="error-icon">⚠️</span> {error}
-          </div>
-        )}
+        {error && <div className="stripe-error">⚠️ {error}</div>}
 
         <button
           type="submit"
           disabled={disabled || loading || !stripe || !elements}
           className="btn-pay-stripe"
         >
-          {loading ? "Traitement..." : `Payer ${amount}€`}
+          {loading ? "Traitement..." : "Payer par carte"}
         </button>
       </form>
     </div>

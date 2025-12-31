@@ -123,7 +123,6 @@ export default function Header({
                   <>
                     {/* <li><Link to="/profile">Mon profil</Link></li> */}
                     <li><Link to="/orders">Mes commandes</Link></li>
-                    <li><Link to="/favorites">Mes favoris</Link></li>
                   </>
                 )}
 

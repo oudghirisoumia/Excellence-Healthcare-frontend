@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
-import "../styles/ProductCard.css"; // keep your CSS or use Tailwind
+import "../styles/ProductCard.css";
 
 const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite = false }) => {
   if (!product) return null;
 
   // Calculate real discounted price
-  const originalPrice = parseFloat(product.prix_detail);
+  const originalPrice = parseFloat(product.prix_detail || product.price || 0);
   const discountPercent = product.promotion ? parseFloat(product.pourcentage_promo) : 0;
-  const discountedPrice = discountPercent > 0 
-    ? (originalPrice * (1 - discountPercent / 100)).toFixed(2)
-    : null;
+  const discountedPrice =
+    discountPercent > 0
+      ? (originalPrice * (1 - discountPercent / 100)).toFixed(2)
+      : null;
 
   const isLowStock = product.stock > 0 && product.stock <= product.seuil_alerte;
   const isOutOfStock = product.stock <= 0;
@@ -20,21 +21,25 @@ const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite = fals
     onAddToCart(product);
   };
 
-  const handleFavorite = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onToggleFavorite(product.id);
-  };
+const handleFavorite = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  console.log("HEART CLICKED:", product.id);
+  onToggleFavorite(Number(product.id));
+};
+
+
+console.log("isFavorite:", isFavorite, product.id);
 
   return (
     <div className="product-card">
       <div className="product-image-container">
         <Link to={`/product/${product.id}`}>
           {product.image_principale ? (
-            <img 
-              src={product.image_principale} 
-              alt={product.name} 
-              className="product-image" 
+            <img
+              src={product.image_principale}
+              alt={product.name}
+              className="product-image"
             />
           ) : (
             <div className="image-placeholder">
@@ -49,46 +54,30 @@ const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite = fals
           onClick={handleFavorite}
           aria-label="Favoris"
         >
-          <i className={`fas fa-heart ${isFavorite ? "filled" : ""}`}></i>
+          <i className="fas fa-heart"></i>
         </button>
 
         {/* Promotion Badge */}
         {product.promotion && (
-          <div className="discount-badge">
-            -{discountPercent}%
-          </div>
+          <div className="discount-badge">-{discountPercent}%</div>
         )}
 
-        {/* Stock Alert */}
-        {isLowStock && (
-          <div className="stock-alert">
-            Plus que {product.stock} !
-          </div>
-        )}
-        {isOutOfStock && (
-          <div className="out-of-stock-badge">
-            Rupture
-          </div>
-        )}
+        {/* Stock Alerts */}
+        {isLowStock && <div className="stock-alert">Plus que {product.stock} !</div>}
+        {isOutOfStock && <div className="out-of-stock-badge">Rupture</div>}
       </div>
 
       <div className="product-info">
-        {/* Brand + Reference */}
         <p className="product-brand">
           {product.brand} • {product.reference}
         </p>
 
-        {/* Name */}
         <h3 className="product-name">
-          <Link to={`/product/${product.id}`}>
-            {product.name}
-          </Link>
+          <Link to={`/product/${product.id}`}>{product.name}</Link>
         </h3>
 
-        {/* Description */}
         <p className="product-description">{product.description}</p>
 
-        {/* Price */}
         <div className="product-pricing">
           {discountedPrice ? (
             <>
@@ -100,7 +89,6 @@ const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite = fals
           )}
         </div>
 
-        {/* Add to Cart Button */}
         <button
           className={`add-to-cart-btn ${isOutOfStock ? "disabled" : ""}`}
           onClick={handleAddToCart}

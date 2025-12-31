@@ -1,155 +1,88 @@
-"use client"
-
 import { useState, useEffect } from "react"
-import "../styles/OrderTrackingPage.css"
-import { ORDER_STATUSES } from "../data/deliveryData"
 import api from "../api"
+import "../styles/OrderTrackingPage.css"
 
-const OrderTrackingPage = () => {
-  const [orders, setOrders] = useState([])
-  const [selectedOrder, setSelectedOrder] = useState(null)
+const STATUS_MAP = {
+  pending: 0,
+  confirmed: 1,
+  shipped: 2,
+  delivered: 3,
+}
+
+const STATUSES = ["En attente", "Confirmée", "Expédiée", "Livrée"]
+
+export default function OrderTrackingPage() {
+  const [order, setOrder] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
-    const lastOrder = JSON.parse(localStorage.getItem("lastOrder") || "null")
-    if (lastOrder) {
-      setOrders([lastOrder])
-      setSelectedOrder(lastOrder)
+    const orderId = localStorage.getItem("lastOrderId")
+    if (!orderId) {
+      setError("Aucune commande trouvée")
+      setLoading(false)
+      return
     }
+
+    api.get(`/orders/${orderId}`)
+      .then(res => {
+        const data = res.data?.order || res.data
+        if (data) {
+          setOrder(data)
+        } else {
+          setError("Commande introuvable")
+        }
+      })
+      .catch(() => setError("Impossible de charger la commande"))
+      .finally(() => setLoading(false))
   }, [])
 
-  const getStatusColor = (statusId) => {
-    return ORDER_STATUSES.find((s) => s.id === statusId)?.color || "#999"
-  }
+  if (loading) return <div className="tracking-page"><p>Chargement...</p></div>
+  if (error) return <div className="tracking-page"><p>{error}</p></div>
+  if (!order) return <div className="tracking-page"><p>Aucune commande trouvée</p></div>
 
-  const getStatusLabel = (statusId) => {
-    return ORDER_STATUSES.find((s) => s.id === statusId)?.label || "Inconnu"
-  }
+  const currentStep = STATUS_MAP[order.status] ?? 0
 
   return (
     <div className="tracking-page">
-      <h1>Suivi de vos commandes</h1>
+      <h1>Suivi de commande</h1>
 
-      {orders.length === 0 ? (
-        <p className="no-orders">Aucune commande trouvée</p>
-      ) : (
-        <div className="tracking-container">
-          <div className="orders-list">
-            {orders.map((order) => (
-              <div
-                key={order.id}
-                className={`order-card ${selectedOrder?.id === order.id ? "active" : ""}`}
-                onClick={() => setSelectedOrder(order)}
-              >
-                <div className="order-header">
-                  <span className="order-id">{order.id}</span>
-                  <span className="order-status" style={{ backgroundColor: getStatusColor(order.status) }}>
-                    {getStatusLabel(order.status)}
-                  </span>
-                </div>
-                <p className="order-date">{order.createdAt ? new Date(order.createdAt).toLocaleDateString("fr-FR") : "-"}</p>
-                <p className="order-total">{(parseFloat(order.total) || 0).toFixed(2)} DH</p>
-              </div>
-            ))}
+      <p><strong>Commande :</strong> {order.order_number || "—"}</p>
+      <p><strong>Total :</strong> {order.total ? Number(order.total).toFixed(2) + " DH" : "0.00 DH"}</p>
+      <p><strong>Adresse :</strong> {order.address || order.delivery_address || order.customer_address || "—"}</p>
+
+      <h3>Statut</h3>
+      <ul className="timeline">
+        {STATUSES.map((label, idx) => {
+          let statusClass = ""
+          if (idx === 0 && idx <= currentStep) statusClass = "pending active"
+          if (idx === 1 && idx <= currentStep) statusClass = "confirmed active"
+          if (idx === 2 && idx <= currentStep) statusClass = "shipped active"
+          if (idx === 3 && idx <= currentStep) statusClass = "delivered active"
+
+          return (
+            <li key={idx} className={statusClass}>
+              {label}
+            </li>
+          )
+        })}
+      </ul>
+
+      <h3>Articles</h3>
+      {(order.items || []).length === 0 && <p>Aucun article trouvé</p>}
+      {(order.items || []).map(item => (
+        <div key={item.id} className="order-item">
+          <div>
+            <strong>{item.product?.name || "Produit"}</strong>
+            <p>Quantité : {item.quantity}</p>
           </div>
-
-          {selectedOrder && (
-            <div className="order-details">
-              <div className="tracking-header">
-                <h2>Commande {selectedOrder.id}</h2>
-                <span className="tracking-number">
-                  <i className="fas fa-barcode"></i> {selectedOrder.trackingNumber}
-                </span>
-              </div>
-
-              <div className="status-timeline">
-                {ORDER_STATUSES.map((status, idx) => (
-                  <div
-                    key={status.id}
-                    className={`timeline-item ${ORDER_STATUSES.findIndex((s) => s.id === selectedOrder.status) >= idx ? "completed" : ""}`}
-                  >
-                    <div className="timeline-dot" style={{ backgroundColor: status.color }}></div>
-                    <div className="timeline-content">
-                      <p className="timeline-status">{status.label}</p>
-                    </div>
-                    {idx < ORDER_STATUSES.length - 1 && <div className="timeline-line"></div>}
-                  </div>
-                ))}
-              </div>
-
-              <div className="order-info">
-                <div className="info-section">
-                  <h3>Détails de livraison</h3>
-                  <p>
-                    <strong>Mode:</strong> {selectedOrder.deliveryMode}
-                  </p>
-                  <p>
-                    <strong>Transporteur:</strong> {selectedOrder.carrier}
-                  </p>
-                  <p>
-                    <strong>Créneau:</strong> {selectedOrder.timeSlot}
-                  </p>
-                  <p>
-                    <strong>Adresse:</strong> {selectedOrder.deliveryAddress}
-                  </p>
-                </div>
-
-                <div className="info-section">
-                  <h3>Résumé financier</h3>
-                  <p>
-                    <strong>Sous-total:</strong> {(selectedOrder.subtotal || 0).toFixed(2)} DH
-                  </p>
-                  <p>
-                    <strong>Livraison:</strong> {(parseFloat(selectedOrder.deliveryFee) || 0).toFixed(2)} DH
-                  </p>
-                  <p className="total">
-                    <strong>Total:</strong> {(parseFloat(selectedOrder.total) || parseFloat(selectedOrder.calculated_total) || 0).toFixed(2)} DH
-                  </p>
-                </div>
-
-                <div className="info-section">
-                  <h3>Articles</h3>
-                  <div className="order-items">
-                    {(selectedOrder.items || []).map((item) => {
-                      const price = parseFloat(item.discountPrice || item.price || item.prix_detail || 0)
-                      const qty = parseInt(item.quantity || 1)
-                      const img = (() => {
-                        const path = item.image || item.image_principale || item.product_image
-                        if (!path) return "/placeholder.svg"
-                        try {
-                          const base = api.defaults.baseURL || ''
-                          const host = base.replace(/\/api\/?$/, '')
-                          if (path.startsWith('http')) return path
-                          if (path.startsWith('/')) return host + path
-                          return host + '/' + path
-                        } catch (err) {
-                          return path
-                        }
-                      })()
-
-                      return (
-                        <div key={item.id || item.product_id || Math.random()} className="order-item">
-                          <img src={img} alt={item.name} />
-                          <div>
-                            <p>{item.name}</p>
-                            <p className="qty">Quantité: {qty}</p>
-                          </div>
-                          <span>{(price * qty).toFixed(2)} DH</span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-
-                <button className="download-invoice">
-                  <i className="fas fa-download"></i> Télécharger la facture
-                </button>
-              </div>
-            </div>
-          )}
+          <span>
+            {item.price && item.quantity
+              ? (Number(item.price) * item.quantity).toFixed(2) + " DH"
+              : "0.00 DH"}
+          </span>
         </div>
-      )}
+      ))}
     </div>
   )
 }
-
-export default OrderTrackingPage

@@ -118,7 +118,7 @@ export default function AdminProducts() {
     fd.append("upload_preset", "excellence_healthcare");
 
     try {
-      const res = await fetch("https://api.cloudinary.com/v1_1/drfkv05gu/image/upload", {
+      const res = await fetch("https://api.cloudinary.com/v1_1/ddufkwapt/image/upload", {
         method: "POST",
         body: fd
       });
@@ -230,7 +230,7 @@ export default function AdminProducts() {
       fd.append("upload_preset", "excellence_healthcare");
 
       try {
-        const res = await fetch("https://api.cloudinary.com/v1_1/drfkv05gu/image/upload", {
+        const res = await fetch("https://api.cloudinary.com/v1_1/ddufkwapt/image/upload", {
           method: "POST",
           body: fd
         });

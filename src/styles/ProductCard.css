@@ -67,10 +67,14 @@
 }
 
 .favorite-btn.active {
-  color: #ff1744;
   background: #ffe0e0;
   border-color: #ff1744;
 }
+
+.favorite-btn.active i {
+  color: #ff1744 !important;
+}
+
 
 .discount-badge {
   position: absolute;
