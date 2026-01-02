@@ -1,5 +1,4 @@
 "use client"
-import "../styles/NotificationBadge.css"
 
 const NotificationBadge = ({ count, onClick }) => {
   return (
