@@ -1,5 +1,3 @@
-/* Enhanced styling for better mobile responsiveness and icon visibility */
-
 .product-card {
   background: white;
   border: 1px solid #e0e0e0;
@@ -204,38 +202,58 @@
   cursor: not-allowed;
 }
 
-/* Enhanced mobile responsiveness */
 @media (max-width: 768px) {
-  .product-card {
-    border-radius: 8px;
-  }
-
   .product-info {
     padding: 0.75rem;
   }
 
   .favorite-btn {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     font-size: 1.1rem;
-  }
-
-  .add-to-cart-btn {
-    font-size: 0.9rem;
-    padding: 0.65rem;
   }
 }
 
 @media (max-width: 480px) {
-  .product-name {
-    font-size: 0.95rem;
+  .product-card {
+    border-radius: 8px;
   }
 
-  .product-pricing {
-    gap: 0.5rem;
+  .product-image-container {
+    padding-bottom: 75%;
+  }
+
+  .product-info {
+    padding: 0.5rem;
+  }
+
+  .product-brand {
+    font-size: 0.65rem;
+  }
+
+  .product-name {
+    font-size: 0.8rem;
+    line-height: 1.25;
+    margin: 0.3rem 0;
+  }
+
+  .product-rating {
+    display: none;
   }
 
   .discount-price {
-    font-size: 1.2rem;
+    font-size: 1rem;
+  }
+
+  .add-to-cart-btn {
+    padding: 0.45rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+  }
+
+  .favorite-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
   }
 }

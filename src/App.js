@@ -267,7 +267,7 @@ function AppContent() {
         <Categories />
       </Header>
 
-      <main className="container">
+      <main>
         <Routes>
           <Route
             path="/"
