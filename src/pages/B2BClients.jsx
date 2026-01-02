@@ -99,7 +99,7 @@ export default function B2BClients() {
   if (loading) return <div className="loading">Chargement...</div>
 
   return (
-    <div className="order-clients-page">
+    <div className="b2b-clients-page ">
       <h1>Gestion des clients B2B</h1>
 
       <form className="client-form" onSubmit={handleSubmit}>
