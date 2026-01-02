@@ -3,26 +3,26 @@
   margin: 0 auto;
   padding: 32px 20px;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f9fafb;
   color: #1a1a1a;
+  min-height: 100vh;
 }
 
-/* Title */
 .tracking-page h1 {
   font-size: 26px;
   font-weight: 600;
   text-align: center;
   margin-bottom: 20px;
   color: #0f172a;
+  letter-spacing: -0.01em;
 }
 
-/* Info lines */
 .tracking-page > p {
   font-size: 15px;
   color: #374151;
-  margin: 4px 0;   /* tighter spacing */
+  margin: 4px 0;
   text-align: center;
   line-height: 1.4;
+  word-break: break-word;
 }
 
 .tracking-page > p strong {
@@ -30,22 +30,31 @@
   color: #111;
 }
 
-/* Section titles */
 .tracking-page h3 {
   font-size: 18px;
   font-weight: 600;
   margin: 24px 0 12px;
   color: #111;
-  /* no border-left, clean look */
 }
 
-/* Timeline */
 .timeline {
   display: flex;
   justify-content: space-between;
   margin: 20px 0;
   padding: 0;
   list-style: none;
+  position: relative;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e5e7eb;
+  z-index: 0;
 }
 
 .timeline li {
@@ -54,6 +63,8 @@
   font-size: 13px;
   color: #9ca3af;
   position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
 }
 
 .timeline li::before {
@@ -64,21 +75,29 @@
   margin: 0 auto 6px;
   border-radius: 50%;
   background: #e5e7eb;
+  border: 2px solid #fff;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Dynamic colors per status */
 .timeline li.pending::before {
-  background: #fbbf24; /* amber */
+  background: #fbbf24;
+  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.1);
 }
+
 .timeline li.confirmed::before {
-  background: #3b82f6; /* blue */
+  background: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
+
 .timeline li.shipped::before {
-  background: #6366f1; /* indigo */
+  background: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
+
 .timeline li.delivered::before {
-  background: #10b981; /* green */
+  background: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
 }
 
 .timeline li.active {
@@ -86,7 +105,10 @@
   font-weight: 600;
 }
 
-/* Order Items */
+.timeline li.active::before {
+  transform: scale(1.2);
+}
+
 .order-item {
   display: flex;
   justify-content: space-between;
@@ -101,13 +123,15 @@
 
 .order-item:hover {
   border-color: #d1d5db;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .order-item strong {
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 4px;
+  display: block;
+  word-break: break-word;
 }
 
 .order-item p {
@@ -121,9 +145,10 @@
   font-weight: 600;
   color: #111;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  margin-left: 12px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .tracking-page {
     padding: 24px 16px;
@@ -133,29 +158,115 @@
     font-size: 22px;
   }
 
+  .tracking-page > p {
+    font-size: 14px;
+  }
+
+  .tracking-page h3 {
+    font-size: 17px;
+    margin: 20px 0 10px;
+  }
+
   .timeline {
     flex-direction: column;
     gap: 14px;
+    padding-left: 20px;
+  }
+
+  .timeline::before {
+    top: 0;
+    bottom: 0;
+    left: 8px;
+    width: 2px;
+    height: auto;
+    right: auto;
   }
 
   .timeline li {
     text-align: left;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
   }
 
   .timeline li::before {
     margin: 0;
+    flex-shrink: 0;
   }
 
   .order-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 8px;
+    padding: 14px 16px;
   }
 
   .order-item span {
     align-self: flex-end;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .tracking-page {
+    padding: 20px 12px;
+  }
+
+  .tracking-page h1 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .tracking-page > p {
+    font-size: 13px;
+  }
+
+  .timeline {
+    padding-left: 16px;
+    gap: 12px;
+  }
+
+  .timeline::before {
+    left: 7px;
+  }
+
+  .timeline li {
+    font-size: 12px;
+    gap: 10px;
+  }
+
+  .timeline li::before {
+    width: 14px;
+    height: 14px;
+  }
+
+  .order-item {
+    padding: 12px 14px;
+  }
+
+  .order-item strong {
+    font-size: 14px;
+  }
+
+  .order-item p {
+    font-size: 12px;
+  }
+
+  .order-item span {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  .tracking-page {
+    padding: 16px 10px;
+  }
+
+  .tracking-page h1 {
+    font-size: 18px;
+  }
+
+  .order-item {
+    padding: 10px 12px;
   }
 }
