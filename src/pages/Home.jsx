@@ -70,7 +70,7 @@ export default function Home({ favorites, onAddToCart, onToggleFavorite }) {
       {/* CTA Final */}
       <div className="text-center mt-16">
         <p className="text-lg text-gray-600 mb-6">
-          Plus de 500 produits disponibles • Livraison partout au Maroc
+          Plus de produits disponibles • Livraison partout au Maroc
         </p>
         <button
           onClick={() => window.location.href = "/products"}

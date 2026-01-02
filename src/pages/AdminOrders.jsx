@@ -54,53 +54,54 @@ export default function AdminOrders() {
           <option value="b2b">B2B (bulk)</option>
         </select>
       </div>
-
-      <table className="orders-table">
-        <thead>
-          <tr>
-            <th>N°</th>
-            <th>Type</th>
-            <th>Client</th>
-            <th>Montant</th>
-            <th>Statut</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredOrders.length === 0 && (
+      <div className="orders-table-container">
+        <table className="orders-table">
+          <thead>
             <tr>
-              <td colSpan="7" className="empty">Aucune commande trouvée</td>
+              <th>N°</th>
+              <th>Type</th>
+              <th>Client</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Date</th>
+              <th>Actions</th>
             </tr>
-          )}
-          {filteredOrders.map(order => (
-            <tr key={`${order.type}-${order.id}`}>
-              <td>{order.order_number}</td>
-              <td>{order.type.toUpperCase()}</td>
-              <td>{order.customer_name}</td>
-              <td className="amount">{order.total} MAD</td>
-              <td>
-                <span className={`status-badge status-${order.status}`}>
-                  {order.status}
-                </span>
-              </td>
-              <td>{new Date(order.created_at).toLocaleDateString("fr-FR")}</td>
-              <td>
-                <select
-                  value={order.status}
-                  onChange={e => updateStatus(order.id, order.type, e.target.value)}
-                >
-                  <option value="pending">En attente</option>
-                  <option value="processing">En traitement</option>
-                  <option value="shipped">Expédié</option>
-                  <option value="delivered">Livré</option>
-                  <option value="cancelled">Annulé</option>
-                </select>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
+          </thead>
+          <tbody>
+            {filteredOrders.length === 0 && (
+              <tr>
+                <td colSpan="7" className="empty">Aucune commande trouvée</td>
+              </tr>
+            )}
+            {filteredOrders.map(order => (
+              <tr key={`${order.type}-${order.id}`}>
+                <td>{order.order_number}</td>
+                <td>{order.type.toUpperCase()}</td>
+                <td>{order.customer_name}</td>
+                <td className="amount">{order.total} MAD</td>
+                <td>
+                  <span className={`status-badge status-${order.status}`}>
+                    {order.status}
+                  </span>
+                </td>
+                <td>{new Date(order.created_at).toLocaleDateString("fr-FR")}</td>
+                <td>
+                  <select
+                    value={order.status}
+                    onChange={e => updateStatus(order.id, order.type, e.target.value)}
+                  >
+                    <option value="pending">En attente</option>
+                    <option value="processing">En traitement</option>
+                    <option value="shipped">Expédié</option>
+                    <option value="delivered">Livré</option>
+                    <option value="cancelled">Annulé</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      </div>
+      )
 }

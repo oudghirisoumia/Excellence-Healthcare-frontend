@@ -57,28 +57,29 @@ export default function AdminDashboard() {
 
   return (
     <>
-      <div className="stats-grid">
-        <div className="stat-card">
-          <span className="stat-title">Chiffre d'affaires</span>
-          <div className="stat-val">{stats.revenue} MAD</div>
-        </div>
+      <div className="stats-wrapper">
+        <div className="stats-grid">
+          <div className="stat-card">
+            <span className="stat-title">Chiffre d'affaires</span>
+            <div className="stat-val">{stats.revenue} MAD</div>
+          </div>
 
-        <div className="stat-card">
-          <span className="stat-title">Commandes</span>
-          <div className="stat-val">{stats.orders}</div>
-        </div>
+          <div className="stat-card">
+            <span className="stat-title">Commandes</span>
+            <div className="stat-val">{stats.orders}</div>
+          </div>
 
-        <div className="stat-card">
-          <span className="stat-title">Utilisateurs</span>
-          <div className="stat-val">{stats.users}</div>
-        </div>
+          <div className="stat-card">
+            <span className="stat-title">Utilisateurs</span>
+            <div className="stat-val">{stats.users}</div>
+          </div>
 
-        <div className="stat-card">
-          <span className="stat-title">Produits</span>
-          <div className="stat-val">{stats.products}</div>
+          <div className="stat-card">
+            <span className="stat-title">Produits</span>
+            <div className="stat-val">{stats.products}</div>
+          </div>
         </div>
       </div>
-
       <div className="panel promo-panel">
         <h2>Promotion livraison</h2>
 
@@ -105,37 +106,37 @@ export default function AdminDashboard() {
           Commandes récentes
           <span className="panel-subtitle"> 10 dernières commandes</span>
         </h2>
-
-        <table className="recent-orders">
-          <thead>
-            <tr>
-              <th>N°</th>
-              <th>Client</th>
-              <th>Montant</th>
-              <th>Statut</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentOrders.map((order) => (
-              <tr key={order.id}>
-                <td>{order.order_number}</td>
-                <td>{order.customer_name}</td>
-                <td className="amount">{order.total} MAD</td>
-                <td>
-                  <span className={`status ${order.status}`}>
-                    {order.status}
-                  </span>
-                </td>
-                <td>
-                  {new Date(order.created_at).toLocaleDateString("fr-FR")}
-                </td>
+        <div className="table-wrapper">
+          <table className="recent-orders">
+            <thead>
+              <tr>
+                <th>N°</th>
+                <th>Client</th>
+                <th>Montant</th>
+                <th>Date</th>
+                <th>Statut</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {recentOrders.map((order) => (
+                <tr key={order.id}>
+                  <td>{order.order_number}</td>
+                  <td>{order.customer_name}</td>
+                  <td className="amount">{order.total} MAD</td>
+                  <td>
+                    {new Date(order.created_at).toLocaleDateString("fr-FR")}
+                  </td>
+                  <td>
+                    <span className={`status status-${order.status}`}>
+                      {order.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-
       {showPromoConfirm && (
         <div className="modal-overlay">
           <div className="modal">
