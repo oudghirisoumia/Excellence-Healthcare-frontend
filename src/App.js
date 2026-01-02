@@ -16,7 +16,6 @@ import AuthPage from "./pages/AuthPage"
 import CheckoutPage from "./pages/CheckoutPage"
 import OrderTrackingPage from "./pages/OrderTrackingPage"
 import OrderConfirmation from "./pages/OrderConfirmation"
-import NotificationPanel from "./components/NotificationPanel"
 import ProductPage from "./pages/ProductPage"
 import B2BDashboard from "./pages/B2BDashboardPage"
 import B2BClients from "./pages/B2BClients"
@@ -34,6 +33,8 @@ import AdminProducts from "./pages/AdminProducts"
 import WaitingApprovalPage from "./pages/WaitingApprovalPage"
 import AdminOrders from "./pages/AdminOrders"
 import Monitoring from "./pages/Monitoring"
+import NotificationsPage from "./pages/NotificationsPage"
+import NotificationPanel from "./components/NotificationPanel"
 
 import StripeProvider from "./components/StripeProvider"
 import About from "./components/About"
@@ -50,10 +51,36 @@ function AppContent() {
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
 
+  const [showNotifications, setShowNotifications] = useState(false)
+
 
   useEffect(() => {
-    console.log("APP favorites state ", favorites);
-  }, [favorites]);
+    if (!user) return
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await api.get("/notifications")
+        const notifData = res.data?.data || res.data || []
+        setNotifications(Array.isArray(notifData) ? notifData : [])
+      } catch (err) {
+        console.error("Notification polling failed", err)
+      }
+    }, 5000) // 5 seconds
+
+    return () => clearInterval(interval)
+  }, [user])
+
+  const handleOpenNotifications = async () => {
+    setShowNotifications(true)
+
+    try {
+      const res = await api.get("/notifications")
+      const notifData = res.data?.data || res.data || []
+      setNotifications(Array.isArray(notifData) ? notifData : [])
+    } catch (err) {
+      console.error("Failed to refresh notifications", err)
+    }
+  }
 
 
   // Load cart & favorites & notifications on login
@@ -93,7 +120,9 @@ function AppContent() {
           : []
       );
 
-      setNotifications(Array.isArray(notifRes.data) ? notifRes.data : [])
+      const notifData = notifRes.data?.data || notifRes.data || []
+      setNotifications(Array.isArray(notifData) ? notifData : [])
+
     } catch (err) {
       console.error("Failed to load user data", err)
       if (err.response?.status === 401) {
@@ -260,9 +289,13 @@ function AppContent() {
       <Header
         cartCount={cartArray.reduce((sum, i) => sum + i.quantity, 0)}
         favoritesCount={favorites.length}
-        notificationsCount={notifications.filter((n) => !n.read).length}
+        notificationsCount={
+          Array.isArray(notifications)
+            ? notifications.filter((n) => Number(n.is_read) === 0).length
+            : 0
+        }
         onOpenFavorites={() => setShowFavorites(true)}
-        onOpenNotifications={() => { }}
+        onOpenNotifications={handleOpenNotifications}
       >
         <Categories />
       </Header>
@@ -331,6 +364,8 @@ function AppContent() {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="monitoring" element={<Monitoring />} />
           </Route>
+
+          <Route path="/notifications" element={<NotificationsPage />} />
         </Routes>
       </main>
 
@@ -343,6 +378,19 @@ function AppContent() {
           }
           onAddToCart={handleAddToCart}
           onClose={() => setShowFavorites(false)}
+        />
+      )}
+
+      {showNotifications && (
+        <NotificationPanel
+          notifications={notifications}
+          onClose={() => setShowNotifications(false)}
+          onMarkAsRead={async () => {
+            await api.put("/notifications/read-all")
+            const res = await api.get("/notifications")
+            const notifData = res.data?.data || res.data || []
+            setNotifications(Array.isArray(notifData) ? notifData : [])
+          }}
         />
       )}
 
