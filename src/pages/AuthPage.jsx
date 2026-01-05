@@ -39,6 +39,7 @@ export default function AuthPage() {
           address: data.address || null,
           city: data.city || null,
           type: accountType,
+
           ...(accountType === "b2b" && {
             companyName: data.companyName,
             taxId: data.taxId,
@@ -65,9 +66,9 @@ export default function AuthPage() {
         err.response?.status === 403
           ? "Votre compte B2B est en attente de validation par un administrateur."
           : err.response?.data?.error ||
-          err.response?.data?.errors?.email?.[0] ||
-          err.response?.data?.message ||
-          "Une erreur est survenue"
+            err.response?.data?.errors?.email?.[0] ||
+            err.response?.data?.message ||
+            "Une erreur est survenue"
 
       toast.error(msg)
     } finally {
@@ -85,12 +86,14 @@ export default function AuthPage() {
 
         <div className="auth-tabs">
           <button
+            type="button"
             className={`tab-button ${mode === "login" ? "active" : ""}`}
             onClick={() => setMode("login")}
           >
             Connexion
           </button>
           <button
+            type="button"
             className={`tab-button ${mode === "signup" ? "active" : ""}`}
             onClick={() => setMode("signup")}
           >
@@ -113,10 +116,11 @@ export default function AuthPage() {
                 <input name="city" type="text" placeholder="Ville (optionnel)" />
               </div>
 
-              <div className="form-row">
+              <div className="form-row radio-row">
                 <label>
                   <input
                     type="radio"
+                    name="accountType"
                     checked={accountType === "b2c"}
                     onChange={() => setAccountType("b2c")}
                   />
@@ -126,6 +130,7 @@ export default function AuthPage() {
                 <label>
                   <input
                     type="radio"
+                    name="accountType"
                     checked={accountType === "b2b"}
                     onChange={() => setAccountType("b2b")}
                   />
@@ -144,7 +149,13 @@ export default function AuthPage() {
           )}
 
           <input name="email" type="email" placeholder="Email" required />
-          <input name="password" type="password" placeholder="Mot de passe" minLength="8" required />
+          <input
+            name="password"
+            type="password"
+            placeholder="Mot de passe"
+            minLength="8"
+            required
+          />
 
           <button type="submit" disabled={loading} className="submit-btn">
             {loading ? "Patientez..." : mode === "login" ? "Se connecter" : "Créer mon compte"}
@@ -153,7 +164,9 @@ export default function AuthPage() {
 
         <div className="auth-footer">
           {mode === "login" ? (
-            <p>Mot de passe oublié ? <a href="#">Réinitialiser</a></p>
+            <p>
+              Mot de passe oublié ? <a href="#">Réinitialiser</a>
+            </p>
           ) : (
             <p>
               Déjà un compte ?{" "}

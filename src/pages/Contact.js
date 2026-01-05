@@ -87,8 +87,8 @@ export default function ContactPage() {
                 <div>
                   <p className="info-label">Email</p>
                   <p className="info-text">
-                    <a href="mailto:Digitum.business2020@gmail.com">
-                      Digitum.business2020@gmail.com
+                    <a href="mailto:excellencehealth.platform@gmail.com">
+                      excellencehealth.platform@gmail.com
                     </a>
                   </p>
                   <p className="info-sub">Réponse sous 24h</p>

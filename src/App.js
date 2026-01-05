@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Routes, Route, useNavigate } from "react-router-dom"
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom"
 import { LanguageProvider } from "./context/LanguageContext"
 import { AuthProvider, useAuth } from "./context/AuthContext"
 import Header from "./components/Header"
@@ -172,11 +172,6 @@ function AppContent() {
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem("token")
 
-    if (!token) {
-      navigate("/auth")
-      return
-    }
-
     try {
       const response = await api.post("/cart", {
         product_id: product.id,
@@ -343,8 +338,19 @@ function AppContent() {
 
           <Route
             path="/checkout"
-            element={<CheckoutPage cart={cart} onClearCart={handleClearCart} />}
+            element={
+              user ? (
+                user.type === "b2b" && !user.approved ? (
+                  <WaitingApprovalPage />
+                ) : (
+                  <CheckoutPage cart={cart} onClearCart={handleClearCart} />
+                )
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
+
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/order-tracking" element={<OrderTrackingPage />} />
           <Route path="/about" element={<About />} />
