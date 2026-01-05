@@ -41,7 +41,7 @@ import About from "./components/About"
 import api from "./api"
 
 function AppContent() {
-  const { user, logout } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const navigate = useNavigate()
 
   const [favorites, setFavorites] = useState([])
@@ -49,7 +49,7 @@ function AppContent() {
   const [products, setProducts] = useState([])
   const [cart, setCart] = useState([])
   const [notifications, setNotifications] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [dataLoading, setDataLoading] = useState(true)
 
   const [showNotifications, setShowNotifications] = useState(false)
 
@@ -91,7 +91,7 @@ function AppContent() {
       setCart([])
       setFavorites([])
       setNotifications([])
-      setLoading(false)
+      setDataLoading(false)
     }
   }, [user])
 
@@ -126,11 +126,11 @@ function AppContent() {
     } catch (err) {
       console.error("Failed to load user data", err)
       if (err.response?.status === 401) {
-        logout()
-        navigate("/auth")
+        console.warn("401 while refreshing user data — ignoring")
       }
+
     } finally {
-      setLoading(false)
+      setDataLoading(false)
     }
   }
 
@@ -269,7 +269,15 @@ function AppContent() {
     }
   }
 
-  if (loading) {
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Vérification de la session...
+      </div>
+    )
+  }
+
+  if (dataLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         Chargement...
@@ -340,7 +348,9 @@ function AppContent() {
             path="/checkout"
             element={
               user ? (
-                user.type === "b2b" && !user.approved ? (
+                cart.length === 0 ? (
+                  <Navigate to="/cart" />
+                ) : user.type === "b2b" && !user.approved ? (
                   <WaitingApprovalPage />
                 ) : (
                   <CheckoutPage cart={cart} onClearCart={handleClearCart} />

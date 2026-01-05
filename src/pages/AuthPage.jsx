@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import api from "../api"
 import "../styles/auth.css"
+import { useAuth } from "../context/AuthContext"
 
 export default function AuthPage() {
   const [mode, setMode] = useState("login")
@@ -12,6 +13,7 @@ export default function AuthPage() {
   const [accountType, setAccountType] = useState("b2c")
 
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const handleAuth = async (e) => {
     e.preventDefault()
@@ -21,46 +23,37 @@ export default function AuthPage() {
     const data = Object.fromEntries(formData)
 
     try {
-      let response
-
+      // LOGIN
       if (mode === "login") {
-        response = await api.post("/login", {
-          email: data.email,
-          password: data.password,
-        })
-      } else {
-        response = await api.post("/register", {
-          email: data.email,
-          password: data.password,
-          password_confirmation: data.password,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          phone: data.phone || null,
-          address: data.address || null,
-          city: data.city || null,
-          type: accountType,
-
-          ...(accountType === "b2b" && {
-            companyName: data.companyName,
-            taxId: data.taxId,
-            licenseNumber: data.licenseNumber,
-          }),
-        })
-      }
-
-      const { token, user } = response.data
-
-      localStorage.setItem("token", token)
-      localStorage.setItem("user", JSON.stringify(user))
-
-      if (user.type === "b2b" && !user.approved) {
-        toast.info("Votre compte B2B est en attente de validation par un administrateur.")
-        navigate("/waiting-approval")
+        await login(data.email, data.password)
+        toast.success("Connexion réussie")
+        navigate("/")
         return
       }
 
-      toast.success(mode === "login" ? "Connexion réussie" : "Inscription réussie")
+      // REGISTER
+      await api.post("/register", {
+        email: data.email,
+        password: data.password,
+        password_confirmation: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phone: data.phone || null,
+        address: data.address || null,
+        city: data.city || null,
+        type: accountType,
+
+        ...(accountType === "b2b" && {
+          companyName: data.companyName,
+          taxId: data.taxId,
+          licenseNumber: data.licenseNumber,
+        }),
+      })
+
+      await login(data.email, data.password)
+      toast.success("Inscription réussie")
       navigate("/")
+
     } catch (err) {
       const msg =
         err.response?.status === 403
@@ -120,7 +113,6 @@ export default function AuthPage() {
                 <label>
                   <input
                     type="radio"
-                    name="accountType"
                     checked={accountType === "b2c"}
                     onChange={() => setAccountType("b2c")}
                   />
@@ -130,7 +122,6 @@ export default function AuthPage() {
                 <label>
                   <input
                     type="radio"
-                    name="accountType"
                     checked={accountType === "b2b"}
                     onChange={() => setAccountType("b2b")}
                   />
@@ -161,21 +152,6 @@ export default function AuthPage() {
             {loading ? "Patientez..." : mode === "login" ? "Se connecter" : "Créer mon compte"}
           </button>
         </form>
-
-        <div className="auth-footer">
-          {mode === "login" ? (
-            <p>
-              Mot de passe oublié ? <a href="#">Réinitialiser</a>
-            </p>
-          ) : (
-            <p>
-              Déjà un compte ?{" "}
-              <span onClick={() => setMode("login")} className="link">
-                Se connecter
-              </span>
-            </p>
-          )}
-        </div>
       </div>
     </div>
   )
