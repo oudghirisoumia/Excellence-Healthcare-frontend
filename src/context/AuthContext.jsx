@@ -15,6 +15,8 @@ export function AuthProvider({ children }) {
         try {
           const res = await api.get('/me');
           setUser(res.data);
+          localStorage.setItem("user", JSON.stringify(res.data));
+
         } catch (err) {
           localStorage.removeItem('token');
         }
@@ -27,11 +29,17 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const res = await api.post('/login', { email, password });
     const token = res.data.token;
+
     localStorage.setItem('token', token);
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
     const userRes = await api.get('/me');
+
     setUser(userRes.data);
+
+    localStorage.setItem("user", JSON.stringify(userRes.data));
   };
+
 
   const logout = () => {
     localStorage.removeItem('token');
