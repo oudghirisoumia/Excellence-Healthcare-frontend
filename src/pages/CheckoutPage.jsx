@@ -146,11 +146,15 @@ export default function CheckoutPage({ cart }) {
         cart_items: cartItems(),
       })
 
-      return response.data.order
+      const order = response.data.order
+
+      navigate("/order-confirmation", {
+        state: { order }
+      })
 
     } catch (err) {
+      console.error(err)
       setError("Erreur lors de la création de la commande")
-      throw err
     } finally {
       setLoading(false)
     }
@@ -322,12 +326,14 @@ export default function CheckoutPage({ cart }) {
 
                 {paymentMethod === "cash" && (
                   <button
+                    type="button"
                     className="btn-next"
                     onClick={handleConfirmOrder}
                     disabled={loading}
                   >
                     Confirmer la commande
                   </button>
+
                 )}
 
                 {/* Show Stripe form only for card-required modes */}
