@@ -90,8 +90,8 @@ export default function Footer() {
 
             <p>
               <i className="fas fa-envelope"></i>
-              <a href="mailto:Digitum.business2020@gmail.com">
-                Digitum.business2020@gmail.com
+              <a href="mailto:excellencehealth.platform@gmail.com">
+                excellencehealth.platform@gmail.com
               </a>
             </p>
 
