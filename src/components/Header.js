@@ -6,7 +6,6 @@ import { useLanguage } from "../context/LanguageContext"
 import { getTranslation } from "../translations/translations"
 import "../styles/Header.css"
 import { useAuth } from "../context/AuthContext"
-const { logout } = useAuth()
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHeart, faBell, faUser, faShoppingCart } from "@fortawesome/free-solid-svg-icons"
@@ -29,11 +28,10 @@ export default function Header({
   const [showDropdown, setShowDropdown] = useState(false)
 
   const { user } = useAuth()
+  const { logout } = useAuth()
 
   const isAuth = !!user
   const userType = user?.type
-
-  const { logout } = useAuth()
 
   const handleLogout = () => {
     logout()
