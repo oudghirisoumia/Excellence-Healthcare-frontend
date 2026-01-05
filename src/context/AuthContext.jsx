@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
       if (token) {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         try {
-          const res = await api.get('/user');
+          const res = await api.get('/me');
           setUser(res.data);
         } catch (err) {
           localStorage.removeItem('token');
@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
     const token = res.data.token;
     localStorage.setItem('token', token);
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    const userRes = await api.get('/user');
+    const userRes = await api.get('/me');
     setUser(userRes.data);
   };
 

@@ -1,12 +1,21 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../api"
 import StripeCheckoutForm from "../components/StripeCheckoutForm"
 import "../styles/CheckoutPage.css"
 import { Box, Zap, DollarSign, Store } from "lucide-react"
 
-export default function CheckoutPage({ cart = [] }) {
+import { useAuth } from "../context/AuthContext"
+
+export default function CheckoutPage({ cart }) {
+  const { user } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user?.type === "b2b" && !user?.approved) {
+      navigate("/waiting-approval")
+    }
+  }, [user])
 
   const cartItems = () =>
     cart.map(item => {
@@ -121,52 +130,34 @@ export default function CheckoutPage({ cart = [] }) {
     setError("")
 
     try {
-      const cart_items = cartItems()
-
-      const payload = {
+      const response = await api.post("/orders", {
         first_name: personalInfo.first_name.trim(),
-        last_name: personalInfo.last_name.trim() || "",
-        email: personalInfo.email.trim() || "",
+        last_name: personalInfo.last_name.trim(),
+        email: personalInfo.email.trim(),
         phone: personalInfo.phone.trim(),
         address: personalInfo.address.trim(),
         city: personalInfo.city.trim() || "Casablanca",
-        notes: deliveryInfo.notes?.trim() || null,
+        notes: deliveryInfo.notes || null,
         shipping_method: deliveryInfo.carrier || "amana",
         payment_method: paymentMethod,
-        subtotal: parseFloat(subtotal.toFixed(2)),
-        shipping_fee: parseFloat(shippingFee.toFixed(2)),
-        total: parseFloat(total.toFixed(2)),
-        cart_items
-      }
-
-      const response = await api.post("/orders", payload)
-
-      localStorage.removeItem("cart")
-
-      const orderData = response.data?.order || response.data?.data || response.data
-
-      navigate("/order-confirmation", {
-        state: { order: orderData, cart_items: cart }
+        subtotal,
+        shipping_fee: shippingFee,
+        total,
+        cart_items: cartItems(),
       })
+
+      return response.data.order
+
     } catch (err) {
-      let errorMessage = "Erreur lors de la création de la commande"
-
-      if (err.message && !err.response) {
-        errorMessage = err.message
-      } else if (err.response?.data?.message) {
-        errorMessage = err.response.data.message
-      } else if (err.response?.data?.error) {
-        errorMessage = err.response.data.error
-      } else if (err.response?.data?.errors) {
-        errorMessage = Object.entries(err.response.data.errors)
-          .map(([k, v]) => `${k}: ${v}`)
-          .join(" | ")
-      }
-
-      setError(errorMessage)
+      setError("Erreur lors de la création de la commande")
+      throw err
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleStripeSuccess = () => {
+    navigate("/order-confirmation")
   }
 
   if (cart.length === 0) {
@@ -328,7 +319,7 @@ export default function CheckoutPage({ cart = [] }) {
                   <p><strong>Livraison :</strong> {deliveryModes.find(m => m.id === deliveryInfo.delivery_mode)?.name}</p>
                   <p><strong>Total :</strong> {(total || 0).toFixed(2)} DH</p>
                 </div>
-                
+
                 {paymentMethod === "cash" && (
                   <button
                     className="btn-next"
@@ -342,7 +333,7 @@ export default function CheckoutPage({ cart = [] }) {
                 {/* Show Stripe form only for card-required modes */}
                 {paymentMethod === "stripe" && (
                   <StripeCheckoutForm
-                    amount={Math.round((total || 0) * 100)}
+                    onPaymentSuccess={handleStripeSuccess}
                     disabled={loading}
                     checkoutData={{
                       first_name: personalInfo.first_name.trim(),
@@ -357,9 +348,8 @@ export default function CheckoutPage({ cart = [] }) {
                       subtotal,
                       shipping_fee: shippingFee,
                       total,
-                      cart_items: cartItems()
+                      cart_items: cartItems(),
                     }}
-                    onPaymentSuccess={handleConfirmOrder}
                   />
                 )}
 

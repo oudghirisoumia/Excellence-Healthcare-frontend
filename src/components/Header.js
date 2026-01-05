@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { useLanguage } from "../context/LanguageContext"
 import { getTranslation } from "../translations/translations"
 import "../styles/Header.css"
+import { useAuth } from "../context/AuthContext"
+const { logout } = useAuth()
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHeart, faBell, faUser, faShoppingCart } from "@fortawesome/free-solid-svg-icons"
@@ -20,25 +22,24 @@ export default function Header({
   onOpenNotifications,
   children
 }) {
+
   const { language, changeLanguage } = useLanguage()
   const t = (key) => getTranslation(language, key)
   const navigate = useNavigate()
   const [showDropdown, setShowDropdown] = useState(false)
 
-  let user = null;
-
-  try {
-    user = JSON.parse(localStorage.getItem("user") || "null");
-  } catch (e) { }
+  const { user } = useAuth()
 
   const isAuth = !!user
-  const userType = user?.type // b2c / b2b / admin
+  const userType = user?.type
 
-  const logout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
+  const { logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
     navigate("/auth")
   }
+
 
   return (
     <header className="header">
@@ -152,9 +153,10 @@ export default function Header({
                 {/* LOGOUT */}
                 <hr className="dropdown-separator" />
                 <li>
-                  <button className="logout" onClick={logout}>
+                  <button className="logout" onClick={handleLogout}>
                     Logout
                   </button>
+
                 </li>
               </>
             )}
