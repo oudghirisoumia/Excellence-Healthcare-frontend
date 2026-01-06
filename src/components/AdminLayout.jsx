@@ -12,7 +12,7 @@ export default function AdminLayout() {
     { label: "Utilisateurs", path: "/admin/users", icon: Users },
     { label: "Produits", path: "/admin/products", icon: Package },
     { label: "Commandes", path: "/admin/orders", icon: ClipboardList },
-    { label: "Livraisons", path: "/admin/deliveries", icon: Truck }
+    // { label: "Livraisons", path: "/admin/deliveries", icon: Truck }
   ]
 
   return (
