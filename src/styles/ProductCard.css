@@ -257,3 +257,26 @@
     font-size: 1rem;
   }
 }
+
+.out-of-stock-badge {
+  position:absolute;
+  bottom: 0px;
+  left: 5px;
+  color: #ff0000ef;
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .out-of-stock-badge {
+    font-size: 0.65rem;
+    padding: 5px 10px;
+    bottom: 10px;
+    left: 10px;
+  }
+  
+
+}
