@@ -1,19 +1,25 @@
 import { Link } from "react-router-dom";
 import "../styles/ProductCard.css";
 
-const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite = false }) => {
+const ProductCard = ({
+  product,
+  onAddToCart,
+  onToggleFavorite,
+  isFavorite = false,
+}) => {
   if (!product) return null;
 
-  // Calculate real discounted price
-  const originalPrice = parseFloat(product.prix_detail || product.price || 0);
-  const discountPercent = product.promotion ? parseFloat(product.pourcentage_promo) : 0;
-  const discountedPrice =
-    discountPercent > 0
-      ? (originalPrice * (1 - discountPercent / 100)).toFixed(2)
-      : null;
-
-  const isLowStock = product.stock > 0 && product.stock <= product.seuil_alerte;
+  // Stock
+  const isLowStock =
+    product.stock > 0 && product.stock <= product.seuil_alerte;
   const isOutOfStock = product.stock <= 0;
+
+  // Prices
+  const price = Number(product.price) || 0;
+  const finalPrice = Number(product.final_price) || price;
+
+  const hasPromotion =
+    product.promotion && finalPrice < price;
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -21,15 +27,11 @@ const ProductCard = ({ product, onAddToCart, onToggleFavorite, isFavorite = fals
     onAddToCart(product);
   };
 
-const handleFavorite = (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  console.log("HEART CLICKED:", product.id);
-  onToggleFavorite(Number(product.id));
-};
-
-
-console.log("isFavorite:", isFavorite, product.id);
+  const handleFavorite = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggleFavorite(Number(product.id));
+  };
 
   return (
     <div className="product-card">
@@ -48,23 +50,30 @@ console.log("isFavorite:", isFavorite, product.id);
           )}
         </Link>
 
-        {/* Favorite Heart */}
+        {/* Favorite */}
         <button
           className={`favorite-btn ${isFavorite ? "active" : ""}`}
           onClick={handleFavorite}
-          aria-label="Favoris"
         >
           <i className="fas fa-heart"></i>
         </button>
 
-        {/* Promotion Badge */}
-        {product.promotion && (
-          <div className="discount-badge">-{discountPercent}%</div>
+        {/* Promotion badge */}
+        {hasPromotion && (
+          <div className="discount-badge">
+            -{product.pourcentage_promo}%
+          </div>
         )}
 
-        {/* Stock Alerts */}
-        {isLowStock && <div className="stock-alert">Plus que {product.stock} !</div>}
-        {isOutOfStock && <div className="out-of-stock-badge">Rupture</div>}
+        {/* Stock */}
+        {isLowStock && (
+          <div className="stock-alert">
+            Only {product.stock} left!
+          </div>
+        )}
+        {isOutOfStock && (
+          <div className="out-of-stock-badge">Out of stock</div>
+        )}
       </div>
 
       <div className="product-info">
@@ -78,14 +87,21 @@ console.log("isFavorite:", isFavorite, product.id);
 
         <p className="product-description">{product.description}</p>
 
+        {/* PRICE */}
         <div className="product-pricing">
-          {discountedPrice ? (
+          {hasPromotion ? (
             <>
-              <span className="discount-price">{discountedPrice} DH</span>
-              <span className="original-price">{originalPrice.toFixed(2)} DH</span>
+              <span className="discount-price">
+                {finalPrice.toFixed(2)} DH
+              </span>
+              <span className="original-price">
+                {price.toFixed(2)} DH
+              </span>
             </>
           ) : (
-            <span className="current-price">{originalPrice.toFixed(2)} DH</span>
+            <span className="current-price">
+              {price.toFixed(2)} DH
+            </span>
           )}
         </div>
 
@@ -95,7 +111,7 @@ console.log("isFavorite:", isFavorite, product.id);
           disabled={isOutOfStock}
         >
           <i className="fas fa-shopping-cart"></i>
-          {isOutOfStock ? "Rupture" : "Ajouter au panier"}
+          {isOutOfStock ? "Out of stock" : "Add to cart"}
         </button>
       </div>
     </div>

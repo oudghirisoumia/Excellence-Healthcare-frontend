@@ -435,7 +435,8 @@ export default function AdminProducts() {
                   <th>Catégorie</th>
                   <th>Description</th>
                   <th>Réf</th>
-                  <th>Prix</th>
+                  <th>Prix Détail</th>
+                  <th>Prix Gros</th>
                   <th>Stock</th>
                   <th>Promo</th>
                   <th>Actions</th>
@@ -451,31 +452,44 @@ export default function AdminProducts() {
                         className="gestion-product-thumb"
                       />
                     </td>
-                    <td>
-                      <div className="gestion-product-name">{p.name}</div>
-                    </td>
-                    <td>
-                      <div className="gestion-product-brand">{p.brand}</div>
-                    </td>
+
+                    <td className="gestion-product-name">{p.name}</td>
+                    <td>{p.brand}</td>
                     <td>{p.category?.name || "—"}</td>
-                    <td className="gestion-description-cell">
-                      {p.description || "—"}
-                    </td>
+                    <td className="gestion-description-cell">{p.description || "—"}</td>
                     <td>{p.reference}</td>
-                    <td>{p.prix_detail} DH</td>
+
+                    {/* PRIX DÉTAIL */}
+                    <td>
+                      {p.prix_detail !== null && p.prix_detail !== undefined
+                        ? `${Number(p.prix_detail).toFixed(2)} DH`
+                        : "—"}
+                    </td>
+
+                    {/* PRIX GROS */}
+                    <td>
+                      {p.prix_gros !== null && p.prix_gros !== undefined
+                        ? `${Number(p.prix_gros).toFixed(2)} DH`
+                        : "—"}
+                    </td>
+
+                    {/* STOCK */}
                     <td>
                       <span
                         className={`gestion-stock-badge ${p.stock === 0
-                          ? "danger"
-                          : p.stock <= (p.seuil_alerte ?? 0)
-                            ? "warning"
-                            : "success"
+                            ? "danger"
+                            : p.stock <= (p.seuil_alerte ?? 0)
+                              ? "warning"
+                              : "success"
                           }`}
                       >
                         {p.stock}
                       </span>
                     </td>
-                    <td>{p.promotion ? `-${p.pourcentage_promo}%` : "—"}</td>
+
+                    {/* PROMO */}
+                    <td>{p.promotion ? `-${p.pourcentage_promo}%` : "No promo"}</td>
+
                     <td>
                       <button onClick={() => openEditModal(p)} className="gestion-btn-edit">
                         Modifier
@@ -486,188 +500,191 @@ export default function AdminProducts() {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         </div>
-      )}
-
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>{editingProduct ? "Modifier le produit" : "Nouveau produit"}</h2>
-            <form onSubmit={handleSubmit} className="modal-form">
-              <div className="form-row">
-                <input
-                  name="name"
-                  placeholder="Nom *"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  name="brand"
-                  placeholder="Marque *"
-                  value={formData.brand}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <input
-                name="reference"
-                placeholder="Référence *"
-                value={formData.reference}
-                onChange={handleInputChange}
-                required
-              />
-
-              <textarea
-                name="description"
-                placeholder="Description"
-                value={formData.description}
-                onChange={handleInputChange}
-                rows="3"
-              />
-
-              <div className="form-row">
-                <input
-                  name="prix_detail"
-                  type="number"
-                  step="0.01"
-                  placeholder="Prix détail (DH) *"
-                  value={formData.prix_detail}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  name="prix_gros"
-                  type="number"
-                  step="0.01"
-                  placeholder="Prix gros (DH)"
-                  value={formData.prix_gros}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-row">
-                <input
-                  name="stock"
-                  type="number"
-                  placeholder="Stock *"
-                  value={formData.stock}
-                  onChange={handleInputChange}
-                  required
-                />
-                <input
-                  name="seuil_alerte"
-                  type="number"
-                  placeholder="Seuil alerte *"
-                  value={formData.seuil_alerte}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Catégorie *</label>
-                <select
-                  name="category_id"
-                  value={formData.category_id}
-                  onChange={handleInputChange}
-                  required
-                  className="form-select"
-                >
-                  <option value="">Choisir une catégorie</option>
-                  {(categories || []).map((cat) => (
-                    <option key={cat.id} value={String(cat.id)}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-
-              </div>
-
-              <div className="form-group">
-                <label>Image principale *</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={uploadingImage}
-                />
-                {uploadingImage && <p>Upload en cours...</p>}
-                {imageFile && (
-                  <div className="image-preview">
-                    <img src={imageFile} alt="Preview" />
-                  </div>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label>Images secondaires (upload ou URLs)</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleSecondaryImagesUpload}
-                />
-                <input
-                  name="images_secondaires"
-                  placeholder="https://..., https://..."
-                  value={formData.images_secondaires}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Tags (séparés par des virgules)</label>
-                <input
-                  name="tags"
-                  placeholder="ex: santé, hygiène, pharmacie"
-                  value={formData.tags}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  name="promotion"
-                  checked={formData.promotion}
-                  onChange={handleInputChange}
-                />
-                <span>Produit en promotion</span>
-              </label>
-
-              {formData.promotion && (
-                <input
-                  name="pourcentage_promo"
-                  type="number"
-                  min="1"
-                  max="90"
-                  placeholder="% réduction"
-                  value={formData.pourcentage_promo}
-                  onChange={handleInputChange}
-                />
-              )}
-
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="btn-cancel"
-                >
-                  Annuler
-                </button>
-                <button type="submit" className="btn-submit">
-                  {editingProduct ? "Enregistrer" : "Créer"}
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
-      )}
+  )
+}
+
+{
+  showModal && (
+    <div className="modal-overlay" onClick={() => setShowModal(false)}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <h2>{editingProduct ? "Modifier le produit" : "Nouveau produit"}</h2>
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="form-row">
+            <input
+              name="name"
+              placeholder="Nom *"
+              value={formData.name}
+              onChange={handleInputChange}
+              required
+            />
+            <input
+              name="brand"
+              placeholder="Marque *"
+              value={formData.brand}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <input
+            name="reference"
+            placeholder="Référence *"
+            value={formData.reference}
+            onChange={handleInputChange}
+            required
+          />
+
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleInputChange}
+            rows="3"
+          />
+
+          <div className="form-row">
+            <input
+              name="prix_detail"
+              type="number"
+              step="0.01"
+              placeholder="Prix détail (DH) *"
+              value={formData.prix_detail}
+              onChange={handleInputChange}
+              required
+            />
+            <input
+              name="prix_gros"
+              type="number"
+              step="0.01"
+              placeholder="Prix gros (DH)"
+              value={formData.prix_gros}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="form-row">
+            <input
+              name="stock"
+              type="number"
+              placeholder="Stock *"
+              value={formData.stock}
+              onChange={handleInputChange}
+              required
+            />
+            <input
+              name="seuil_alerte"
+              type="number"
+              placeholder="Seuil alerte *"
+              value={formData.seuil_alerte}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Catégorie *</label>
+            <select
+              name="category_id"
+              value={formData.category_id}
+              onChange={handleInputChange}
+              required
+              className="form-select"
+            >
+              <option value="">Choisir une catégorie</option>
+              {(categories || []).map((cat) => (
+                <option key={cat.id} value={String(cat.id)}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+
+          </div>
+
+          <div className="form-group">
+            <label>Image principale *</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={uploadingImage}
+            />
+            {uploadingImage && <p>Upload en cours...</p>}
+            {imageFile && (
+              <div className="image-preview">
+                <img src={imageFile} alt="Preview" />
+              </div>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>Images secondaires (upload ou URLs)</label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleSecondaryImagesUpload}
+            />
+            <input
+              name="images_secondaires"
+              placeholder="https://..., https://..."
+              value={formData.images_secondaires}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Tags (séparés par des virgules)</label>
+            <input
+              name="tags"
+              placeholder="ex: santé, hygiène, pharmacie"
+              value={formData.tags}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              name="promotion"
+              checked={formData.promotion}
+              onChange={handleInputChange}
+            />
+            <span>Produit en promotion</span>
+          </label>
+
+          {formData.promotion && (
+            <input
+              name="pourcentage_promo"
+              type="number"
+              min="1"
+              max="90"
+              placeholder="% réduction"
+              value={formData.pourcentage_promo}
+              onChange={handleInputChange}
+            />
+          )}
+
+          <div className="modal-actions">
+            <button
+              type="button"
+              onClick={() => setShowModal(false)}
+              className="btn-cancel"
+            >
+              Annuler
+            </button>
+            <button type="submit" className="btn-submit">
+              {editingProduct ? "Enregistrer" : "Créer"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  )
+}
+    </div >
   );
 }
