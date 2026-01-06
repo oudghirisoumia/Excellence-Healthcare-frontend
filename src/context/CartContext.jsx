@@ -1,29 +1,62 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
+import api from "../api";
 
-// 1️⃣ Crée le contexte
 export const CartContext = createContext();
 
-// 2️⃣ Crée le provider
 export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
 
-  // Ajouter un produit au panier
-  const addToCart = (product) => {
-    setCart((prev) => [...prev, product]);
+  // Load cart from backend
+  const fetchCart = async () => {
+    const res = await api.get("/cart");
+    setCartItems(res.data.cartItems);
+    setTotal(res.data.total);
+    setTotalItems(res.data.totalItems);
   };
 
-  // Supprimer un produit du panier par ID
-  const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  // Add to cart
+  const addToCart = async ({ product_id, quantity = 1 }) => {
+    await api.post("/cart", { product_id, quantity });
+    await fetchCart();
   };
 
-  // Vider le panier
-  const clearCart = () => {
-    setCart([]);
+  // Update quantity
+  const updateQuantity = async (cartItemId, quantity) => {
+    await api.put(`/cart/${cartItemId}`, { quantity });
+    await fetchCart();
+  };
+
+  // Remove item
+  const removeFromCart = async (cartItemId) => {
+    await api.delete(`/cart/${cartItemId}`);
+    await fetchCart();
+  };
+
+  // Clear cart
+  const clearCart = async () => {
+    await api.delete("/cart/clear");
+    await fetchCart();
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        total,
+        totalItems,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+        fetchCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

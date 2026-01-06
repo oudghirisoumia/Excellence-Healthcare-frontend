@@ -13,11 +13,9 @@ export default function ProductModal({ product, onAddToCart }) {
     return <div className="product-modal__empty">Produit introuvable</div>;
   }
 
-  const price = Number(product.prix_detail) || 0;
-  const discount = Number(product.discount) || 0;
-
-  const finalPrice =
-    discount > 0 ? price - (price * discount) / 100 : price;
+  const price = Number(product.price) || 0;
+  const finalPrice = Number(product.final_price) || price;
+  const hasPromotion = finalPrice < price;
 
   const handleQuantityChange = (delta) => {
     setQuantity((prev) => Math.max(1, prev + delta));
@@ -25,8 +23,7 @@ export default function ProductModal({ product, onAddToCart }) {
 
   const handleAddToCart = () => {
     onAddToCart({
-      ...product,
-      id: product.id,
+      product_id: product.id,
       quantity,
     });
 
@@ -39,10 +36,7 @@ export default function ProductModal({ product, onAddToCart }) {
 
   return (
     <div className="product-modal">
-      <button
-        onClick={() => navigate(-1)}
-        className="product-modal__back"
-      >
+      <button onClick={() => navigate(-1)} className="product-modal__back">
         <ArrowLeft size={18} />
         Retour
       </button>
@@ -55,28 +49,24 @@ export default function ProductModal({ product, onAddToCart }) {
             className="product-modal__image"
           />
 
-          {discount > 0 && (
+          {hasPromotion && (
             <span className="product-modal__discount">
-              -{discount}%
+              -{product.pourcentage_promo}%
             </span>
           )}
         </div>
 
         <div className="product-modal__details">
-          <span className="product-modal__brand">
-            {product.brand}
-          </span>
+          <span className="product-modal__brand">{product.brand}</span>
 
-          <h1 className="product-modal__title">
-            {product.name}
-          </h1>
+          <h1 className="product-modal__title">{product.name}</h1>
 
           <div className="product-modal__price">
             <span className="product-modal__price-final">
               {finalPrice.toFixed(2)} DH
             </span>
 
-            {discount > 0 && (
+            {hasPromotion && (
               <span className="product-modal__price-old">
                 {price.toFixed(2)} DH
               </span>
@@ -110,10 +100,7 @@ export default function ProductModal({ product, onAddToCart }) {
             </div>
           </div>
 
-          <button
-            onClick={handleAddToCart}
-            className="product-modal__add-to-cart"
-          >
+          <button onClick={handleAddToCart} className="product-modal__add-to-cart">
             <ShoppingCart size={20} />
             Ajouter au panier – {(finalPrice * quantity).toFixed(2)} DH
           </button>
