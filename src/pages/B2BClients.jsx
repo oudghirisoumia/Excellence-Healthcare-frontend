@@ -100,7 +100,7 @@ export default function B2BClients() {
 
   return (
     <div className="b2b-clients-page ">
-      <h1>Gestion des clients B2B</h1>
+      <h1>Gestion des clients</h1>
 
       <form className="client-form" onSubmit={handleSubmit}>
         <input placeholder="Prénom" value={form.first_name} onChange={e => setForm({ ...form, first_name: e.target.value })} required />

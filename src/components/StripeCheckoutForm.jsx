@@ -2,99 +2,82 @@ import { useState } from "react"
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js"
 import api from "../api"
 import "../styles/StripePaymentForm.css"
+import { useAuth } from "../context/AuthContext"
 
-const StripeCheckoutForm = ({ onPaymentSuccess, disabled, checkoutData }) => {
+const StripeCheckoutForm = ({ order, onPaymentSuccess }) => {
   const stripe = useStripe()
   const elements = useElements()
+  const { user } = useAuth()
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
+  if (!order) return null
+
   const handlePayment = async (e) => {
-  e.preventDefault()
-  setLoading(true)
-  setError("")
+    e.preventDefault()
+    setLoading(true)
+    setError("")
 
-  if (!stripe || !elements) {
-    setError("Stripe n'est pas chargé")
-    setLoading(false)
-    return
-  }
-
-  try {
-    const { data } = await api.post(
-      "/stripe/create-payment-intent",
-      { amount_mad: checkoutData.total }
-    )
-
-    const clientSecret = data.clientSecret
-
-    const { paymentIntent, error } =
-      await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement),
-          billing_details: {
-            name: `${checkoutData.first_name} ${checkoutData.last_name}`,
-            email: checkoutData.email,
-            phone: checkoutData.phone,
-            address: {
-              line1: checkoutData.address,
-              city: checkoutData.city,
-              country: "MA",
-            },
-          },
-        },
-      })
-
-    if (error) {
-      setError(error.message)
+    if (!stripe || !elements) {
+      setError("Stripe n'est pas chargé")
+      setLoading(false)
       return
     }
 
-    if (paymentIntent.status === "succeeded") {
-      localStorage.removeItem("cart")
+    try {
+      const { data } = await api.post("/stripe/create-payment-intent", {
+        order_id: order.id,
+        order_type: user?.type === "b2b" ? "b2b" : "b2c",
+      })
 
-      onPaymentSuccess()
-    } else {
-      setError("Paiement non confirmé")
+      const clientSecret = data.clientSecret
+
+      const { paymentIntent, error } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: elements.getElement(CardElement),
+          },
+        }
+      )
+
+      if (error) {
+        setError(error.message)
+        return
+      }
+
+      if (paymentIntent.status === "succeeded") {
+        onPaymentSuccess()
+      } else {
+        setError("Paiement non confirmé")
+      }
+
+    } catch (err) {
+      console.error(err)
+      setError("Erreur paiement")
+    } finally {
+      setLoading(false)
     }
-
-  } catch (err) {
-    setError("Erreur paiement")
-  } finally {
-    setLoading(false)
-  }
-}
-
-  const cardElementOptions = {
-    style: {
-      base: {
-        fontSize: "16px",
-        color: "#424770",
-        fontFamily: "Segoe UI, Roboto, Arial, sans-serif",
-        "::placeholder": { color: "#aab7c4" },
-      },
-      invalid: {
-        color: "#fa755a",
-      },
-    },
   }
 
   return (
     <div className="stripe-payment-form">
       <form onSubmit={handlePayment}>
         <p className="total-mad">
-          Total à payer : {checkoutData.total} DH
+          Total à payer : {order.total} DH
         </p>
+
         <div className="stripe-card-wrapper">
           <label>Informations de la carte</label>
-          <CardElement options={cardElementOptions} />
+          <CardElement />
         </div>
 
         {error && <div className="stripe-error">⚠️ {error}</div>}
 
         <button
           type="submit"
-          disabled={disabled || loading || !stripe || !elements}
+          disabled={loading || !stripe || !elements}
           className="btn-pay-stripe"
         >
           {loading ? "Traitement..." : "Payer par carte"}

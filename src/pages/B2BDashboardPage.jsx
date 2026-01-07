@@ -8,30 +8,15 @@ function formatCurrency(number) {
   return Number(number).toLocaleString("fr-FR", { minimumFractionDigits: 2 }) + " DH"
 }
 
-function formatDate(iso) {
-  if (!iso) return ""
-  return new Date(iso).toLocaleDateString("fr-FR")
-}
-
-function StatusBadge({ status }) {
-  if (!status) return <span className="status-badge status-default">—</span>
-  return (
-    <span className={`status-badge status-${status.toLowerCase()}`}>
-      {status}
-    </span>
-  )
-}
-
 const B2BDashboard = () => {
   const [stats, setStats] = useState(null)
-  const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
 
   // Get user info
   let user = null
   try {
     user = JSON.parse(localStorage.getItem("user") || "null")
-  } catch {}
+  } catch { }
   const companyName = user?.companyName || user?.pharmacyName || user?.name || "Votre entreprise"
 
   useEffect(() => {
@@ -42,7 +27,6 @@ const B2BDashboard = () => {
     try {
       const res = await api.get("/b2b/dashboard")
       setStats(res.data.statistics)
-      setOrders(res.data.recentOrders || [])
     } catch (err) {
       console.error("Error loading dashboard:", err)
     } finally {
@@ -80,46 +64,6 @@ const B2BDashboard = () => {
         <div className="card">
           <div className="card-title">Clients</div>
           <div className="card-value">{stats.totalClients}</div>
-        </div>
-      </div>
-
-      {/* Recent Orders */}
-      <div className="card-panel">
-        <div className="panel-header">
-          <h3>Commandes récentes</h3>
-          <span className="muted">Les 10 dernières commandes</span>
-        </div>
-
-        <div className="table-wrap">
-          <table className="orders-table">
-            <thead>
-              <tr>
-                <th>N° Commande</th>
-                <th>Date</th>
-                <th>Client</th>
-                <th>Produits</th>
-                <th>Total</th>
-                <th>Statut</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.length === 0 && (
-                <tr>
-                  <td colSpan="6" className="empty">Aucune commande trouvée</td>
-                </tr>
-              )}
-              {orders.map(order => (
-                <tr key={order.id}>
-                  <td>{order.order_number ?? `CMD-${order.id}`}</td>
-                  <td>{formatDate(order.created_at)}</td>
-                  <td>{order.customer_name}</td>
-                  <td>{order.items?.length || 0}</td>
-                  <td className="amount">{formatCurrency(order.total)}</td>
-                  <td><StatusBadge status={order.status} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

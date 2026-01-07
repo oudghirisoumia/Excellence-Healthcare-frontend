@@ -1,0 +1,346 @@
+.b2b-orders-page {
+  padding: 40px 48px;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #374151;
+  background: #fafafa;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  letter-spacing: -0.01em;
+  color: #1f2937;
+}
+
+
+.status-filter {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-size: 14px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  color: #4b5563;
+}
+
+.status-filter:hover {
+  border-color: #d1d5db;
+}
+
+.status-filter:focus {
+  outline: none;
+  border-color: #9ca3af;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.orders-table th {
+  text-align: left;
+  padding: 14px 18px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.orders-table td {
+  padding: 18px;
+  font-size: 14px;
+  border-top: 1px solid #f3f4f6;
+  color: #374151;
+}
+
+.order-row {
+  transition: background 0.2s ease;
+}
+
+.order-row:hover {
+  background: #fafafa;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+  display: inline-block;
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.processing {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.shipped {
+  background: #e9d5ff;
+  color: #6b21a8;
+}
+
+.status-badge.delivered {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge.empty {
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+.view-order-btn {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.view-order-btn:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.view-order-btn .material-icons {
+  font-size: 20px;
+  display: block;
+}
+
+.loading-text,
+.empty-state {
+  text-align: center;
+  padding: 60px 40px;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 12px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 1px;
+}
+
+.modal-title {
+  font-size: 32px;
+  font-weight: 500;
+  color: #1f2937;
+  text-transform: uppercase ;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.modal-section {
+  padding: 25px 32px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.modal-section:last-of-type {
+  border-bottom: none;
+}
+
+.modal-section-title {
+  font-size: 10px;
+  font-weight: 200;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  margin-bottom: 12px;
+  margin-top: 12px;
+}
+
+.modal-line {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.modal-line strong {
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.modal-product {
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #f3f4f6;
+}
+
+.modal-product:last-child {
+  margin-bottom: 0;
+}
+
+.modal-product-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.modal-product-line {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.modal-product-line:last-child {
+  margin-bottom: 0;
+}
+
+
+.recap-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+
+.recap-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.modal-footer {
+  padding: 24px 32px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.download-invoice-btn {
+  width: 100%;
+  padding: 12px 24px;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.download-invoice-btn:hover {
+  background: #1f2937;
+}
+
+@media (max-width: 1024px) {
+  .b2b-orders-page {
+    padding: 32px 24px;
+  }
+
+  .modal {
+    max-height: 90vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .b2b-orders-page {
+    padding: 24px 16px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+
+  .modal {
+    width: 95%;
+    border-radius: 10px;
+  }
+
+  .modal-header,
+  .modal-section,
+  .modal-footer {
+    padding: 20px 24px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+  }
+}

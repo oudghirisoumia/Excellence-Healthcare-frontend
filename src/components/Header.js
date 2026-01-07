@@ -121,7 +121,7 @@ export default function Header({
                 {userType === "b2c" && (
                   <>
                     {/* <li><Link to="/profile">Mon profil</Link></li> */}
-                    <li><Link to="/orders">Mes commandes</Link></li>
+                    <li><Link to="/orders">Mes achats</Link></li>
                   </>
                 )}
 
@@ -130,9 +130,12 @@ export default function Header({
                   <>
                     {user?.approved ? (
                       <>
+                        {/* <li><Link to="/profile">Mon profil</Link></li> */}
                         <li><Link to="/b2b/dashboard">Tableau de bord</Link></li>
-                        <li><Link to="/b2b/orders">Commandes en gros</Link></li>
-                        <li><Link to="/b2b/clients">Gestion des clients</Link></li>
+                        <li><Link to="/b2b/orders">Mes achats</Link></li>
+                        {/* <li><Link to="/b2b/bulkorders">Commandes clients</Link></li>
+                        <li><Link to="/b2b/clients">Gestion des clients</Link></li> */}
+
                       </>
                     ) : (
                       <li className="muted">Accès en cours d’activation</li>
@@ -143,6 +146,7 @@ export default function Header({
                 {/* ADMIN */}
                 {userType === "admin" && (
                   <>
+                    {/* <li><Link to="/profile">Mon profil</Link></li> */}
                     <li><Link to="/admin">Back-Office Admin</Link></li>
                     {/* <li><Link to="/admin/settings">Paramètres</Link></li> */}
                   </>
