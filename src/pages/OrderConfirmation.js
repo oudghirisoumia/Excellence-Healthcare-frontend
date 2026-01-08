@@ -95,7 +95,7 @@ const OrderConfirmation = () => {
             {downloadingInvoice ? "Téléchargement..." : "Télécharger la facture"}
           </button>
 
-          <Link to="/order-tracking">Suivre ma commande</Link>
+          {/* <Link to="/order-tracking">Suivre ma commande</Link> */}
           <Link to="/products">Continuer vos achats</Link>
         </div>
 
@@ -106,3 +106,4 @@ const OrderConfirmation = () => {
 }
 
 export default OrderConfirmation
+

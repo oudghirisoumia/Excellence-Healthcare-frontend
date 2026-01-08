@@ -1,0 +1,387 @@
+/* ---------- Page Container ---------- */
+
+.b2b-orders-root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.b2b-orders-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 24px 0;
+}
+
+/* ---------- Filter ---------- */
+
+.b2b-orders-filter {
+  padding: 10px 16px;
+  border: 1px solid #cfeaf1;
+  border-radius: 10px;
+  background: #f7fbfd;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  margin-bottom: 24px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.b2b-orders-filter:focus {
+  border: 1px solid #17a2b8;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.15);
+  background: white;
+}
+
+/* ---------- Loading State ---------- */
+
+.b2b-orders-loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* ---------- Orders Table ---------- */
+
+.b2b-orders-table {
+  width: 100%;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  border-collapse: collapse;
+}
+
+.b2b-orders-thead {
+  background: #f7fbfd;
+  border-bottom: 1px solid #eee;
+}
+
+.b2b-orders-thead th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.b2b-orders-tbody td {
+  padding: 16px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.b2b-orders-tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.b2b-orders-row {
+  transition: background 0.2s ease;
+}
+
+.b2b-orders-row:hover {
+  background: #f9fafb;
+}
+
+.b2b-orders-empty {
+  text-align: center;
+  padding: 60px 20px !important;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ---------- Status Badge ---------- */
+
+.od-status {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 12px;
+  text-transform: capitalize;
+}
+
+.od-status--empty {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+
+.od-status--pending {
+  background: #fff8e1;
+  color: #f57c00;
+}
+
+.od-status--processing {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.od-status--shipped {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.od-status--delivered {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.od-status--cancelled {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* ---------- View Order Button ---------- */
+
+.view-order-btn {
+  background: none;
+  border: none;
+  color: #17a2b8;
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.view-order-btn:hover {
+  background: #f7fbfd;
+}
+
+.view-order-btn .material-icons {
+  font-size: 20px;
+}
+
+/* ---------- Modal Overlay ---------- */
+
+.od-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.od-modal-container {
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- Modal Header ---------- */
+
+.od-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.od-modal-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
+}
+
+.od-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.od-modal-close:hover {
+  background: #f1f5f9;
+  color: #333;
+}
+
+/* ---------- Modal Blocks ---------- */
+
+.od-modal-block {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.od-modal-block:last-of-type {
+  border-bottom: none;
+}
+
+.od-modal-subtitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #17a2b8;
+  margin: 0 0 12px 0;
+}
+
+.od-modal-text {
+  font-size: 14px;
+  color: #333;
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.od-modal-text strong {
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* ---------- Product Items ---------- */
+
+.od-product-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.od-product-item:last-child {
+  border-bottom: none;
+}
+
+.od-product-name {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.od-product-line {
+  font-size: 13px;
+  color: #64748b;
+  margin: 4px 0;
+}
+
+/* ---------- Recap Section ---------- */
+
+.od-recap-block {
+  background: #f7fbfd;
+}
+
+.od-recap-line {
+  font-size: 14px;
+  color: #333;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.od-recap-total {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px solid #cfeaf1;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  color: #17a2b8;
+}
+
+/* ---------- Modal Footer ---------- */
+
+.od-modal-footer {
+  padding: 20px 24px;
+  display: flex;
+  justify-content: flex-end;
+  background: #f9fafb;
+  border-radius: 0 0 12px 12px;
+}
+
+.od-invoice-download {
+  padding: 12px 24px;
+  background: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.od-invoice-download:hover {
+  background: #138496;
+  transform: translateY(-1px);
+}
+
+.od-invoice-download:active {
+  transform: translateY(0);
+}
+
+/* ---------- Responsive Design ---------- */
+
+@media (max-width: 768px) {
+  .b2b-orders-root {
+    padding: 16px 12px;
+  }
+
+  .b2b-orders-title {
+    font-size: 24px;
+  }
+
+  .b2b-orders-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .b2b-orders-thead th,
+  .b2b-orders-tbody td {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .od-modal-container {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 12px;
+  }
+
+  .od-modal-header {
+    padding: 20px 16px;
+  }
+
+  .od-modal-title {
+    font-size: 20px;
+  }
+
+  .od-modal-block {
+    padding: 16px;
+  }
+
+  .od-modal-footer {
+    padding: 16px;
+  }
+
+  .od-invoice-download {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .b2b-orders-thead th:nth-child(3),
+  .b2b-orders-tbody td:nth-child(3) {
+    display: none;
+  }
+}

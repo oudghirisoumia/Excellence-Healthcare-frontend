@@ -1,0 +1,432 @@
+/* ---------- Page Container ---------- */
+
+.orders-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.orders-container h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 6px 0;
+}
+
+.orders-count {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 24px 0;
+}
+
+/* ---------- Loading & Empty States ---------- */
+
+.orders-loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 15px;
+  color: #64748b;
+}
+
+.orders-empty {
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.orders-empty h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 12px 0;
+}
+
+.orders-empty p {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0 0 24px 0;
+}
+
+.btn-primary {
+  padding: 12px 24px;
+  background: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background: #138496;
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ---------- Orders List ---------- */
+
+.orders-list {
+  display: grid;
+  gap: 16px;
+}
+
+.order-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.order-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.order-header strong {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+}
+
+.order-date {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 4px 0 0 0;
+}
+
+.order-total {
+  font-size: 18px;
+  font-weight: 600;
+  color: #17a2b8;
+}
+
+.order-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.items-count {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ---------- Status Badges ---------- */
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 12px;
+}
+
+.status-badge.large {
+  padding: 6px 16px;
+  font-size: 13px;
+}
+
+.status-badge.pending {
+  background: #fff8e1;
+  color: #f57c00;
+}
+
+.status-badge.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.warning {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-badge.info {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.status-badge.danger {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.status-badge.default {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+/* ---------- Order Modal ---------- */
+
+.order-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.order-modal {
+  background: white;
+  border-radius: 12px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  padding: 32px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease, color 0.2s ease;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background: #f1f5f9;
+  color: #333;
+}
+
+.order-modal h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 6px 0;
+}
+
+.modal-date {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 16px 0;
+}
+
+.modal-status {
+  margin-bottom: 24px;
+}
+
+/* ---------- Modal Sections ---------- */
+
+.modal-section {
+  padding: 20px 0;
+  border-top: 1px solid #f1f5f9;
+}
+
+.modal-section:first-of-type {
+  border-top: none;
+}
+
+.modal-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #17a2b8;
+  margin: 0 0 12px 0;
+}
+
+.modal-section p {
+  font-size: 14px;
+  color: #333;
+  margin: 4px 0;
+  line-height: 1.6;
+}
+
+/* ---------- Order Items ---------- */
+
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 10px;
+}
+
+.order-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-info strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.item-info p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 2px 0;
+}
+
+.item-total {
+  font-size: 16px;
+  font-weight: 600;
+  color: #17a2b8;
+  align-self: center;
+}
+
+/* ---------- Modal Actions ---------- */
+
+.modal-actions {
+  padding: 20px 0;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-secondary {
+  padding: 12px 24px;
+  background: #f7fbfd;
+  color: #17a2b8;
+  border: 1px solid #cfeaf1;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn-secondary:hover {
+  background: #e8f5f9;
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* ---------- Modal Total ---------- */
+
+.modal-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #f7fbfd;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.modal-total span {
+  font-size: 15px;
+  color: #64748b;
+}
+
+.modal-total strong {
+  font-size: 20px;
+  font-weight: 600;
+  color: #17a2b8;
+}
+
+/* ---------- Responsive Design ---------- */
+
+@media (max-width: 768px) {
+  .orders-page {
+    padding: 16px 12px;
+  }
+
+  .orders-container h1 {
+    font-size: 24px;
+  }
+
+  .order-card {
+    padding: 16px;
+  }
+
+  .order-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .order-total {
+    font-size: 16px;
+  }
+
+  .order-modal {
+    padding: 24px;
+    margin: 16px;
+  }
+
+  .modal-close {
+    top: 16px;
+    right: 16px;
+  }
+
+  .order-modal h2 {
+    font-size: 20px;
+    padding-right: 30px;
+  }
+
+  .order-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .order-item img {
+    width: 100%;
+    height: 180px;
+  }
+
+  .item-total {
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal-total {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-status {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

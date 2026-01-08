@@ -19,11 +19,12 @@ import OrderConfirmation from "./pages/OrderConfirmation"
 import ProductPage from "./pages/ProductPage"
 import B2BDashboard from "./pages/B2BDashboardPage"
 import B2BClients from "./pages/B2BClients"
-import B2BOrders from "./pages/B2BOrders"
+import B2BOrdersPage from "./pages/B2BOrdersPage"
+import B2BGestionOrders from "./pages/B2BGestionOrders"
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import Invoice from "./pages/invoices"
-import OrdersPage from "./pages/OrdersPage"
+import B2COrdersPage from "./pages/B2COrdersPage"
 
 import AdminLayout from "./components/AdminLayout"
 import AdminDashboard from "./pages/AdminDashboard"
@@ -82,8 +83,6 @@ function AppContent() {
     }
   }
 
-
-  // Load cart & favorites & notifications on login
   useEffect(() => {
     if (user) {
       loadUserData()
@@ -169,36 +168,44 @@ function AppContent() {
     }
   };
 
-  const handleAddToCart = async (product) => {
-    const token = localStorage.getItem("token")
+  const handleAddToCart = async (data) => {
+    const productId = data.product_id ?? data.id
+    const quantity = data.quantity ?? 1
+
+    if (!productId) {
+      toast.error("Produit invalide")
+      return
+    }
 
     try {
       const response = await api.post("/cart", {
-        product_id: product.id,
-        quantity: 1,
+        product_id: productId,
+        quantity,
       })
+
       const newCartItem = response.data?.cartItem
+
+      if (!newCartItem) {
+        throw new Error("Invalid cart item from backend")
+      }
 
       setCart((prev) => {
         const cartArray = Array.isArray(prev) ? prev : []
-        const exists = cartArray.find((i) => i.product_id === product.id)
+        const exists = cartArray.find(
+          (i) => i.product_id === newCartItem.product_id
+        )
+
         if (exists) {
           return cartArray.map((i) =>
-            i.product_id === product.id
-              ? { ...i, quantity: i.quantity + 1 }
+            i.product_id === newCartItem.product_id
+              ? newCartItem
               : i
           )
         }
-        return [
-          ...cartArray,
-          newCartItem || {
-            id: Date.now(),
-            product_id: product.id,
-            product,
-            quantity: 1,
-          },
-        ]
+
+        return [...cartArray, newCartItem]
       })
+
       toast.success("Produit ajouté au panier")
     } catch (err) {
       console.error("Add to cart error:", err)
@@ -209,6 +216,7 @@ function AppContent() {
       }
     }
   }
+
 
   const handleRemoveFromCart = async (itemId) => {
     try {
@@ -272,7 +280,7 @@ function AppContent() {
   if (authLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        Vérification de la session...
+        ...
       </div>
     )
   }
@@ -330,7 +338,7 @@ function AppContent() {
             path="/product/:id"
             element={<ProductPage onAddToCart={handleAddToCart} />}
           />
-          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/orders" element={<B2COrdersPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/invoice/:id" element={<Invoice />} />
           <Route
@@ -368,7 +376,22 @@ function AppContent() {
           {/* B2B */}
           <Route path="/b2b/dashboard" element={<B2BDashboard />} />
           <Route path="/b2b/clients" element={<B2BClients />} />
-          <Route path="/b2b/orders" element={<B2BOrders />} />
+          <Route path="/b2b/orders" element={<B2BOrdersPage />} />
+          <Route
+            path="/b2b/bulkorders"
+            element={
+              user ? (
+                user.type === "b2b" ? (
+                  <B2BGestionOrders />
+                ) : (
+                  <Navigate to="/" />
+                )
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
+          />
+
           <Route path="/waiting-approval" element={<WaitingApprovalPage />} />
 
           {/* Admin */}

@@ -1,38 +1,37 @@
-"use client"
 import React, { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import api from "../api"
 import "../styles/B2BDashboard.css"
 
-function formatCurrency(number) {
-  if (number == null) return "0 DH"
-  return Number(number).toLocaleString("fr-FR", { minimumFractionDigits: 2 }) + " DH"
+function formatCurrency(value) {
+  if (!value) return "0,00 DH"
+  return Number(value).toLocaleString("fr-FR", {
+    minimumFractionDigits: 2,
+  }) + " DH"
 }
 
-function formatDate(iso) {
-  if (!iso) return ""
-  return new Date(iso).toLocaleDateString("fr-FR")
-}
-
-function StatusBadge({ status }) {
-  if (!status) return <span className="status-badge status-default">—</span>
-  return (
-    <span className={`status-badge status-${status.toLowerCase()}`}>
-      {status}
-    </span>
-  )
+function formatDate(date) {
+  return new Date(date).toLocaleDateString("fr-FR")
 }
 
 const B2BDashboard = () => {
+  const navigate = useNavigate()
+
   const [stats, setStats] = useState(null)
-  const [orders, setOrders] = useState([])
+  const [salesByMonth, setSalesByMonth] = useState([])
+  const [recentOrders, setRecentOrders] = useState([])
   const [loading, setLoading] = useState(true)
 
-  // Get user info
   let user = null
   try {
     user = JSON.parse(localStorage.getItem("user") || "null")
-  } catch {}
-  const companyName = user?.companyName || user?.pharmacyName || user?.name || "Votre entreprise"
+  } catch { }
+
+  const companyName =
+    user?.companyName ||
+    user?.pharmacyName ||
+    user?.name ||
+    "Votre entreprise"
 
   useEffect(() => {
     loadDashboard()
@@ -42,85 +41,110 @@ const B2BDashboard = () => {
     try {
       const res = await api.get("/b2b/dashboard")
       setStats(res.data.statistics)
-      setOrders(res.data.recentOrders || [])
-    } catch (err) {
-      console.error("Error loading dashboard:", err)
+      setSalesByMonth(res.data.salesByMonth || [])
+      setRecentOrders(res.data.recentOrders || [])
+    } catch (e) {
+      console.error(e)
     } finally {
       setLoading(false)
     }
   }
 
-  if (loading) return <div className="loading">Chargement...</div>
-  if (!stats) return <div className="error">Impossible de charger le dashboard</div>
+  if (loading) return <div className="loading">Chargement…</div>
+  if (!stats) return <div className="error">Impossible de charger les données</div>
 
   return (
     <div className="b2b-dashboard-page">
 
-      <div className="b2b-header">
+      <div className="dashboard-header">
         <div>
-          <h1>Bienvenue, {companyName}</h1>
-          <p className="sub">Tableau de bord B2B</p>
+          <h1>Vue d’ensemble</h1>
+          <p className="subtitle">
+            Bienvenue <strong>{companyName}</strong>, voici l’état de votre activité
+          </p>
         </div>
       </div>
 
-      {/* Stats */}
+      {stats.pendingOrders > 0 && (
+        <div className="alert warning">
+          Vous avez <strong>{stats.pendingOrders}</strong> commande(s) en attente de traitement
+        </div>
+      )}
+
       <div className="cards">
         <div className="card">
-          <div className="card-title">Ventes totales</div>
+          <div className="card-label">Chiffre d’affaires</div>
           <div className="card-value">{formatCurrency(stats.totalSales)}</div>
         </div>
+
         <div className="card">
-          <div className="card-title">Commandes</div>
+          <div className="card-label">Commandes totales</div>
           <div className="card-value">{stats.totalOrders}</div>
         </div>
-        <div className="card">
-          <div className="card-title">En attente</div>
-          <div className="card-value">{stats.pendingOrders}</div>
-        </div>
-        <div className="card">
-          <div className="card-title">Clients</div>
+
+        {/* <div className="card">
+          <div className="card-label">Clients</div>
           <div className="card-value">{stats.totalClients}</div>
+        </div> */}
+
+        <div className="card highlight">
+          <div className="card-label">Commandes En attente</div>
+          <div className="card-value">{stats.pendingOrders}</div>
         </div>
       </div>
 
-      {/* Recent Orders */}
-      <div className="card-panel">
-        <div className="panel-header">
-          <h3>Commandes récentes</h3>
-          <span className="muted">Les 10 dernières commandes</span>
+      <div className="dashboard-grid">
+
+        <div className="panel">
+          <div className="panel-header">
+            <h3>Dernières commandes</h3>
+            <a href="/b2b/orders" className="link-btn">
+              Voir tout →
+            </a>
+
+          </div>
+
+          {recentOrders.length === 0 ? (
+            <p className="empty">Aucune commande récente</p>
+          ) : (
+            recentOrders.map(order => (
+              <div key={order.id} className="order-row">
+                <div>
+                  <strong>Commande #{order.id}</strong>
+                  <div className="muted">{formatDate(order.created_at)}</div>
+                </div>
+
+                <div className="right">
+                  <div>{formatCurrency(order.total)}</div>
+                  <span className={`status ${order.status}`}>
+                    {order.status}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
-        <div className="table-wrap">
-          <table className="orders-table">
-            <thead>
-              <tr>
-                <th>N° Commande</th>
-                <th>Date</th>
-                <th>Client</th>
-                <th>Produits</th>
-                <th>Total</th>
-                <th>Statut</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.length === 0 && (
-                <tr>
-                  <td colSpan="6" className="empty">Aucune commande trouvée</td>
-                </tr>
-              )}
-              {orders.map(order => (
-                <tr key={order.id}>
-                  <td>{order.order_number ?? `CMD-${order.id}`}</td>
-                  <td>{formatDate(order.created_at)}</td>
-                  <td>{order.customer_name}</td>
-                  <td>{order.items?.length || 0}</td>
-                  <td className="amount">{formatCurrency(order.total)}</td>
-                  <td><StatusBadge status={order.status} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="panel">
+          <h3>Évolution des ventes</h3>
+
+          {salesByMonth.length === 0 ? (
+            <p className="empty">Pas encore de données</p>
+          ) : (
+            salesByMonth.map(row => (
+              <div key={row.month} className="month-row">
+                <span>
+                  {new Date(row.month).toLocaleDateString("fr-FR", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </span>
+                <strong>{formatCurrency(row.total)}</strong>
+              </div>
+            ))
+          )}
         </div>
+
       </div>
     </div>
   )

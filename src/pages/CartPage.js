@@ -4,22 +4,29 @@ import { Link, useNavigate } from "react-router-dom"
 
 const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
   const navigate = useNavigate()
-  
-  // Handle different cart item structures
+
   const normalizedCart = cart.map(item => ({
-    ...item,
-    price: item.discountPrice || item.product?.discountPrice || item.product?.prix_detail || 0,
-    name: item.name || item.product?.name || 'Unknown',
-    brand: item.brand || item.product?.brand || '',
-    image: item.image || item.product?.image_principale || '/placeholder.svg',
-    itemId: item.id || item.product_id
+    cartItemId: item.id,
+    productId: item.product_id,
+    name: item.product?.name ?? "Produit",
+    brand: item.product?.brand ?? "",
+    image: item.product?.image_principale ?? "/placeholder.svg",
+    price: Number(
+      item.unit_price ??
+      item.product?.final_price ??
+      item.product?.price ??
+      0
+    ),
+    quantity: item.quantity
   }))
 
-  const subtotal = normalizedCart.reduce((total, item) => total + (parseFloat(item.price) || 0) * (item.quantity || 1), 0)
 
-  const total = subtotal 
+  const subtotal = normalizedCart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  )
 
-  if (cart.length === 0) {
+  if (normalizedCart.length === 0) {
     return (
       <div className="cart-page">
         <h1>Mon Panier</h1>
@@ -33,57 +40,64 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
       </div>
     )
   }
-
+  
   return (
     <div className="cart-page">
-      <h1>Mon Panier ({cart.length})</h1>
+      <h1>Mon Panier ({normalizedCart.length})</h1>
 
       <div className="cart-container">
         <div className="cart-items">
-          {normalizedCart.map((item) => (
-            <div key={item.itemId} className="cart-item">
+          {normalizedCart.map(item => (
+            <div key={item.cartItemId} className="cart-item">
               <img src={item.image} alt={item.name} />
 
               <div className="item-details">
                 <h3>{item.name}</h3>
                 <p className="brand">{item.brand}</p>
-                <p className="price">{parseFloat(item.price).toFixed(2)} DH</p>
+                <p className="price">{item.price.toFixed(2)} DH</p>
               </div>
 
               <div className="quantity-control">
-                <button 
-                  className="qty-btn" 
-                  onClick={() => {
-                    if (item.quantity > 1) {
-                      onUpdateQuantity(item.itemId, item.quantity - 1)
-                    }
-                  }}
+                <button
+                  className="qty-btn"
+                  onClick={() =>
+                    item.quantity > 1 &&
+                    onUpdateQuantity(item.cartItemId, item.quantity - 1)
+                  }
                 >
                   −
                 </button>
+
                 <input
                   type="number"
                   value={item.quantity}
-                  onChange={(e) => {
-                    const newQty = Number.parseInt(e.target.value) || 1
-                    if (newQty > 0) {
-                      onUpdateQuantity(item.itemId, newQty)
-                    }
-                  }}
-                  className="qty-input"
                   min="1"
+                  className="qty-input"
+                  onChange={e => {
+                    const qty = Math.max(1, Number(e.target.value))
+                    onUpdateQuantity(item.cartItemId, qty)
+                  }}
                 />
-                <button 
-                  className="qty-btn" 
-                  onClick={() => onUpdateQuantity(item.itemId, item.quantity + 1)}
+
+                <button
+                  className="qty-btn"
+                  onClick={() =>
+                    onUpdateQuantity(item.cartItemId, item.quantity + 1)
+                  }
                 >
                   +
                 </button>
               </div>
 
-              <div className="item-total">{(parseFloat(item.price) * item.quantity).toFixed(2)} DH</div>
+              <div className="item-total">
+                {(item.price * item.quantity).toFixed(2)} DH
+              </div>
 
-              <button className="remove-btn" onClick={() => onRemoveFromCart(item.itemId)} title="Supprimer">
+              <button
+                className="remove-btn"
+                onClick={() => onRemoveFromCart(item.cartItemId)}
+                title="Supprimer"
+              >
                 <i className="fas fa-trash"></i>
               </button>
             </div>
@@ -94,27 +108,21 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
           <h3>Résumé de commande</h3>
 
           <div className="summary-line">
-            <span>Sous-total</span>
+            <span>Sous-total (HT)</span>
             <span>{subtotal.toFixed(2)} DH</span>
           </div>
 
-          {/* <div className="summary-line">
-            <span>Livraison</span>
-            <span className={shipping === 0 ? "free" : ""}>
-              {shipping === 0 ? "Gratuite" : shipping.toFixed(2) + " DH"}
-            </span>
-          </div> */}
-
-          <div className="summary-total">
-            <span>Total</span>
-            <span>{total.toFixed(2)} DH</span>
+          {/* TVA & Livraison handled by backend */}
+          <div className="summary-line info">
+            TVA et frais de livraison calculés à l’étape suivante
           </div>
 
-          <Link
-            to="/checkout"
-            className="checkout-btn"
-            style={{ textDecoration: "none", display: "block", textAlign: "center" }}
-          >
+          <div className="summary-total">
+            <span>Total estimé</span>
+            <span>{subtotal.toFixed(2)} DH</span>
+          </div>
+
+          <Link to="/checkout" className="checkout-btn">
             <i className="fas fa-lock"></i>
             Procéder au paiement
           </Link>

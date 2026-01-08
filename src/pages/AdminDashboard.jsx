@@ -9,7 +9,6 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
   const [recentOrders, setRecentOrders] = useState([])
 
-  // Promo
   const [freeDelivery, setFreeDelivery] = useState(false)
   const [loadingPromo, setLoadingPromo] = useState(false)
   const [showPromoConfirm, setShowPromoConfirm] = useState(false)
