@@ -40,7 +40,7 @@ const CartPage = ({ cart, onRemoveFromCart, onUpdateQuantity }) => {
       </div>
     )
   }
-
+  
   return (
     <div className="cart-page">
       <h1>Mon Panier ({normalizedCart.length})</h1>

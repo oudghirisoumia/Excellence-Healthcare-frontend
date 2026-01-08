@@ -1,346 +1,387 @@
-.b2b-orders-page {
-  padding: 40px 48px;
-  max-width: 1400px;
+/* ---------- Page Container ---------- */
+
+.b2b-orders-root {
+  max-width: 1200px;
   margin: 0 auto;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #374151;
-  background: #fafafa;
-  min-height: 100vh;
+  padding: 24px 16px;
 }
 
-.page-title {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 32px;
-  letter-spacing: -0.01em;
-  color: #1f2937;
+.b2b-orders-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 24px 0;
 }
 
+/* ---------- Filter ---------- */
 
-.status-filter {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  font-size: 14px;
-  margin-bottom: 24px;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-  color: #4b5563;
-}
-
-.status-filter:hover {
-  border-color: #d1d5db;
-}
-
-.status-filter:focus {
-  outline: none;
-  border-color: #9ca3af;
-}
-
-.orders-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+.b2b-orders-filter {
+  padding: 10px 16px;
+  border: 1px solid #cfeaf1;
   border-radius: 10px;
-  overflow: hidden;
-}
-
-.orders-table th {
-  text-align: left;
-  padding: 14px 18px;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #6b7280;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.orders-table td {
-  padding: 18px;
+  background: #f7fbfd;
   font-size: 14px;
-  border-top: 1px solid #f3f4f6;
-  color: #374151;
+  color: #333;
+  cursor: pointer;
+  margin-bottom: 24px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
-.order-row {
+.b2b-orders-filter:focus {
+  border: 1px solid #17a2b8;
+  box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.15);
+  background: white;
+}
+
+/* ---------- Loading State ---------- */
+
+.b2b-orders-loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* ---------- Orders Table ---------- */
+
+.b2b-orders-table {
+  width: 100%;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  border-collapse: collapse;
+}
+
+.b2b-orders-thead {
+  background: #f7fbfd;
+  border-bottom: 1px solid #eee;
+}
+
+.b2b-orders-thead th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.b2b-orders-tbody td {
+  padding: 16px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.b2b-orders-tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.b2b-orders-row {
   transition: background 0.2s ease;
 }
 
-.order-row:hover {
-  background: #fafafa;
+.b2b-orders-row:hover {
+  background: #f9fafb;
 }
 
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: capitalize;
+.b2b-orders-empty {
+  text-align: center;
+  padding: 60px 20px !important;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ---------- Status Badge ---------- */
+
+.od-status {
   display: inline-block;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 12px;
+  text-transform: capitalize;
 }
 
-.status-badge.pending {
-  background: #fef3c7;
-  color: #92400e;
+.od-status--empty {
+  background: #f1f5f9;
+  color: #94a3b8;
 }
 
-.status-badge.processing {
-  background: #dbeafe;
-  color: #1e40af;
+.od-status--pending {
+  background: #fff8e1;
+  color: #f57c00;
 }
 
-.status-badge.shipped {
-  background: #e9d5ff;
-  color: #6b21a8;
+.od-status--processing {
+  background: #e3f2fd;
+  color: #1565c0;
 }
 
-.status-badge.delivered {
-  background: #d1fae5;
-  color: #065f46;
+.od-status--shipped {
+  background: #f3e5f5;
+  color: #7b1fa2;
 }
 
-.status-badge.cancelled {
-  background: #fee2e2;
-  color: #991b1b;
+.od-status--delivered {
+  background: #e8f5e9;
+  color: #2e7d32;
 }
 
-.status-badge.empty {
-  background: #f3f4f6;
-  color: #9ca3af;
+.od-status--cancelled {
+  background: #ffebee;
+  color: #c62828;
 }
+
+/* ---------- View Order Button ---------- */
 
 .view-order-btn {
-  background: transparent;
-  border: 1px solid #e5e7eb;
+  background: none;
+  border: none;
+  color: #17a2b8;
   cursor: pointer;
-  padding: 8px;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
-  color: #6b7280;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .view-order-btn:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  color: #374151;
+  background: #f7fbfd;
 }
 
 .view-order-btn .material-icons {
   font-size: 20px;
-  display: block;
 }
 
-.loading-text,
-.empty-state {
-  text-align: center;
-  padding: 60px 40px;
-  font-size: 14px;
-  color: #9ca3af;
-}
+/* ---------- Modal Overlay ---------- */
 
-.modal-overlay {
+.od-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 2000;
+  padding: 20px;
 }
 
-.modal {
-  background: #ffffff;
+.od-modal-container {
+  background: white;
   border-radius: 12px;
-  max-width: 700px;
-  width: 90%;
-  max-height: 85vh;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
-.modal-header {
+/* ---------- Modal Header ---------- */
+
+.od-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 28px 32px 20px;
-  border-bottom: 1px solid #f3f4f6;
-  margin-bottom: 1px;
+  padding: 24px;
+  border-bottom: 1px solid #eee;
 }
 
-.modal-title {
-  font-size: 32px;
-  font-weight: 500;
-  color: #1f2937;
-  text-transform: uppercase ;
+.od-modal-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
 }
 
-.modal-close-btn {
-  background: transparent;
+.od-modal-close {
+  background: none;
   border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  font-size: 24px;
+  color: #94a3b8;
   cursor: pointer;
-  font-size: 18px;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.modal-close-btn:hover {
-  background: #f3f4f6;
-  color: #374151;
+.od-modal-close:hover {
+  background: #f1f5f9;
+  color: #333;
 }
 
-.modal-section {
-  padding: 25px 32px;
-  border-bottom: 1px solid #f3f4f6;
+/* ---------- Modal Blocks ---------- */
+
+.od-modal-block {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
-.modal-section:last-of-type {
+.od-modal-block:last-of-type {
   border-bottom: none;
 }
 
-.modal-section-title {
-  font-size: 10px;
-  font-weight: 200;
-  letter-spacing: 0.05em;
-  color: #6b7280;
-  margin-bottom: 12px;
-  margin-top: 12px;
+.od-modal-subtitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #17a2b8;
+  margin: 0 0 12px 0;
 }
 
-.modal-line {
-  margin-bottom: 10px;
+.od-modal-text {
   font-size: 14px;
-  color: #4b5563;
+  color: #333;
+  margin: 8px 0;
   line-height: 1.6;
 }
 
-.modal-line strong {
-  color: #1f2937;
+.od-modal-text strong {
+  color: #64748b;
   font-weight: 500;
 }
 
-.modal-product {
-  background: #fafafa;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  border: 1px solid #f3f4f6;
+/* ---------- Product Items ---------- */
+
+.od-product-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
 }
 
-.modal-product:last-child {
-  margin-bottom: 0;
+.od-product-item:last-child {
+  border-bottom: none;
 }
 
-.modal-product-name {
+.od-product-name {
   display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #1f2937;
-  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 6px;
 }
 
-.modal-product-line {
+.od-product-line {
   font-size: 13px;
-  color: #6b7280;
-  margin-bottom: 4px;
+  color: #64748b;
+  margin: 4px 0;
 }
 
-.modal-product-line:last-child {
-  margin-bottom: 0;
+/* ---------- Recap Section ---------- */
+
+.od-recap-block {
+  background: #f7fbfd;
 }
 
-
-.recap-line {
-  display: flex;
-  justify-content: space-between;
+.od-recap-line {
   font-size: 14px;
-  color: #4b5563;
-  margin-bottom: 8px;
-}
-
-.recap-total {
+  color: #333;
+  margin: 8px 0;
   display: flex;
   justify-content: space-between;
-  padding-top: 12px;
+}
+
+.od-recap-total {
   margin-top: 12px;
-  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+  border-top: 2px solid #cfeaf1;
   font-size: 16px;
-  font-weight: 500;
-  color: #1f2937;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  color: #17a2b8;
 }
 
-.modal-footer {
-  padding: 24px 32px;
-  border-top: 1px solid #f3f4f6;
+/* ---------- Modal Footer ---------- */
+
+.od-modal-footer {
+  padding: 20px 24px;
+  display: flex;
+  justify-content: flex-end;
+  background: #f9fafb;
+  border-radius: 0 0 12px 12px;
 }
 
-.download-invoice-btn {
-  width: 100%;
+.od-invoice-download {
   padding: 12px 24px;
-  color: #ffffff;
+  background: #17a2b8;
+  color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, transform 0.1s ease;
 }
 
-.download-invoice-btn:hover {
-  background: #1f2937;
+.od-invoice-download:hover {
+  background: #138496;
+  transform: translateY(-1px);
 }
 
-@media (max-width: 1024px) {
-  .b2b-orders-page {
-    padding: 32px 24px;
-  }
-
-  .modal {
-    max-height: 90vh;
-  }
+.od-invoice-download:active {
+  transform: translateY(0);
 }
+
+/* ---------- Responsive Design ---------- */
 
 @media (max-width: 768px) {
-  .b2b-orders-page {
-    padding: 24px 16px;
+  .b2b-orders-root {
+    padding: 16px 12px;
   }
 
-  .page-title {
+  .b2b-orders-title {
     font-size: 24px;
-    margin-bottom: 24px;
   }
 
-  .orders-table th,
-  .orders-table td {
-    padding: 14px 16px;
+  .b2b-orders-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .b2b-orders-thead th,
+  .b2b-orders-tbody td {
+    padding: 12px;
     font-size: 13px;
   }
 
-  .modal {
-    width: 95%;
-    border-radius: 10px;
+  .od-modal-container {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 12px;
   }
 
-  .modal-header,
-  .modal-section,
-  .modal-footer {
-    padding: 20px 24px;
+  .od-modal-header {
+    padding: 20px 16px;
   }
 
-  .modal-title {
+  .od-modal-title {
     font-size: 20px;
+  }
+
+  .od-modal-block {
+    padding: 16px;
+  }
+
+  .od-modal-footer {
+    padding: 16px;
+  }
+
+  .od-invoice-download {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .b2b-orders-thead th:nth-child(3),
+  .b2b-orders-tbody td:nth-child(3) {
+    display: none;
   }
 }

@@ -195,7 +195,6 @@ export default function B2COrdersPage() {
                   ))}
                 </div>
               </div>
-
               <div className="modal-actions">
                 <button
                   className="btn-secondary"

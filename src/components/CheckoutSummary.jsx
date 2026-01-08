@@ -37,7 +37,6 @@ export default function CheckoutSummary({ cart, preview }) {
       <div className="summary-line">
         <span>Livraison</span>
         <div className="summary-line">
-          <span>Livraison</span>
           <span>
             {preview.shipping_fee === 0
               ? "Gratuit"

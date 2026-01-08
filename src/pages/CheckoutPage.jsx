@@ -247,7 +247,6 @@ export default function CheckoutPage({ cart, onClearCart }) {
                   />
                 )}
 
-
                 <button onClick={() => setStep(2)}>Modifier</button>
               </>
             )}

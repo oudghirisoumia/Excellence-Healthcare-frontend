@@ -133,9 +133,8 @@ export default function Header({
                         {/* <li><Link to="/profile">Mon profil</Link></li> */}
                         <li><Link to="/b2b/dashboard">Tableau de bord</Link></li>
                         <li><Link to="/b2b/orders">Mes achats</Link></li>
-                        {/* <li><Link to="/b2b/bulkorders">Commandes clients</Link></li>
-                        <li><Link to="/b2b/clients">Gestion des clients</Link></li> */}
-
+                        <li><Link to="/b2b/clients">Mes Clients</Link></li>
+                        {/* <li><Link to="/b2b/bulkorders">Commandes clients</Link></li> */}
                       </>
                     ) : (
                       <li className="muted">Accès en cours d’activation</li>

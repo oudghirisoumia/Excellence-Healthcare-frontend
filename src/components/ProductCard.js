@@ -9,12 +9,10 @@ const ProductCard = ({
 }) => {
   if (!product) return null;
 
-  // Stock
   const isLowStock =
     product.stock > 0 && product.stock <= product.seuil_alerte;
   const isOutOfStock = product.stock <= 0;
 
-  // Prices
   const price = Number(product.price) || 0;
   const finalPrice = Number(product.final_price) || price;
 
@@ -50,7 +48,6 @@ const ProductCard = ({
           )}
         </Link>
 
-        {/* Favorite */}
         <button
           className={`favorite-btn ${isFavorite ? "active" : ""}`}
           onClick={handleFavorite}
@@ -58,14 +55,12 @@ const ProductCard = ({
           <i className="fas fa-heart"></i>
         </button>
 
-        {/* Promotion badge */}
         {hasPromotion && (
           <div className="discount-badge">
             -{product.pourcentage_promo}%
           </div>
         )}
 
-        {/* Stock */}
         {isLowStock && (
           <div className="stock-alert">
             Only {product.stock} left!
@@ -87,7 +82,6 @@ const ProductCard = ({
 
         <p className="product-description">{product.description}</p>
 
-        {/* PRICE */}
         <div className="product-pricing">
           {hasPromotion ? (
             <>

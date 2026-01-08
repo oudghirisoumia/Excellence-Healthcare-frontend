@@ -4,6 +4,8 @@ import api from "../api"
 import { toast } from "react-toastify"
 import "../styles/B2BOrdersPage.css"
 
+/* ---------- Utils ---------- */
+
 function formatCurrency(number) {
   if (number == null) return "0,00 DH"
   return (
@@ -18,15 +20,17 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString("fr-FR")
 }
 
-function StatusBadge({ status }) {
-  if (!status) return <span className="status-badge empty">—</span>
-  return <span className={`status-badge ${status}`}>{status}</span>
-}
-
 function formatPaymentMethod(method) {
   return method === "stripe"
     ? "Carte bancaire"
     : "Paiement à la livraison"
+}
+
+/* ---------- Components ---------- */
+
+function StatusBadge({ status }) {
+  if (!status) return <span className="od-status od-status--empty">—</span>
+  return <span className={`od-status od-status--${status}`}>{status}</span>
 }
 
 function OrderDetailsModal({ order, onClose, onDownloadInvoice }) {
@@ -37,56 +41,58 @@ function OrderDetailsModal({ order, onClose, onDownloadInvoice }) {
   const totalTTC = subtotal + tva + Number(order.shipping_fee || 0)
 
   return (
-    <div className="modal-overlay">
-      <div className="modal">
+    <div className="od-modal-overlay">
+      <div className="od-modal-container">
 
-        <div className="modal-header">
-          <h2 className="modal-title">Commande #{order.id}</h2>
-          <button className="modal-close-btn" onClick={onClose}>✕</button>
+        <div className="od-modal-header">
+          <h2 className="od-modal-title">Commande #{order.id}</h2>
+          <button className="od-modal-close" onClick={onClose}>✕</button>
         </div>
 
-        <div className="modal-section">
-          <h3 className="modal-section-title">Client</h3>
-          <p className="modal-line"><strong>Nom :</strong> {order.customer_name}</p>
-          <p className="modal-line"><strong>Email :</strong> {order.customer_email}</p>
-          <p className="modal-line"><strong>Téléphone :</strong> {order.customer_phone}</p>
+        <div className="od-modal-block">
+          <h3 className="od-modal-subtitle">Client</h3>
+          <p className="od-modal-text"><strong>Nom :</strong> {order.customer_name}</p>
+          <p className="od-modal-text"><strong>Email :</strong> {order.customer_email}</p>
+          <p className="od-modal-text"><strong>Téléphone :</strong> {order.customer_phone}</p>
         </div>
 
-        <div className="modal-section">
-          <h3 className="modal-section-title">Produits</h3>
+        <div className="od-modal-block">
+          <h3 className="od-modal-subtitle">Produits</h3>
 
           {order.items?.map(item => (
-            <div key={item.id} className="modal-product">
-              <strong className="modal-product-name">{item.product?.name}</strong>
-              <div className="modal-product-line">Qté : {item.quantity}</div>
-              <div className="modal-product-line">Prix unitaire : {formatCurrency(item.price)}</div>
-              <div className="modal-product-line">Total HT : {formatCurrency(item.total)}</div>
+            <div key={item.id} className="od-product-item">
+              <strong className="od-product-name">{item.product?.name}</strong>
+              <div className="od-product-line">Qté : {item.quantity}</div>
+              <div className="od-product-line">Prix unitaire : {formatCurrency(item.price)}</div>
+              <div className="od-product-line">Total HT : {formatCurrency(item.total)}</div>
             </div>
           ))}
         </div>
 
-        <div className="modal-section recap-section">
-          <h3 className="modal-section-title">Récapitulatif</h3>
-          <div className="recap-line">Sous-total HT : {formatCurrency(subtotal)}</div>
-          <div className="recap-line">TVA (20%) : {formatCurrency(tva)}</div>
-          <div className="recap-line">Frais de livraison : {formatCurrency(order.shipping_fee)}</div>
-          <div className="recap-total">
-            <strong>Total TTC : {formatCurrency(totalTTC)}</strong>
+        <div className="od-modal-block od-recap-block">
+          <h3 className="od-modal-subtitle">Récapitulatif</h3>
+          <div className="od-recap-line">Sous-total HT : {formatCurrency(subtotal)}</div>
+          <div className="od-recap-line">TVA (20%) : {formatCurrency(tva)}</div>
+          <div className="od-recap-line">Frais de livraison : {formatCurrency(order.shipping_fee)}</div>
+          <div className="od-recap-total">
+            Total TTC : {formatCurrency(totalTTC)}
           </div>
         </div>
 
-        <div className="modal-section">
-          <h3 className="modal-section-title">Logistique</h3>
-          <div className="modal-line">
+        <div className="od-modal-block">
+          <h3 className="od-modal-subtitle">Logistique</h3>
+          <div className="od-modal-text">
             Statut : <StatusBadge status={order.status} />
           </div>
-          <div className="modal-line">Livraison : {order.delivery_speed}</div>
-          <div className="modal-line">Paiement : {formatPaymentMethod(order.payment_method)}</div>
+          <div className="od-modal-text">Livraison : {order.delivery_speed}</div>
+          <div className="od-modal-text">
+            Paiement : {formatPaymentMethod(order.payment_method)}
+          </div>
         </div>
 
-        <div className="modal-footer">
+        <div className="od-modal-footer">
           <button
-            className="download-invoice-btn"
+            className="od-invoice-download"
             onClick={() => onDownloadInvoice(order.id)}
           >
             Télécharger la facture
@@ -97,6 +103,8 @@ function OrderDetailsModal({ order, onClose, onDownloadInvoice }) {
     </div>
   )
 }
+
+/* ---------- Page ---------- */
 
 export default function B2BOrdersPage() {
   const [orders, setOrders] = useState([])
@@ -115,7 +123,7 @@ export default function B2BOrdersPage() {
         params: { type: "b2b", status: status || undefined },
       })
       setOrders(res.data.data || [])
-    } catch (err) {
+    } catch {
       toast.error("Impossible de charger les commandes")
     } finally {
       setLoading(false)
@@ -133,23 +141,23 @@ export default function B2BOrdersPage() {
 
       const link = document.createElement("a")
       link.href = url
-      link.setAttribute("download", `Facture_BULK_${orderId}.pdf`)
+      link.download = `Facture_BULK_${orderId}.pdf`
       document.body.appendChild(link)
       link.click()
 
       link.remove()
       window.URL.revokeObjectURL(url)
-    } catch (err) {
+    } catch {
       toast.error("Téléchargement impossible")
     }
   }
 
   return (
-    <div className="b2b-orders-page">
-      <h1 className="page-title">Mes achats</h1>
+    <div className="b2b-orders-root">
+      <h1 className="b2b-orders-title">Mes achats</h1>
 
       <select
-        className="status-filter"
+        className="b2b-orders-filter"
         value={status}
         onChange={e => setStatus(e.target.value)}
       >
@@ -162,10 +170,10 @@ export default function B2BOrdersPage() {
       </select>
 
       {loading ? (
-        <p className="loading-text">Chargement...</p>
+        <p className="b2b-orders-loading">Chargement...</p>
       ) : (
-        <table className="orders-table">
-          <thead>
+        <table className="b2b-orders-table">
+          <thead className="b2b-orders-thead">
             <tr>
               <th>ID</th>
               <th>Date</th>
@@ -175,10 +183,11 @@ export default function B2BOrdersPage() {
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+
+          <tbody className="b2b-orders-tbody">
             {orders.length === 0 && (
               <tr>
-                <td colSpan="6" className="empty-state">
+                <td colSpan="6" className="b2b-orders-empty">
                   Aucune commande
                 </td>
               </tr>
@@ -190,7 +199,7 @@ export default function B2BOrdersPage() {
               const totalTTC = subtotal + tva + Number(order.shipping_fee || 0)
 
               return (
-                <tr key={order.id} className="order-row">
+                <tr key={order.id} className="b2b-orders-row">
                   <td>{order.id}</td>
                   <td>{formatDate(order.created_at)}</td>
                   <td>{order.customer_name}</td>
@@ -206,7 +215,6 @@ export default function B2BOrdersPage() {
                     >
                       <span className="material-icons">visibility</span>
                     </button>
-
                   </td>
                 </tr>
               )
