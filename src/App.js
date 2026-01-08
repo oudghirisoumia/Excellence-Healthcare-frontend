@@ -55,21 +55,22 @@ function AppContent() {
   const [showNotifications, setShowNotifications] = useState(false)
 
 
-  useEffect(() => {
-    if (!user) return
+useEffect(() => {
+  if (!user) return
 
-    const interval = setInterval(async () => {
-      try {
-        const res = await api.get("/notifications")
-        const notifData = res.data?.data || res.data || []
-        setNotifications(Array.isArray(notifData) ? notifData : [])
-      } catch (err) {
-        console.error("Notification polling failed", err)
-      }
-    }, 5000) // 5 seconds
+  const interval = setInterval(async () => {
+    try {
+      const res = await api.get("/notifications")
+      const notifData = res.data?.data || res.data || []
+      setNotifications(Array.isArray(notifData) ? notifData : [])
+    } catch (err) {
+      console.error("Notification polling failed", err)
+    }
+  }, 15000)
 
-    return () => clearInterval(interval)
-  }, [user])
+  return () => clearInterval(interval)
+}, [user])
+
 
   const handleOpenNotifications = async () => {
     setShowNotifications(true)
