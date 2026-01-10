@@ -10,12 +10,16 @@ export default function AdminDashboard() {
   const [recentOrders, setRecentOrders] = useState([])
 
   const [freeDelivery, setFreeDelivery] = useState(false)
+  const [shippingFees, setShippingFees] = useState(null)
+  const [loadingFees, setLoadingFees] = useState(false)
+
   const [loadingPromo, setLoadingPromo] = useState(false)
   const [showPromoConfirm, setShowPromoConfirm] = useState(false)
   const [nextPromoValue, setNextPromoValue] = useState(false)
 
   useEffect(() => {
     loadDashboard()
+    loadShippingFees()
   }, [])
 
   const loadDashboard = async () => {
@@ -49,6 +53,27 @@ export default function AdminDashboard() {
       toast.error("Erreur lors de la mise à jour de la promotion")
     } finally {
       setLoadingPromo(false)
+    }
+  }
+
+  const loadShippingFees = async () => {
+    try {
+      const res = await api.get("/admin/shipping-fees")
+      setShippingFees(res.data)
+    } catch (err) {
+      toast.error("Erreur lors du chargement des tarifs de livraison")
+    }
+  }
+
+  const saveShippingFees = async () => {
+    try {
+      setLoadingFees(true)
+      await api.put("/admin/shipping-fees", shippingFees)
+      toast.success("Tarifs de livraison mis à jour")
+    } catch (err) {
+      toast.error("Erreur lors de la mise à jour")
+    } finally {
+      setLoadingFees(false)
     }
   }
 
@@ -99,6 +124,92 @@ export default function AdminDashboard() {
           </label>
         </div>
       </div>
+
+      {shippingFees && (
+        <div className="panel promo-panel">
+          <h2>Tarifs de livraison</h2>
+
+          <div className="fees-grid">
+            <div className="fee-row">
+              <label>Fes — Stripe</label>
+              <input
+                type="number"
+                value={shippingFees.fes_stripe}
+                onChange={(e) =>
+                  setShippingFees({
+                    ...shippingFees,
+                    fes_stripe: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="fee-row">
+              <label>Hors Fes — Stripe</label>
+              <input
+                type="number"
+                value={shippingFees.other_stripe}
+                onChange={(e) =>
+                  setShippingFees({
+                    ...shippingFees,
+                    other_stripe: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="fee-row">
+              <label>Fes — Cash</label>
+              <input
+                type="number"
+                value={shippingFees.fes_cod}
+                onChange={(e) =>
+                  setShippingFees({
+                    ...shippingFees,
+                    fes_cod: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="fee-row">
+              <label>Hors Fes — Cash</label>
+              <input
+                type="number"
+                value={shippingFees.other_cod}
+                onChange={(e) =>
+                  setShippingFees({
+                    ...shippingFees,
+                    other_cod: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="fee-row">
+              <label>Supplément express</label>
+              <input
+                type="number"
+                value={shippingFees.express_fee}
+                onChange={(e) =>
+                  setShippingFees({
+                    ...shippingFees,
+                    express_fee: e.target.value,
+                  })
+                }
+              />
+            </div>
+          </div>
+
+          <button
+            className="btn-confirm"
+            disabled={loadingFees}
+            onClick={saveShippingFees}
+          >
+            Enregistrer les tarifs
+          </button>
+        </div>
+      )}
 
       <div className="panel">
         <h2>
